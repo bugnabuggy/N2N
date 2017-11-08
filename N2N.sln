@@ -17,6 +17,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "N2N.Data", "src\N2N.Data\N2
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "N2N.Infrasturcture", "src\N2N.Infrastructure\N2N.Infrasturcture.csproj", "{E45EAE66-10ED-4179-805A-F6A5B65F6532}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "N2N.Web", "src\N2N.Web\N2N.Web.csproj", "{8B788DD5-8887-4463-AD79-18FEA9E27272}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B64A5793-483F-4B9F-863E-E6ADED0FF553}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,6 +50,10 @@ Global
 		{E45EAE66-10ED-4179-805A-F6A5B65F6532}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E45EAE66-10ED-4179-805A-F6A5B65F6532}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E45EAE66-10ED-4179-805A-F6A5B65F6532}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8B788DD5-8887-4463-AD79-18FEA9E27272}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8B788DD5-8887-4463-AD79-18FEA9E27272}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8B788DD5-8887-4463-AD79-18FEA9E27272}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8B788DD5-8887-4463-AD79-18FEA9E27272}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -53,6 +64,7 @@ Global
 		{94757EF4-4F40-4FCA-B64F-95AB5942B0D6} = {E17A8916-7BC2-4F80-9198-1CA6744EBB3C}
 		{5141DFD2-0FFD-43D7-BAC7-1F9B3BBEBF63} = {E17A8916-7BC2-4F80-9198-1CA6744EBB3C}
 		{E45EAE66-10ED-4179-805A-F6A5B65F6532} = {E17A8916-7BC2-4F80-9198-1CA6744EBB3C}
+		{8B788DD5-8887-4463-AD79-18FEA9E27272} = {E17A8916-7BC2-4F80-9198-1CA6744EBB3C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EEA9FF11-6FF0-4EF2-A7AF-699EDC60DA0E}
