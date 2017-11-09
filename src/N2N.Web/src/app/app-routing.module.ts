@@ -3,15 +3,17 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { AppComponent } from './app.component';
 import { NavMenuComponent } from './navmenu/navmenu.component';
-import { HomeComponent } from './home/home.component';
-// import { FetchDataComponent } from './fetchdata/fetchdata.component';
-// import { CounterComponent } from './counter/counter.component';
+import { MakeaPromiseComponent } from './Make-a-Promise/makeapromise.component';
+import { SenfGiftComponent } from './Send-Gift/senfgift.component';
+import {SendPostcardComponent} from './Send-Postcard/sendpostcard.component'
 
 
 const routes: Routes = [
-  { path: '', redirectTo: 'home', pathMatch: 'full' },
-
-  { path: '**', redirectTo: 'home' }
+  { path: '', redirectTo: 'Make-a-Promise', pathMatch: 'full' },
+  { path: 'Make-a-Promise', component: MakeaPromiseComponent },
+  { path: 'Send-Gift', component: SenfGiftComponent },
+  { path: 'Send-PostCard', component: SenfGiftComponent },
+  { path: '**', redirectTo: 'Make-a-Promise' }
 
 ];
 

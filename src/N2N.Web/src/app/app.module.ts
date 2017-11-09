@@ -3,7 +3,9 @@ import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
 import { NavMenuComponent } from './navmenu/navmenu.component';
-import { HomeComponent } from './home/home.component';
+import { MakeaPromiseComponent } from './Make-a-Promise/makeapromise.component';
+import { SenfGiftComponent } from './Send-Gift/senfgift.component';
+import {SendPostcardComponent} from './Send-Postcard/sendpostcard.component'
 
 
 import { AppRoutingModule } from './app-routing.module';
@@ -12,7 +14,9 @@ import { AppRoutingModule } from './app-routing.module';
   declarations: [
     AppComponent,
     NavMenuComponent,
-    HomeComponent,
+    MakeaPromiseComponent,
+    SenfGiftComponent,
+    SendPostcardComponent
   
   ],
   imports: [
