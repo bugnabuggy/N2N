@@ -16,17 +16,12 @@ namespace N2N.Web
 {
   public class Startup
   {
-    public Startup(IHostingEnvironment env)
+   
+    public IConfiguration Configuration { get; }
+    public Startup(IConfiguration configuration, IHostingEnvironment env)
     {
-      var builder = new ConfigurationBuilder()
-          .SetBasePath(env.ContentRootPath)
-          .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-          .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
-          .AddEnvironmentVariables();
-      Configuration = builder.Build();
+      Configuration = configuration;
     }
-
-    public IConfigurationRoot Configuration { get; }
 
     // This method gets called by the runtime. Use this method to add services to the container.
     // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
@@ -44,20 +39,23 @@ namespace N2N.Web
       }
       else
       {
-        app.UseExceptionHandler("/Home/Error");
+        app.UseExceptionHandler("/Error");
       }
 
       app.UseStaticFiles();
-      string file = env.WebRootPath + "/";
+
+      var shellPath = env.WebRootPath + "/" + Configuration["Shell"];
+      var shellContent = this.GetShellContent(shellPath);
 
       app.Run(async (context) =>
       {
-        await context.Response.WriteAsync(Files(file + Configuration["Page"]));
+        await context.Response.WriteAsync(shellContent);
       });
     }
-    public string Files(string put)
+
+    private string GetShellContent(string shellPath)
     {
-      return File.ReadAllText(put);
+      return File.ReadAllText(shellPath);
     }
   }
 }

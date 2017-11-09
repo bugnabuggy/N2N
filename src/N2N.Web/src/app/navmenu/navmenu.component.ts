@@ -6,4 +6,9 @@ import { Component } from '@angular/core';
     styleUrls: ['./navmenu.component.css']
 })
 export class NavMenuComponent {
+    logIn()
+    {
+        var nickname =prompt("");
+        var password =prompt("");
+    }
 }

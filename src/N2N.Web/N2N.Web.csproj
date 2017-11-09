@@ -22,5 +22,9 @@
     <Reference Include="System.Configuration" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
   
 </Project>
