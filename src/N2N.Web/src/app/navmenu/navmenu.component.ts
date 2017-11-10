@@ -8,7 +8,7 @@ import { Component } from '@angular/core';
 export class NavMenuComponent {
     logIn()
     {
-        var nickname =prompt("");
-        var password =prompt("");
+       
     }
+    
 }

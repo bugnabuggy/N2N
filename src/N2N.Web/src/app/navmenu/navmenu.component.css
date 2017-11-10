@@ -22,7 +22,7 @@ li.link-active a:focus {
     /* On small screens, convert the nav menu to a vertical sidebar */
     .main-nav {
         height: 100%;
-        width: calc(30% - 20px);
+        width: calc(35% - 20px);
     }
     .navbar {
        
@@ -35,13 +35,14 @@ li.link-active a:focus {
     .navbar-collapse {
         border-top: 1px solid #444;
         padding: 0px;
+        
     }
     .navbar ul {
         float: none;
     }
     .navbar li {
         float: none;
-        font-size: 30px;
+        font-size: 40px;
         border-bottom: 2px solid #444;
     }
     .navbar li a {
@@ -54,11 +55,8 @@ li.link-active a:focus {
         overflow: hidden;
         text-overflow: ellipsis;
     }
+
     .size-text{
-        margin-top: 16px;
         font-size: 40px;
-    }
-     button {
-        margin-top: 16px;
     }
 }
