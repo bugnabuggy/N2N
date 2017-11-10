@@ -1,44 +1,31 @@
-<div class='main-nav'>
-    <div class='navbar navbar-inverse'>
-        <div class='navbar-header '>
-            <button type='button' class='navbar-toggle' data-toggle='collapse' data-target='.navbar-collapse'>
-                <span class='sr-only'>Toggle navigation</span>
-                <span class='icon-bar'></span>
-                <span class='icon-bar'></span>
-                <span class='icon-bar'></span>
-            </button>
-            <div class="row">
-                    <div class="col-md-4">
-                        <a class='navbar-brand size-text' [routerLink]="['/Make-a-Promise']">N2N</a>
-                    </div>   
-                    <div class="col-md-4">
-                        <button (click)="logIn()" ><span class="fa fa-key fa-4x"></span>Log In</button>
-                    </div>    
-            </div>
-            <div>
-               <span class='navbar-brand '>Anonymous</span> 
-            </div>
-        </div>
-        <div class='clearfix'></div>
-        <div class='navbar-collapse collapse'>
-            <ul class='nav navbar-nav'>
-                <li [routerLinkActive]="['link-active']">
-                    <a [routerLink]="['/Make-a-Promise']">
-                         Make a Promise
-                    </a>
-                </li>
-                
-                <li [routerLinkActive]="['link-active']">
-                    <a [routerLink]="['/Send-Gift']">
-                        Send Gift
-                    </a>
-                </li>
-                <li [routerLinkActive]="['link-active']">
-                    <a [routerLink]="['/Send-PostCard']">
-                        Send PostCard
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </div>
-</div>
+<nav class="navbar navbar-expand-sm  flex-column  navbar-light bg-light main-nav">
+  <div class="row">
+      <a class="navbar-brand col-sm-7 size-text" href="#">N2N</a>
+      
+      <button class="col-sm-5" (click)="logIn()">
+        <span class="fa fa-key fa-4x"></span>Log In
+      </button>
+  </div> 
+  <span class='navbar-brand '>Anonymous</span>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+    aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto flex-column">
+      <li class="nav-item active ">
+        <a class="nav-link" href="/Make-a-Promise">Make a Promise
+          <span class="sr-only">(current)</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/Send-Gift">Send Gift</a>
+      </li>
+      <li class="nav-item ">
+        <a class="nav-link " href="/Send-PostCard">
+          Send PostCard
+        </a>
+      </li>
+    </ul>
+  </div>
+</nav>
