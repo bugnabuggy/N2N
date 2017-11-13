@@ -1,0 +1,28 @@
+<h1 mat-dialog-title>Registration</h1>
+<div class="container">
+<div mat-dialog-content class="content-center">
+    <mat-form-field >
+        <input matInput placeholder="NickName" #nickname  tabindex="1">
+    </mat-form-field>
+    <mat-form-field >
+        <input matInput placeholder="Password" #password  tabindex="2">
+    </mat-form-field>
+    <mat-form-field >
+        <input matInput placeholder="Confiramtion" #confiramtion  tabindex="3">
+    </mat-form-field>
+    <br>
+    <img class="size-picture" src="https://s15.stc.all.kpcdn.net/share/i/12/7250594/inx960x640.jpg" alt="capcha">
+    <mat-form-field >
+        <input matInput #capcha  placeholder="Your Answer"   tabindex="4">
+    </mat-form-field>
+  
+    <section class="align-left" >
+        <mat-checkbox  >Remember me</mat-checkbox>
+    </section>
+    <br>
+</div>
+<div mat-dialog-actions class="align-rigth">
+  <button mat-button (click)="sendDataRegistration(nickname.value,password.value,confiramtion.value,capcha.value)"tabindex="5">Register</button>
+  <button mat-button (click)="onNoClick()" tabindex="-1">Cancel</button>
+</div>
+</div>
