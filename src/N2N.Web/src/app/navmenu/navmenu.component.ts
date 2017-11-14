@@ -1,4 +1,7 @@
 import { Component } from '@angular/core';
+import { MatDialog } from '@angular/material';
+
+import {LogInComponent} from '../login/login.component';
 
 @Component({
     selector: 'nav-menu',
@@ -6,9 +9,17 @@ import { Component } from '@angular/core';
     styleUrls: ['./navmenu.component.css']
 })
 export class NavMenuComponent {
-    logIn()
-    {
-       
+    
+    constructor(
+        public dialog: MatDialog)
+        {}
+        
+
+    openDialog(): void {
+        let dialogRef = this.dialog.open(LogInComponent, {
+          width: '350px',
+        
+        });
     }
     
 }
