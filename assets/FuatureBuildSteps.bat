@@ -25,4 +25,3 @@ REM ! npm i
 REM 6) FrontEnd tests
 REM Set working direcory for frontend app
 REM ! node node_modules/karma/bin/karma start --single-run
-
