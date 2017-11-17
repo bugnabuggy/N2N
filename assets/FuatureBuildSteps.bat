@@ -25,6 +25,9 @@ REM ! npm i -g @angular/cli
 REM ! npm i -g webpack
 REM ! npm i
 
-REM 6) FrontEnd tests
+REM 6) build ng app
+REM ! ng build -prod -aot
+
+REM 7) FrontEnd tests
 REM Set working direcory for frontend app
 REM ! node node_modules/karma/bin/karma start --single-run

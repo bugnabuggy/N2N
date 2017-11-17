@@ -27,7 +27,7 @@
     <Folder Include="wwwroot\" />
   </ItemGroup>
 
-  <Target Name="Build Angular" BeforeTargets="Build">
+  <Target Name="Build Angular" Condition="'$(Configuration)'=='Debug'" BeforeTargets="Build">
     <Message Text="* * * * * * Building Angular App * * * * * *" Importance="high" />
     <Exec Command="ng build -prod -aot" />
   </Target>
