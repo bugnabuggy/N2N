@@ -22,9 +22,6 @@ REM set no .net coverage for now
 
 REM 5) Restore FrontEnd packages
 REM Set working direcory for frontend app
-REM ! npm i -g typescript
-REM ! npm i -g @angular/cli
-REM ! npm i -g webpack
 REM ! npm i
 
 REM 6) build ng app
