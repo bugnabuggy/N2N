@@ -18,6 +18,7 @@ REM path to tools packages\NUnit.ConsoleRunner.3.7.0\tools\nunit3-console.exe
 REM additional command line parameter --x86
 REM Run tests from:  [list of compiled .dll for test projects ]
 REM tests\N2N.Infrastructure.Tests\bin\Release\N2N.Infrastructure.Tests.dll
+REM Exclude sqlserver /ProcessFilters=-:sqlservr.exe  or just -:sqlserver in Filters field
 
 REM 5) Restore FrontEnd packages
 REM Set working direcory for frontend app
