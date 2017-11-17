@@ -5,6 +5,7 @@
     <TypeScriptToolsVersion>2.3</TypeScriptToolsVersion>
     <TypeScriptCompileBlocked>True</TypeScriptCompileBlocked>
     <StartupObject></StartupObject>
+    <RuntimeIdentifiers>win7-x64;win7-x86;win81-x64;win81-x86;</RuntimeIdentifiers>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -26,5 +27,9 @@
     <Folder Include="wwwroot\" />
   </ItemGroup>
 
+  <Target Name="Build Angular" BeforeTargets="Build">
+    <Message Text="* * * * * * Building Angular App * * * * * *" Importance="high" />
+    <Exec Command="ng build -prod -aot" />
+  </Target>
   
 </Project>

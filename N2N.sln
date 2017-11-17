@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2005
+VisualStudioVersion = 15.0.27004.2009
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{E17A8916-7BC2-4F80-9198-1CA6744EBB3C}"
 EndProject
@@ -22,6 +22,12 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B64A5793-483F-4B9F-863E-E6ADED0FF553}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "assets", "assets", "{1567A827-34AE-4655-807F-1D302B995718}"
+	ProjectSection(SolutionItems) = preProject
+		assets\DevBuildSteps.bat = assets\DevBuildSteps.bat
+		assets\FuatureBuildSteps.bat = assets\FuatureBuildSteps.bat
 	EndProjectSection
 EndProject
 Global

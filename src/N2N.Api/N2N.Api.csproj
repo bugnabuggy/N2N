@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net47</TargetFramework>
+    <RuntimeIdentifiers>win7-x64;win7-x86;win81-x64;win81-x86;</RuntimeIdentifiers>
   </PropertyGroup>
 
   <ItemGroup>
