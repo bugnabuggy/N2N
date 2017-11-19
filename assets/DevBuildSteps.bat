@@ -26,11 +26,15 @@ REM 6) FrontEnd tests
 REM Set working direcory for frontend app
 REM ! node node_modules/karma/bin/karma start --single-run
 
-REM 7) Publish website sources
+REM 7) Build FrontEnd App
+REM Set working direcory for frontend app
+REM ! ng build --aot
+
+REM 8) Publish website sources
 REM ! rmdir /s /q N2N\pub
 REM ! dotnet msbuild N2N.sln /t:Publish /p:Configuration=Release /p:PublishDir=pub
 
-REM 8) Stop site, Copy files to web site, and start again
+REM 9) Stop site, Copy files to web site, and start again
 REM ! %env.windir%\system32\inetsrv\appcmd stop site /site.name:api.nick2nick.com
 REM ! %env.windir%\system32\inetsrv\appcmd stop site /site.name:nick2nick.com
 REM ! %env.windir%\system32\inetsrv\appcmd stop apppool /apppool.name:nick2nick.com
