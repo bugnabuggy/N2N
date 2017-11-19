@@ -28,6 +28,7 @@ REM ! node node_modules/karma/bin/karma start --single-run
 
 REM 7) Build FrontEnd App
 REM Set working direcory for frontend app
+REM ! npm install -g @angular/cli
 REM ! ng build --aot
 
 REM 8) Publish website sources
