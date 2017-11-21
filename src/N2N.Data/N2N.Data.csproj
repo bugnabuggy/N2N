@@ -42,5 +42,11 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\N2N.Core\N2N.Core.csproj">
+      <Project>{94757EF4-4F40-4FCA-B64F-95AB5942B0D6}</Project>
+      <Name>N2N.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
