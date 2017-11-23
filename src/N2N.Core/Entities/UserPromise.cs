@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
 
-namespace N2N.Infrastructure.Models
+namespace N2N.Core.Entities
 {
-    public class N2NIdentityUser : IdentityUser
+    public class UserPromise
     {
+        public Guid Id { get; set; }
+        public Guid PromiseId { get; set; }
         public Guid N2NUserId { get; set; }
     }
 }

@@ -15,10 +15,16 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.0.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="2.0.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.0" />
+    <PackageReference Include="SimpleInjector" Version="4.0.12" />
+    <PackageReference Include="SimpleInjector.Integration.AspNetCore" Version="4.0.12" />
+    <PackageReference Include="SimpleInjector.Integration.AspNetCore.Mvc" Version="4.0.12" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\N2N.Core\N2N.Core.csproj" />
     <ProjectReference Include="..\N2N.Infrastructure\N2N.Infrasturcture.csproj" />
+    <ProjectReference Include="..\N2N.Services\N2N.Services.csproj" />
+    <ProjectReference Include="..\N2N.Utilities\N2N.Utilities.csproj" />
   </ItemGroup>
 
 </Project>
