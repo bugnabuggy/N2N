@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("N2N.Data")]
+[assembly: AssemblyTitle("N2N.Services")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("N2N.Data")]
+[assembly: AssemblyProduct("N2N.Services")]
 [assembly: AssemblyCopyright("Copyright ©  2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("5141dfd2-0ffd-43d7-bac7-1f9b3bbebf63")]
+[assembly: Guid("2d14710e-bf4b-4a05-b189-dbc94d0dec1c")]
 
 // Version information for an assembly consists of the following four values:
 //

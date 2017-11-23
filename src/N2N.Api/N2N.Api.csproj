@@ -22,12 +22,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\N2N.Core\N2N.Core.csproj" />
-    <ProjectReference Include="..\N2N.Data\N2N.Data.csproj" />
     <ProjectReference Include="..\N2N.Infrastructure\N2N.Infrasturcture.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Services\" />
+    <ProjectReference Include="..\N2N.Services\N2N.Services.csproj" />
+    <ProjectReference Include="..\N2N.Utilities\N2N.Utilities.csproj" />
   </ItemGroup>
 
 </Project>

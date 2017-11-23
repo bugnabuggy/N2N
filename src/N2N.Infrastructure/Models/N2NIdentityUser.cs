@@ -9,5 +9,6 @@ namespace N2N.Infrastructure.Models
 {
     public class N2NIdentityUser : IdentityUser
     {
+        public Guid N2NUserId { get; set; }
     }
 }

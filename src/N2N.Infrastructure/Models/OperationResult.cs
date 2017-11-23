@@ -10,6 +10,6 @@ namespace N2N.Infrastructure.Models
     {
         public bool Success { get; set; }
         public object Data { get; set; }
-        public List<string> Messages { get; set; }
+        public IEnumerable<string> Messages { get; set; }
     }
 }

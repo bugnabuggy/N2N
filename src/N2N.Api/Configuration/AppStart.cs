@@ -13,6 +13,8 @@ using N2N.Core.Entities;
 using N2N.Data.Repositories;
 using N2N.Infrastructure.DataContext;
 using N2N.Infrastructure.Models;
+using N2N.Services;
+using N2N.Services.Users;
 using SimpleInjector;
 using SimpleInjector.Integration.AspNetCore.Mvc;
 using SimpleInjector.Lifestyles;
@@ -63,16 +65,17 @@ namespace N2N.Api.Configuration
             container.RegisterMvcControllers(app);
             container.RegisterMvcViewComponents(app);
 
-            container.CrossWire<N2NDataContext>(app);
-            container.Register<IRepository<N2NUser>, DbRepository<N2NUser>>();
-            container.Register<N2N.Data.Repositories.TestClass>();
-            // Add application services for AccountController
-            //container.RegisterSingleton<IEmailSender, AuthMessageSender>();
-            //container.RegisterSingleton<ISmsSender, AuthMessageSender>();
-
             // Cross wire Identity services
+            container.CrossWire<N2NDataContext>(app);
             container.CrossWire<UserManager<N2NIdentityUser>>(app);
             container.CrossWire<SignInManager<N2NIdentityUser>>(app);
+
+            // Dependencies
+            container.Register<IRepository<N2NUser>, DbRepository<N2NUser>>();
+            container.Register<ISecurityService, SecurityService>();
+            container.Register<IN2NUserService, N2NUserService>();
+            container.Register<N2N.Data.Repositories.TestClass>();
+            
         }
 
         internal static bool BootstrapDb(N2NDataContext ctx)
