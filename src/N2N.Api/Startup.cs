@@ -5,13 +5,15 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using N2N.Core.Entities;
 using N2N.Infrastructure.DataContext;
-
+using N2N.Infrastructure.Models;
 using SimpleInjector;
 using SimpleInjector.Lifestyles;
 using SimpleInjector.Integration.AspNetCore;
@@ -39,6 +41,24 @@ namespace N2N.Api
 
             services.AddMvc();
 
+            services.AddIdentity<N2NIdentityUser, IdentityRole>()
+                .AddEntityFrameworkStores<N2NDataContext>()
+                .AddDefaultTokenProviders();
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowSpecificOrigin",
+                    builder =>
+                    {
+                        builder.AllowAnyOrigin()
+                            .AllowAnyMethod()
+                            .AllowAnyHeader();
+                    });
+            });
+
+            
+
+
             N2N.Api.Configuration.AppStart.IntegrateSimpleInjector(services, this.container);
             
         }
@@ -53,6 +73,8 @@ namespace N2N.Api
 
             N2N.Api.Configuration.AppStart.UseMvcAndConfigureRoutes(app);
             N2N.Api.Configuration.AppStart.InitializeContainer(app, this.container);
+
+            container.Verify();
 
             var optionsBuilder = new DbContextOptionsBuilder<N2NDataContext>();
             optionsBuilder.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));

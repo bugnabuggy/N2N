@@ -9,13 +9,14 @@ using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using N2N.Api.Services;
 using N2N.Core.Entities;
 using N2N.Data.Repositories;
 using N2N.Infrastructure.DataContext;
 using N2N.Infrastructure.Models;
 using N2N.Services;
-using N2N.Services.Users;
 using SimpleInjector;
+using SimpleInjector.Integration.AspNetCore;
 using SimpleInjector.Integration.AspNetCore.Mvc;
 using SimpleInjector.Lifestyles;
 
@@ -25,6 +26,8 @@ namespace N2N.Api.Configuration
     {
         internal static void UseMvcAndConfigureRoutes(IApplicationBuilder app)
         {
+            app.UseCors("AllowSpecificOrigin");
+
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
@@ -40,7 +43,7 @@ namespace N2N.Api.Configuration
         /// <param name="container">DI container</param>
         internal static void IntegrateSimpleInjector(IServiceCollection services, Container container)
         {
-            container.Options.DefaultScopedLifestyle = new AsyncScopedLifestyle();
+            container.Options.DefaultScopedLifestyle = new AspNetRequestLifestyle();
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
@@ -69,13 +72,12 @@ namespace N2N.Api.Configuration
             container.CrossWire<N2NDataContext>(app);
             container.CrossWire<UserManager<N2NIdentityUser>>(app);
             container.CrossWire<SignInManager<N2NIdentityUser>>(app);
-
+            
             // Dependencies
             container.Register<IRepository<N2NUser>, DbRepository<N2NUser>>();
             container.Register<ISecurityService, SecurityService>();
             container.Register<IN2NUserService, N2NUserService>();
-            container.Register<N2N.Data.Repositories.TestClass>();
-            
+            container.Register<N2NApiUserService>();
         }
 
         internal static bool BootstrapDb(N2NDataContext ctx)

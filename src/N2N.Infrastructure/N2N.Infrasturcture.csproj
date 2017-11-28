@@ -218,6 +218,10 @@
     <Compile Include="Migrations\20171030103621_init.designer.cs">
       <DependentUpon>20171030103621_init.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\20171127042133_Initial.cs" />
+    <Compile Include="Migrations\20171127042133_Initial.designer.cs">
+      <DependentUpon>20171127042133_Initial.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\N2NDataContextModelSnapshot.cs" />
     <Compile Include="Models\N2NIdentityUser.cs" />
     <Compile Include="Models\OperationResult.cs" />
@@ -225,7 +229,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\IRepository.cs" />
     <Compile Include="Repositories\DbRepository.cs" />
-    <Compile Include="Repositories\TestClass.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

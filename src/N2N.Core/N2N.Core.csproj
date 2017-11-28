@@ -44,6 +44,7 @@
     <Compile Include="Entities\UserAddress.cs" />
     <Compile Include="Entities\N2NPromise.cs" />
     <Compile Include="Entities\N2NUser.cs" />
+    <Compile Include="Entities\UserDataForm.cs" />
     <Compile Include="Entities\UserPromise.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
