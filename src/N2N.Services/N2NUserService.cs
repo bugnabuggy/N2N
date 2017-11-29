@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using N2N.Core.Entities;
 using N2N.Data.Repositories;
 using N2N.Infrastructure.Models;
-using N2N.Services.Users;
+using N2N.Services;
 
 namespace N2N.Services
 {
@@ -17,20 +17,33 @@ namespace N2N.Services
         private ISecurityService _security;
 
 
+        public N2NUser CheckOrRegenerateUserId(N2NUser user)
+        {
+            while (this._userRepo.Data.Any( x => x.Id == user.Id))
+            {
+                user.Id = Guid.NewGuid();
+            }
+            return user;
+        }
+
         public N2NUserService(IRepository<N2NUser> userRepo, ISecurityService security)
         {
             this._userRepo = userRepo;
             this._security = security;
         }
 
+        public bool IsNicknameExists(N2NUser user)
+        {
+            var nickNameExists = this._userRepo.Data.Any(x => x.NickName == user.NickName);
+
+            return nickNameExists;
+        }
+
         public OperationResult CreateUser(N2NUser user)
         {
-            var result = new OperationResult()
-            {
-                Success = false
-            };
+            var result = new OperationResult();
 
-            // add verification of user fields
+            //TODO: add verification of user fields
 
             if (this._security.HasAccess())
             {
