@@ -12,18 +12,6 @@ namespace N2N.Api.Controllers
     [Route("Promise")]
     public class PromiseController : Controller
     {
-        private TestClass _test;
-
-        public PromiseController(TestClass test)
-        {
-            this._test = test;
-        }
-
-        // GET: /Promise
-        [HttpGet]
-        public string Get()
-        {
-            return this._test.Test();
-        }
+  
     }
 }
