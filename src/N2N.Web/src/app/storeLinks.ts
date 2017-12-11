@@ -1,3 +1,6 @@
+import { Injectable } from '@angular/core';
+
+@Injectable()
 
 export class StoreLinks {
     public registerUrl = 'http://localhost:63354/User/register';

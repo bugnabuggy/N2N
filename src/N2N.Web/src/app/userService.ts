@@ -7,11 +7,7 @@ import {StoreLinks} from './storeLinks';
 
 @Injectable()
 export class UserService {
-  
-
-  
   // URL to web api
-
   constructor(
     private http: Http,
     private _storeHeaders:StoreHeaders,

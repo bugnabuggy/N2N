@@ -42,15 +42,10 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
     BrowserAnimationsModule,
     FormsModule,
     HttpModule,
-    ReactiveFormsModule,
-    
+    ReactiveFormsModule
   ],
   entryComponents: [LogInComponent,RegistrationComponent],
-  providers: [
-    UserService,
-    StoreHeaders,
-    StoreLinks
-  ],
+  providers: [UserService,StoreHeaders,StoreLinks],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

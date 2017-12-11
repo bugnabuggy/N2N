@@ -4,6 +4,12 @@ import { NavMenuComponent } from './navmenu/navmenu.component';
 import { RouterTestingModule } from '@angular/router/testing'
 import { MatDialogModule } from '@angular/material';
 
+import { HttpModule } from '@angular/http';
+
+import {StoreHeaders} from './storeHeaders';
+import {StoreLinks} from './storeLinks';
+import {UserService} from './userService';
+
 describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -13,9 +19,13 @@ describe('AppComponent', () => {
       ],
       imports: [
         RouterTestingModule,
-        MatDialogModule
+        MatDialogModule,
+        HttpModule 
       ],
       providers:[ 
+        UserService,
+        StoreHeaders,
+        StoreLinks
       ]
     }).compileComponents();
   }));
