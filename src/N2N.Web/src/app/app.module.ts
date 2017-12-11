@@ -13,6 +13,8 @@ import {LogInComponent} from './login/login.component';
 import {RegistrationComponent} from './registration/registration.component';
 
 import {UserService} from './userService';
+import {StoreHeaders} from './storeHeaders'
+import {StoreLinks} from './storeLinks'
 
 import { AppRoutingModule } from './app-routing.module';
 
@@ -43,7 +45,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
     ReactiveFormsModule
   ],
   entryComponents: [LogInComponent,RegistrationComponent],
-  providers: [UserService],
+  providers: [UserService,StoreHeaders,StoreLinks],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

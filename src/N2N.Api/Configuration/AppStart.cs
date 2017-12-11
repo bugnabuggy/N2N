@@ -43,14 +43,13 @@ namespace N2N.Api.Configuration
         /// <param name="container">DI container</param>
         internal static void IntegrateSimpleInjector(IServiceCollection services, Container container)
         {
-            container.Options.DefaultScopedLifestyle = new AspNetRequestLifestyle();
+            container.Options.DefaultScopedLifestyle = new AsyncScopedLifestyle();
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
-            services.AddSingleton<IControllerActivator>(
-                new SimpleInjectorControllerActivator(container));
-            services.AddSingleton<IViewComponentActivator>(
-                new SimpleInjectorViewComponentActivator(container));
+
+            services.AddSingleton<IControllerActivator>(new SimpleInjectorControllerActivator(container));
+            services.AddSingleton<IViewComponentActivator>(new SimpleInjectorViewComponentActivator(container));
 
             services.EnableSimpleInjectorCrossWiring(container);
             services.UseSimpleInjectorAspNetRequestScoping(container);
@@ -72,12 +71,15 @@ namespace N2N.Api.Configuration
             container.CrossWire<N2NDataContext>(app);
             container.CrossWire<UserManager<N2NIdentityUser>>(app);
             container.CrossWire<SignInManager<N2NIdentityUser>>(app);
+            container.CrossWire<IAuthentificationService>(app);
             
             // Dependencies
             container.Register<IRepository<N2NUser>, DbRepository<N2NUser>>();
+            container.Register<IRepository<N2NToken>, DbRepository<N2NToken>>();
             container.Register<ISecurityService, SecurityService>();
             container.Register<IN2NUserService, N2NUserService>();
             container.Register<N2NApiUserService>();
+
         }
 
         internal static bool BootstrapDb(N2NDataContext ctx)
