@@ -41,6 +41,7 @@ namespace N2N.Api
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            var tokenConfig = new TokenConfig();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
@@ -51,12 +52,12 @@ namespace N2N.Api
                         // укзывает, будет ли валидироваться издатель при валидации токена
                         ValidateIssuer = true,
                         // строка, представляющая издателя
-                        ValidIssuer = TokenConfig.ISSUER,
+                        ValidIssuer = tokenConfig.ISSUER,
 
                         // будет ли валидироваться потребитель токена
                         ValidateAudience = true,
                         // установка потребителя токена
-                        ValidAudience = TokenConfig.AUDIENCE,
+                        ValidAudience = tokenConfig.AUDIENCE,
                         // будет ли валидироваться время существования
                         ValidateLifetime = true,
 
@@ -78,6 +79,7 @@ namespace N2N.Api
                 .AddEntityFrameworkStores<N2NDataContext>()
                 .AddDefaultTokenProviders();
 
+            services.AddTransient<IRepository<N2NRefreshToken>, DbRepository<N2NRefreshToken>>();
             services.AddTransient<IRepository<N2NToken>, DbRepository<N2NToken>>();
             services.AddTransient<IAuthentificationService, AuthentificationService>();
 

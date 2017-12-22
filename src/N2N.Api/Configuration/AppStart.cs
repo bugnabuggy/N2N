@@ -76,6 +76,7 @@ namespace N2N.Api.Configuration
             // Dependencies
             container.Register<IRepository<N2NUser>, DbRepository<N2NUser>>();
             container.Register<IRepository<N2NToken>, DbRepository<N2NToken>>();
+            container.Register<IRepository<N2NRefreshToken>, DbRepository<N2NRefreshToken>>();
             container.Register<ISecurityService, SecurityService>();
             container.Register<IN2NUserService, N2NUserService>();
             container.Register<N2NApiUserService>();

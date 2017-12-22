@@ -3,6 +3,7 @@ import { MatDialog } from '@angular/material';
 
 import {LogInComponent} from '../login/login.component';
 import {UserService} from '../userService';
+import {StoreHeaders} from '../storeHeaders'
 
 @Component({
     selector: 'nav-menu',
@@ -13,12 +14,13 @@ export class NavMenuComponent {
     
     constructor(
         public dialog: MatDialog,
-        public userService:UserService
+        public userService:UserService,
+        private _storeHeaders:StoreHeaders
     )
         {}
 
     logout():void{
-        this.userService.logOut();
+        this.userService.logOut().then(data =>{debugger; this._storeHeaders.refrechJsonAndTokenHeaders()});
     }
 
     checkout():void{

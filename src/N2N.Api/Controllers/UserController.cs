@@ -29,13 +29,43 @@ namespace N2N.Api.Controllers
             this._apiUserService = apiUserService;
         }
 
-        [N2NAutorizationFilter]
-        [HttpGet("/user/СheckUser")]
+        //[N2NAutorizationFilter]
+        [HttpGet("/user")]
         public async Task<JsonResult> СheckUser()
         {
             var authHeader = HttpContext.Request.Headers["Authorization"];
-            string welcome_message ="Welcome "+_authentificationService.GetNameUser(authHeader.ToString());
-            return Json(welcome_message);
+            if (authHeader!="Bearer")
+            {
+                string welcome_message = "Welcome " + _authentificationService.GetNameUser(authHeader.ToString());
+                return Json(welcome_message);
+            }
+            return Json("You not authentification");
+        }
+
+
+        [HttpPost("/user/logIn")]
+        public async Task<IActionResult> LogIn([FromBody] UserRegistrationFormDTO userRegistration)
+        {
+
+            if (!userRegistration.NickName.IsNullOrEmpty() &&
+                !userRegistration.Password.IsNullOrEmpty() &&
+                !userRegistration.Capcha.IsNullOrEmpty())
+            {
+                var response =
+                    await _authentificationService.Authentification(userRegistration.NickName,
+                        userRegistration.Password);
+
+                if (response.ToString() == new { }.ToString())
+                {
+                    return BadRequest("Invalid username or password.");
+
+                }
+                return Ok(response);
+            }
+            else
+            {
+                return BadRequest("fill in all the fields");
+            }
         }
 
         [HttpPost("/user/register")]
@@ -59,15 +89,14 @@ namespace N2N.Api.Controllers
                     return BadRequest(result.Messages);
                 }
 
-                var identity = await this._authentificationService.GetIdentity(userRegistration.NickName, userRegistration.Password);
-                if (identity == null)
+                var response =await _authentificationService.Authentification(userRegistration.NickName, userRegistration.Password);
+
+                if (response.ToString() == new { }.ToString())
                 {
-                    Response.StatusCode = 400;
-                    await Response.WriteAsync("Invalid username or password.");
+                    return BadRequest("Invalid username or password.");
                    
                 }
-                var response = await this._authentificationService.GetTokenObject(identity, user.Id);
-
+                
                 return Ok(response);
             }
             else

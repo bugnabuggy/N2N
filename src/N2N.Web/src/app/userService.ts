@@ -27,7 +27,7 @@ export class UserService {
         { headers: this._storeHeaders.jsonHeader }
       )
       .toPromise()
-      .then(resp => { debugger; return resp })
+      .then(resp => {  return resp })
       .catch(this.handleError);
   }
 
@@ -38,21 +38,38 @@ export class UserService {
       { headers: this._storeHeaders.jsonAndTokenHeaders }
     )
     .toPromise()
-    .then(resp => { debugger; return resp.json })
+    .then(resp => {  return resp.json })
     .catch(this.handleError);
   }
 
-  logOut(){
+  logIn(nickName: string, password: string, capcha: string): Promise<any>{
+    var data = {
+      nickName,
+      password,
+      capcha
+    };
+    return this.http.post(
+        this._storeLinks.logInUrl,
+        data,
+        { headers: this._storeHeaders.jsonHeader }
+      )
+      .toPromise()
+      .then(resp => { debugger; return resp })
+      .catch(this.handleError);
+  }
+
+  logOut(): Promise<any>{
     return this.http.delete(
       this._storeLinks.logoutUrl,
       { headers:  this._storeHeaders.jsonAndTokenHeaders}
     )
     .toPromise()
+    .then(resp=> {debugger;return resp; localStorage.setItem('Token',"")})
   }
 
   private handleError(error: any): Promise<any> {
 
-    return Promise.reject(error);;
+    return Promise.reject(error);
   }
 
 }

@@ -33,14 +33,12 @@ export class RegistrationComponent {
         this._userService.sendUserDataForRegistration(nickname, password, capcha)
           .then(data => 
             {
-            debugger; 
-            
             localStorage.setItem("Token", JSON.parse(data._body).access_token);
             this._storeHeaders.refrechJsonAndTokenHeaders();
             alert(JSON.parse(data._body).access_token);
             
         })
-          .catch(data => { 
+          .catch(data => { debugger
             alert(data._body);           
           });
       }

@@ -4,6 +4,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using IdentityServer4.Test;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -18,11 +19,14 @@ namespace N2N.Api.Services
     {
         private UserManager<N2NIdentityUser> _userManager;
         private IRepository<N2NToken> _tokenRepo;
+        private IRepository<N2NRefreshToken> _RefreshTokenRepo;
+
         
-        public AuthentificationService(UserManager<N2NIdentityUser> userManager, IRepository<N2NToken> tokenRepo)
+        public AuthentificationService(UserManager<N2NIdentityUser> userManager, IRepository<N2NToken> tokenRepo, IRepository<N2NRefreshToken> RefreshTokenRepo)
         {
             this._userManager = userManager;
             this._tokenRepo = tokenRepo;
+            this._RefreshTokenRepo = RefreshTokenRepo;
         }
 
         public string GetNameUser(string tokenString)
@@ -81,7 +85,65 @@ namespace N2N.Api.Services
            
         }
 
-        public async Task<ClaimsIdentity> GetIdentity(string nickName, string password)
+        public async Task<object> Authentification(string nickName, string password)
+        {
+            object response=  new { };
+            var access_token = await GetToken(nickName,password);
+            if (access_token !="")
+            {
+                var refresh_token = await GetRefreshToken(nickName, password);
+                response= new
+                {
+                    access_token = access_token,
+                    refresh_token = refresh_token
+                };
+            }
+            return response;
+        }
+
+        public async Task<string> GetToken(string nickName, string password)
+        {
+            var Token="";
+            var tokenConfig = new TokenConfig();
+            var lifeTime = TimeSpan.FromMinutes(tokenConfig.LIFETIME);
+            var user = await this._userManager.FindByNameAsync(nickName);
+            var tokenId = Guid.NewGuid();
+            
+            var claimIdentity = await GetIdentity(nickName, password, tokenId);
+            if (claimIdentity != null)
+            {
+                _tokenRepo.Add(new N2NToken
+                {
+                    Id = tokenId,
+                    N2NUserId = user.N2NUserId,
+                    TokenExpirationDate = DateTime.Now.AddMinutes(tokenConfig.LIFETIME)
+                });
+                Token = await GetTokenObject(claimIdentity, user.N2NUserId, tokenConfig.ISSUER,
+                    tokenConfig.AUDIENCE,
+                    lifeTime);
+            }
+            return Token;
+        }
+
+        public async Task<string> GetRefreshToken(string nickName, string password)
+        {
+            var tokenConfig = new RefreshTokenConfig();
+            var lifeTime = TimeSpan.FromDays(tokenConfig.LIFETIME);
+            var user = await this._userManager.FindByNameAsync(nickName);
+            var tokenId = Guid.NewGuid();
+            _RefreshTokenRepo.Add(new N2NRefreshToken()
+            {
+                Id = tokenId,
+                N2NUserId = user.N2NUserId,
+                RefreshTokenExpirationDate = DateTime.Now.AddDays(tokenConfig.LIFETIME)
+            });
+            var claimIdentity = await GetIdentity(nickName, password, tokenId);
+            var refreshToken =await GetTokenObject(claimIdentity, user.N2NUserId, tokenConfig.ISSUER, tokenConfig.AUDIENCE,
+                lifeTime);
+            return  refreshToken;
+        }
+
+        public async Task<ClaimsIdentity> GetIdentity(string nickName, string password,Guid tokenId)
         {
             var access = await this._userManager.CheckPasswordAsync(this._userManager.Users.FirstOrDefault(x => x.UserName == nickName), password);
             if (access)
@@ -90,13 +152,6 @@ namespace N2N.Api.Services
                 string roleforToken;
                 var user = await this._userManager.FindByNameAsync(nickName);
                 var role = await this._userManager.IsInRoleAsync(user, "Admin");
-                var tokenId = Guid.NewGuid();
-                _tokenRepo.Add(new N2NToken
-                {
-                    Id = tokenId,
-                    N2NUserId = user.N2NUserId,
-                    TokenExpirationDate = DateTime.Now.AddMinutes(TokenConfig.LIFETIME)
-                });
                 if (role != true)
                 {
                     roleforToken = "User";
@@ -123,23 +178,24 @@ namespace N2N.Api.Services
             return null;
         }
 
-        public async Task<object> GetTokenObject(ClaimsIdentity identity,Guid userId)
+        public async Task<string> GetTokenObject(ClaimsIdentity identity,Guid userId, string issuer , string audience, TimeSpan lifetime)
         {
-            var now = DateTime.Now;
-            // создаем JWT-токен
-            var jwt = new JwtSecurityToken(
-                issuer: TokenConfig.ISSUER,
-                audience: TokenConfig.AUDIENCE,
-                notBefore: now,
-                claims: identity.Claims,
-                expires: now.Add(TimeSpan.FromMinutes(TokenConfig.LIFETIME)),
-                signingCredentials: new SigningCredentials(TokenConfig.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
-            var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
+
+            string response="";
             
-            var response = new
-            {
-                access_token = encodedJwt,
-            };
+            var now = DateTime.Now;
+                var jwt = new JwtSecurityToken(
+                    issuer: issuer,
+                    audience: audience,
+                    notBefore: now,
+                    claims: identity.Claims,
+                    expires: now.Add(lifetime),
+                    signingCredentials: new SigningCredentials(TokenConfig.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
+                var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
+
+                response = encodedJwt;
+           
+            
             return response;
         }
     }
