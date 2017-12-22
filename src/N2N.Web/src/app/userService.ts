@@ -64,7 +64,7 @@ export class UserService {
       { headers:  this._storeHeaders.jsonAndTokenHeaders}
     )
     .toPromise()
-    .then(resp=> {debugger;return resp; localStorage.setItem('Token',"")})
+    .then(resp=> {debugger; localStorage.setItem('Token',"");return resp;})
   }
 
   private handleError(error: any): Promise<any> {
