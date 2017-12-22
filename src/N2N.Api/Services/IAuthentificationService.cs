@@ -13,8 +13,7 @@ namespace N2N.Api.Services
         OperationResult ValidateTokenString(string tokenString);
 
         void DeleteToken(string tokenString);
-        Task<object> GetTokenObject(ClaimsIdentity identity, Guid userId);
-        Task<ClaimsIdentity> GetIdentity(string nickName, string password);
+        Task<object> Authentification(string nickName, string password);
         string GetNameUser(string tokenString);
     }
 }
