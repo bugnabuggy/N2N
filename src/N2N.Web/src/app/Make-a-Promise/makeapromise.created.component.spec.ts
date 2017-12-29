@@ -1,5 +1,5 @@
 import { async, ComponentFixture, fakeAsync, inject, TestBed, tick} from '@angular/core/testing';
-import { MakeaPromiseComponent } from './makeapromise.component';
+import { MakeaPromiseCreatedComponent } from './makeapromise.created.component';
 import { RouterTestingModule } from '@angular/router/testing'
 
 import { HttpModule } from '@angular/http';

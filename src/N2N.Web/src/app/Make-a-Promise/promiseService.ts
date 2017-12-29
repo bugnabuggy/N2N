@@ -16,15 +16,22 @@ export class PromiseService {
         private _storeLinks: StoreLinks
     ) { }
 
-    test="ddddd";
+    getPromise(promiseId:string):Promise<any>{
+        return this.http.get(
+            this._storeLinks.SavePromiseOnServerUrl+"/"+promiseId,
+            { headers: this._storeHeaders.jsonAndTokenHeaders }
+        )
+            .toPromise()
+            .then(resp => { return resp })
+            .catch(this.handleError);
+    }
+
     savePromiseOnServer(textPromise: string, dataImplementationPromise: Data, isPublish: boolean): Promise<any> {
         var data = {
             textPromise,
             dataImplementationPromise,
             isPublish
         };
-        debugger
-        this.test="xaxaxaxaxa";
         return this.http.post(
             this._storeLinks.SavePromiseOnServerUrl,
             data,
