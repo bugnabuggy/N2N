@@ -11,14 +11,14 @@ using System;
 namespace N2N.Infrastructure.Migrations
 {
     [DbContext(typeof(N2NDataContext))]
-    [Migration("20171030103621_init")]
-    partial class init
+    [Migration("20171228074709_Initialed")]
+    partial class Initialed
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.0.0-rtm-26452")
+                .HasAnnotation("ProductVersion", "2.0.1-rtm-125")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -129,14 +129,76 @@ namespace N2N.Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("N2N.Core.Entities.N2NPromise", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("BlockChainTransaction");
+
+                    b.Property<DateTime>("DueDate");
+
+                    b.Property<string>("HashIdLinkPromise");
+
+                    b.Property<bool>("IsPublic");
+
+                    b.Property<Guid>("N2NUserId");
+
+                    b.Property<string>("Text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("N2NPromises");
+                });
+
+            modelBuilder.Entity("N2N.Core.Entities.N2NRefreshToken", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<Guid>("N2NUserId");
+
+                    b.Property<DateTime>("RefreshTokenExpirationDate");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("N2NRefreshTokens");
+                });
+
+            modelBuilder.Entity("N2N.Core.Entities.N2NToken", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<Guid>("IdRefreshToken");
+
+                    b.Property<Guid>("N2NUserId");
+
+                    b.Property<DateTime>("TokenExpirationDate");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("N2NTokens");
+                });
+
             modelBuilder.Entity("N2N.Core.Entities.N2NUser", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<string>("Email");
+
+                    b.Property<string>("FirstName");
+
+                    b.Property<string>("LastName");
+
                     b.Property<string>("NickName");
 
+                    b.Property<string>("PhoneNumber");
+
                     b.Property<DateTime>("Registration");
+
+                    b.Property<string>("UserPic");
 
                     b.HasKey("Id");
 
@@ -161,6 +223,8 @@ namespace N2N.Infrastructure.Migrations
                     b.Property<bool>("LockoutEnabled");
 
                     b.Property<DateTimeOffset?>("LockoutEnd");
+
+                    b.Property<Guid>("N2NUserId");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256);
