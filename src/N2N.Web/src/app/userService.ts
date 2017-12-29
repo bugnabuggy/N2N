@@ -14,16 +14,26 @@ export class UserService {
     private _storeLinks:StoreLinks
   ) { }
 
+  isAuthorization(): Promise<any>{
+    return this.http.get(
+      this._storeLinks.isAuthorizationUrl,
+      { headers: this._storeHeaders.jsonAndTokenHeaders }
+    )
+    .toPromise()
+    .then(resp => {  return resp })
+    .catch(this.handleError);
+  }
+
   sendUserDataForRegistration(nickName: string, password: string, capcha: string): Promise<any> {
 
-    var data = {
+    var dataUser = {
       nickName,
       password,
       capcha
     };
     return this.http.post(
         this._storeLinks.registerUrl,
-        data,
+        dataUser,
         { headers: this._storeHeaders.jsonHeader }
       )
       .toPromise()

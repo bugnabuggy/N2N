@@ -20,6 +20,7 @@ namespace N2N.Infrastructure.DataContext
         public DbSet<N2NUser> N2NUsers { get; set; }
         public DbSet<N2NToken> N2NTokens { get; set; }
         public DbSet<N2NRefreshToken> N2NRefreshTokens { get; set; }
+        public DbSet<N2NPromise> N2NPromises { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder builder)

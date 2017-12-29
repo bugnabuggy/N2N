@@ -24,7 +24,7 @@ namespace N2N.Data.Repositories
 
         public T Update(T entity)
         {
-            _table.Add(entity);
+            _table.Update(entity);
             _ctx.SaveChanges();
             return entity;
         }

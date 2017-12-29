@@ -77,8 +77,10 @@ namespace N2N.Api.Configuration
             container.Register<IRepository<N2NUser>, DbRepository<N2NUser>>();
             container.Register<IRepository<N2NToken>, DbRepository<N2NToken>>();
             container.Register<IRepository<N2NRefreshToken>, DbRepository<N2NRefreshToken>>();
+            container.Register<IRepository<N2NPromise>, DbRepository<N2NPromise>>();
             container.Register<ISecurityService, SecurityService>();
             container.Register<IN2NUserService, N2NUserService>();
+            container.Register<IN2NPromiseService, N2NPromiseService>();
             container.Register<N2NApiUserService>();
 
         }
