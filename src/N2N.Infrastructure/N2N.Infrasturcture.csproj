@@ -221,21 +221,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataContext\N2NDataContext.cs" />
-    <Compile Include="Migrations\20171030103621_init.cs" />
-    <Compile Include="Migrations\20171030103621_init.Designer.cs">
-      <DependentUpon>20171030103621_init.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\20171127042133_Initial.cs" />
-    <Compile Include="Migrations\20171127042133_Initial.Designer.cs">
-      <DependentUpon>20171127042133_Initial.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\20171201040445_Initi.cs" />
-    <Compile Include="Migrations\20171201040445_Initi.designer.cs">
-      <DependentUpon>20171201040445_Initi.cs</DependentUpon>
+    <Compile Include="Migrations\20171228074709_Initialed.cs" />
+    <Compile Include="Migrations\20171228074709_Initialed.designer.cs">
+      <DependentUpon>20171228074709_Initialed.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\N2NDataContextModelSnapshot.cs" />
     <Compile Include="Models\N2NIdentityUser.cs" />
     <Compile Include="Models\OperationResult.cs" />
+    <Compile Include="Models\PromiseDTO.cs" />
     <Compile Include="Models\QueryResult.cs" />
     <Compile Include="Models\UserRegistrationFormDTO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
