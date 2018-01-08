@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using N2N.Core.Entities;
+using N2N.Core.DBEntities;
 using N2N.Infrastructure.Models;
 
 namespace N2N.Infrastructure.DataContext
@@ -20,6 +21,9 @@ namespace N2N.Infrastructure.DataContext
         public DbSet<N2NUser> N2NUsers { get; set; }
         public DbSet<N2NToken> N2NTokens { get; set; }
         public DbSet<N2NRefreshToken> N2NRefreshTokens { get; set; }
+        
+        public DbSet<N2NPromise> Promises { get; set; }
+        public DbSet<PromiseToUser> PromisesToUsers { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder builder)

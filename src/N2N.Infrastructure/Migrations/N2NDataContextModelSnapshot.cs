@@ -128,10 +128,26 @@ namespace N2N.Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("N2N.Core.Entities.N2NRefreshToken", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<Guid>("N2NUserId");
+
+                    b.Property<DateTime>("RefreshTokenExpirationDate");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("N2NRefreshTokens");
+                });
+
             modelBuilder.Entity("N2N.Core.Entities.N2NToken", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
+
+                    b.Property<Guid>("IdRefreshToken");
 
                     b.Property<Guid>("N2NUserId");
 

@@ -11,5 +11,7 @@ namespace N2N.Services
     {
         bool HasAccess();
         bool HasAccess(IIdentity identity);
+
+        Guid GetCurrentN2NUserId();
     }
 }

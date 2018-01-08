@@ -10,7 +10,7 @@ namespace N2N.Core.Entities
     {
         public Guid Id { get; set; }
         public string Text{ get; set; }
-        public DateTime DueDate { get; set; }
+        public DateTime? DueDate { get; set; }
         public bool IsPublic { get; set; }
         public string BlockChainTransaction { get; set; }
 
