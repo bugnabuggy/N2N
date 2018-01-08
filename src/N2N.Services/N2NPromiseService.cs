@@ -30,7 +30,7 @@ namespace N2N.Services
             else
             {
                 //even admins should not be able to make promises on behalf another
-                throw new SecurityException("User can't add promise for another user");
+                throw new N2NSecurityException("User can't add promise for another user");
             }
         }
 
@@ -44,7 +44,7 @@ namespace N2N.Services
             else
             {
                 //even admins should not be able to make promises on behalf another
-                throw new SecurityException("User can't edit another user's promise if he is not in administrator role");
+                throw new N2NSecurityException("User can't edit another user's promise if he is not in administrator role");
             }
         }
 
@@ -61,7 +61,7 @@ namespace N2N.Services
             }
             else
             {
-                throw new SecurityException("User can't edit another user's promise if he is not in administrator role");
+                throw new N2NSecurityException("User can't edit another user's promise if he is not in administrator role");
             }
         }
     }

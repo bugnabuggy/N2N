@@ -13,6 +13,7 @@ namespace N2N.Infrastructure.Tests
     
     public class DataContextTests
     {
+        [Ignore("too slow")]
         [Test]
         public void Should_create_database()
         {

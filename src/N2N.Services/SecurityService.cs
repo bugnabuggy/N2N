@@ -10,6 +10,11 @@ namespace N2N.Services
 {
     public class SecurityService : ISecurityService
     {
+        public Guid GetCurrentN2NUserId()
+        {
+            throw new NotImplementedException();
+        }
+
         public bool HasAccess()
         {
             var principal = System.Threading.Thread.CurrentPrincipal;
