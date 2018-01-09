@@ -104,10 +104,8 @@ namespace N2N.Api
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            //if (env.IsDevelopment())
-            //{
-                app.UseDeveloperExceptionPage();
-            //}
+            
+            app.UseDeveloperExceptionPage();
 
             N2N.Api.Configuration.AppStart.UseMvcAndConfigureRoutes(app);
             N2N.Api.Configuration.AppStart.InitializeContainer(app, this.container);
@@ -115,14 +113,6 @@ namespace N2N.Api
             container.Verify();
 
             app.UseAuthentication();
-
-            var optionsBuilder = new DbContextOptionsBuilder<N2NDataContext>();
-            optionsBuilder.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
-
-            using (var db = new N2NDataContext(optionsBuilder.Options))
-            {
-                N2N.Api.Configuration.AppStart.BootstrapDb(db);
-            }
             
         }
 

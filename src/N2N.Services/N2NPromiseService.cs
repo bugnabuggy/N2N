@@ -1,98 +1,68 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 using N2N.Core.Entities;
 using N2N.Data.Repositories;
+using N2N.Infrastructure.Exceptions;
 using N2N.Infrastructure.Models;
-
 
 namespace N2N.Services
 {
     public class N2NPromiseService : IN2NPromiseService
     {
         private IRepository<N2NPromise> _promiseRepo;
-        private ISecurityService _security;
+        private ISecurityService _securitySrv;
 
-        public N2NPromiseService(IRepository<N2NPromise> promiseRepo, ISecurityService security)
+
+        public N2NPromiseService(IRepository<N2NPromise> promiseRepo, ISecurityService securitySrv)
         {
-            this._promiseRepo = promiseRepo;
-            this._security = security;
+            _promiseRepo = promiseRepo;
+            _securitySrv = securitySrv;
         }
 
-        public OperationResult GetPromise(Guid promiseId)
+        public N2NPromise Add(N2NPromise promise)
         {
-            var result = new OperationResult();
-            var promise=_promiseRepo.Data.FirstOrDefault(x => x.Id == promiseId);
-            result.Data = promise;
-            result.Success = true;
-            result.Messages = new[] { $"Promise was created with Id = ${promise.Id}" };
-            return result;
-        }
-
-        public OperationResult CreatePromise(N2NPromise promise)
-        {
-            var result = new OperationResult();
-
-            if (this._security.HasAccess())
+            if (promise.N2NUserId == _securitySrv.GetCurrentN2NUserId())
+                return _promiseRepo.Add(promise);
+            else
             {
-                
-                _promiseRepo.Add(promise);
+                //even admins should not be able to make promises on behalf another
+                throw new N2NSecurityException("User can't add promise for another user");
+            }
+        }
 
-                result.Data = promise;
-                result.Success = true;
-                result.Messages = new[] { $"Promise was created with Id = ${promise.Id}" };
+        public N2NPromise Update(N2NPromise promise)
+        {
+            if (promise.N2NUserId == _securitySrv.GetCurrentN2NUserId() ||
+                _securitySrv.HasAccess())
+            {
+                return _promiseRepo.Update(promise);
             }
             else
             {
-                result.Messages = new[] { "You dont have permissions to create promise" };
+                //even admins should not be able to make promises on behalf another
+                throw new N2NSecurityException("User can't edit another user's promise if he is not in administrator role");
             }
-
-            return result;
         }
 
-        public OperationResult UpdatePromise(N2NPromise promise)
+        public N2NPromise Delete(Guid promiseId)
         {
-            var result = new OperationResult();
+            var promise = _promiseRepo.Data.FirstOrDefault(p => p.Id == promiseId);
 
-            if (this._security.HasAccess())
+            if(promise == null) throw new NotFoundException(promiseId.ToString());
+
+            if (promise.N2NUserId == _securitySrv.GetCurrentN2NUserId() ||
+                _securitySrv.HasAccess())
             {
-                //add user here
-                var idPromise = _promiseRepo.Data.FirstOrDefault(x => x.Id == promise.Id);
-                promise.N2NUserId = idPromise.N2NUserId;
-                _promiseRepo.Update(promise);
-
-                result.Data = promise;
-                result.Success = true;
-                result.Messages = new[] { $"Promise was created with Id = ${promise.Id}" };
+                return _promiseRepo.Update(promise);
             }
             else
             {
-                result.Messages = new[] { "You dont have permissions to create promise" };
+                throw new N2NSecurityException("User can't edit another user's promise if he is not in administrator role");
             }
-
-            return result;
-        }
-
-        public OperationResult DeletePromise(Guid idPromise)
-        {
-            var result = new OperationResult();
-            if (this._security.HasAccess())
-            {
-                //add user here
-                var promise = _promiseRepo.Data.FirstOrDefault(x => x.Id == idPromise);
-                _promiseRepo.Delete(promise);
-
-                result.Data = null;
-                result.Success = true;
-                result.Messages = new[] { $"Promise was delete"};
-            }
-            else
-            {
-                result.Messages = new[] { "not found promise" };
-            }
-            return result;
         }
     }
 }

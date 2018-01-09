@@ -6,10 +6,20 @@ using System.Threading.Tasks;
 
 namespace N2N.Infrastructure.Models
 {
-    public class OperationResult
+
+    public abstract class OperationResultBase
     {
         public bool Success { get; set; }
-        public object Data { get; set; }
         public IEnumerable<string> Messages { get; set; }
+    }
+
+    public class OperationResult: OperationResultBase
+    {
+        public object Data { get; set; }
+    }
+
+    public class OperationResult<T> : OperationResultBase
+    {
+        public T Data { get; set; }
     }
 }

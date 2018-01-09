@@ -88,7 +88,7 @@ namespace N2N.Api.Configuration
         internal static bool BootstrapDb(N2NDataContext ctx)
         {
             var result = ctx.Database.EnsureCreated();
-            //ctx.Database.Migrate();
+            ctx.Database.Migrate();
 
             return result;
         }

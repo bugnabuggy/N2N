@@ -53,9 +53,9 @@
       <Project>{94757ef4-4f40-4fca-b64f-95ab5942b0d6}</Project>
       <Name>N2N.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\N2N.Infrastructure\N2N.Infrasturcture.csproj">
+    <ProjectReference Include="..\N2N.Infrastructure\N2N.Infrastructure.csproj">
       <Project>{e45eae66-10ed-4179-805a-f6a5b65f6532}</Project>
-      <Name>N2N.Infrasturcture</Name>
+      <Name>N2N.Infrastructure</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
