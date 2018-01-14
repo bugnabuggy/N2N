@@ -3,14 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using N2N.Core.Interfaces;
+using N2N.Core.Entities;
 
-namespace N2N.Core.Entities
+namespace N2N.Infrastructure.Exceptions
 {
-    public class UserPromise : IOwned
+    public class N2NException : Exception
     {
-        public Guid Id { get; set; }
-        public Guid PromiseId { get; set; }
         public Guid N2NUserId { get; set; }
     }
 }

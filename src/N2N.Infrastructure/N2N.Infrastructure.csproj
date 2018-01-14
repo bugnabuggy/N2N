@@ -220,12 +220,12 @@
   <ItemGroup>
     <Compile Include="DataContext\N2NDataContext.cs" />
     <Compile Include="DataContext\N2NDataContextFactory .cs" />
+    <Compile Include="Exceptions\N2NException.cs" />
     <Compile Include="Exceptions\NotFoundException.cs" />
     <Compile Include="Exceptions\N2NSecurityException.cs" />
     <Compile Include="Models\DTO\AuthenticationResponseDTO.cs" />
     <Compile Include="Models\N2NIdentity.cs" />
     <Compile Include="Models\N2NIdentityUser.cs" />
-    <Compile Include="Models\OperationResult.cs" />
     <Compile Include="Models\QueryResult.cs" />
     <Compile Include="Models\DTO\UserRegistrationFormDTO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

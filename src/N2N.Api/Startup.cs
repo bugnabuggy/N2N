@@ -20,9 +20,7 @@ using N2N.Data.Repositories;
 using N2N.Infrastructure.DataContext;
 using N2N.Infrastructure.Models;
 using SimpleInjector;
-using SimpleInjector.Lifestyles;
-using SimpleInjector.Integration.AspNetCore;
-using SimpleInjector.Integration.AspNetCore.Mvc;
+
 
 namespace N2N.Api
 {

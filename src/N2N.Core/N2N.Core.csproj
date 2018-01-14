@@ -48,7 +48,13 @@
     <Compile Include="Entities\N2NPromise.cs" />
     <Compile Include="Entities\N2NUser.cs" />
     <Compile Include="Entities\UserPromise.cs" />
+    <Compile Include="Interfaces\IOwned.cs" />
+    <Compile Include="Models\OperationResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\IN2NPromiseService.cs" />
+    <Compile Include="Services\IN2NUserService.cs" />
+    <Compile Include="Services\IPostCardService.cs" />
+    <Compile Include="Services\ISecurityService.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

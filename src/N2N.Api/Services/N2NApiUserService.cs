@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using N2N.Api.Configuration;
 using N2N.Core.Entities;
+using N2N.Core.Models;
+using N2N.Core.Services;
 using N2N.Infrastructure.Models;
 using N2N.Services;
 

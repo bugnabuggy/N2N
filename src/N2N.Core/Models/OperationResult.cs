@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
-namespace N2N.Infrastructure.Models
+namespace N2N.Core.Models
 {
 
     public abstract class OperationResultBase

@@ -4,6 +4,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using N2N.Core.Models;
 using N2N.Infrastructure.Models;
 using N2N.Infrastructure.Models.DTO;
 

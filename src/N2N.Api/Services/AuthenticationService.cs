@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using N2N.Api.Configuration;
 using N2N.Core.Entities;
+using N2N.Core.Models;
 using N2N.Data.Repositories;
 using N2N.Infrastructure.Models;
 using N2N.Infrastructure.Models.DTO;
