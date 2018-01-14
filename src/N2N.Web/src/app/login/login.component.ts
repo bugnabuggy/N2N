@@ -17,14 +17,14 @@ export class LogInComponent {
     private _storeHeaders: StoreHeaders,
     @Inject(MAT_DIALOG_DATA) public data: any) { }
 
-  sendDataLogIn(nickname: string, password: string, capcha: string): void {
+  sendDataLogIn(nickname: string, password: string, captcha: string): void {
     var nickname: string = nickname.trim();
     var password: string = password.trim();
-    var capcha: string = capcha.trim();
+    var captcha: string = captcha.trim();
 
-    if (nickname != "" && password != "" && capcha != "") {
+    if (nickname != "" && password != "" && captcha != "") {
 
-      this._userService.logIn(nickname, password, capcha)
+      this._userService.logIn(nickname, password, captcha)
         .then(data => {
           localStorage.setItem("Token", JSON.parse(data._body).access_token);
           this._storeHeaders.refrechJsonAndTokenHeaders();

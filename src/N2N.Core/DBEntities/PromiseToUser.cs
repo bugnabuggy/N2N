@@ -24,5 +24,10 @@ namespace N2N.Core.DBEntities
         /// Flag to show that promise were fulfilled
         /// </summary>
         public bool IsFulfilled { get; set; }
+
+        /// <summary>
+        /// Date when promise was marked as fullfield
+        /// </summary>
+        public bool FulfillDate { get; set; }
     }
 }

@@ -16,6 +16,8 @@ namespace N2N.Services.Tests
     public class N2NPromiseServiceTests
     {
         private Mock<ISecurityService> _securSrv;
+        private Mock<ISecurityService> _adminSecurSrv;
+
         private Mock<IRepository<N2NPromise>> _repo;
 
         [SetUp]
@@ -24,7 +26,18 @@ namespace N2N.Services.Tests
             _securSrv = new Mock<ISecurityService>();
             _securSrv.Setup(x => x.GetCurrentN2NUserId()).Returns(Guid.Empty);
 
+            //pretend that has access as admin
+            _adminSecurSrv = new Mock<ISecurityService>();
+            _adminSecurSrv.Setup(x => x.GetCurrentN2NUserId()).Returns(Guid.Empty);
+            _adminSecurSrv.Setup(x => x.HasAccess()).Returns(true);
+
+            var promise = 
+
             _repo = new Mock<IRepository<N2NPromise>>();
+            _repo.Setup(x=>x.Data).Returns(new List<N2NPromise>()
+            {
+                new N2NPromise(){N2NUserId = Guid.NewGuid()}
+            }.AsQueryable());
             _repo.Setup(x => x.Add(It.IsAny<N2NPromise>())).Returns(new N2NPromise());
             _repo.Setup(x => x.Update(It.IsAny<N2NPromise>())).Returns((N2NPromise x) => x );
             _repo.Setup(x => x.Delete(It.IsAny<N2NPromise>())).Returns((N2NPromise x) => x );
@@ -76,13 +89,8 @@ namespace N2N.Services.Tests
         [Test]
         public void Should_Edit_Promise_For_Another_UserId_If_Admin()
         {
-            var securSrv = new Mock<ISecurityService>();
-            securSrv.Setup(x => x.GetCurrentN2NUserId()).Returns(Guid.Empty);
-            //pretend that has access as admin
-            securSrv.Setup(x => x.HasAccess()).Returns(true);
-
             var promise = new N2NPromise() { N2NUserId = Guid.NewGuid() };
-            var promiseSrv = new N2NPromiseService(_repo.Object, securSrv.Object);
+            var promiseSrv = new N2NPromiseService(_repo.Object, _adminSecurSrv.Object);
 
             var editedPromise = promiseSrv.Update(promise);
 
@@ -90,5 +98,27 @@ namespace N2N.Services.Tests
 
         }
 
+
+        [Test]
+        public void Should_Throw_Exception_When_User_Delete_Promise_For_Another_UserId()
+        {
+            var promise = new N2NPromise() { N2NUserId = Guid.NewGuid() };
+
+            var promiseSrv = new N2NPromiseService(_repo.Object, _securSrv.Object);
+            Assert.Throws(typeof(N2NSecurityException), delegate { promiseSrv.Delete(promise.Id); });
+        }
+
+
+        [Test]
+        public void Should_Delete_Promise_For_Another_UserId_If_Admin()
+        {
+            var promise = new N2NPromise() { N2NUserId = Guid.NewGuid() };
+            var promiseSrv = new N2NPromiseService(_repo.Object, _adminSecurSrv.Object);
+
+            var editedPromise = promiseSrv.Delete(promise.Id);
+
+            Assert.AreEqual(editedPromise.Id, promise.Id);
+
+        }
     }
 }

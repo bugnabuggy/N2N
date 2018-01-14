@@ -79,9 +79,12 @@ namespace N2N.Api
                 .AddEntityFrameworkStores<N2NDataContext>()
                 .AddDefaultTokenProviders();
 
+
+            // because Simple Injector do not work for HttpContext.RequestServices.GetService
             services.AddTransient<IRepository<N2NRefreshToken>, DbRepository<N2NRefreshToken>>();
             services.AddTransient<IRepository<N2NToken>, DbRepository<N2NToken>>();
-            services.AddTransient<IAuthentificationService, AuthentificationService>();
+            services.AddTransient<IRepository<N2NUser>, DbRepository<N2NUser>>();
+            services.AddTransient<IAuthenticationService, AuthenticationService>();
 
             services.AddCors(options =>
             {

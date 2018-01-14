@@ -71,7 +71,7 @@ namespace N2N.Api.Configuration
             container.CrossWire<N2NDataContext>(app);
             container.CrossWire<UserManager<N2NIdentityUser>>(app);
             container.CrossWire<SignInManager<N2NIdentityUser>>(app);
-            container.CrossWire<IAuthentificationService>(app);
+            container.CrossWire<IAuthenticationService>(app);
             
             // Dependencies
             container.Register<IRepository<N2NUser>, DbRepository<N2NUser>>();
@@ -83,12 +83,5 @@ namespace N2N.Api.Configuration
 
         }
 
-        internal static bool BootstrapDb(N2NDataContext ctx)
-        {
-            var result = ctx.Database.EnsureCreated();
-            ctx.Database.Migrate();
-
-            return result;
-        }
     }
 }

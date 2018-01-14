@@ -57,7 +57,7 @@ namespace N2N.Services
             if (promise.N2NUserId == _securitySrv.GetCurrentN2NUserId() ||
                 _securitySrv.HasAccess())
             {
-                return _promiseRepo.Update(promise);
+                return _promiseRepo.Delete(promise);
             }
             else
             {

@@ -14,12 +14,12 @@ export class UserService {
     private _storeLinks:StoreLinks
   ) { }
 
-  sendUserDataForRegistration(nickName: string, password: string, capcha: string): Promise<any> {
+  sendUserDataForRegistration(nickName: string, password: string, captcha: string): Promise<any> {
 
     var data = {
       nickName,
       password,
-      capcha
+      captcha
     };
     return this.http.post(
         this._storeLinks.registerUrl,
@@ -42,11 +42,11 @@ export class UserService {
     .catch(this.handleError);
   }
 
-  logIn(nickName: string, password: string, capcha: string): Promise<any>{
+  logIn(nickName: string, password: string, captcha: string): Promise<any>{
     var data = {
       nickName,
       password,
-      capcha
+      captcha
     };
     return this.http.post(
         this._storeLinks.logInUrl,
