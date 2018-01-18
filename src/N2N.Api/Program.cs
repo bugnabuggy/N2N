@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using N2N.Api.Configuration;
 using N2N.Infrastructure.DataContext;
 
 namespace N2N.Api
@@ -18,6 +19,7 @@ namespace N2N.Api
         public static void Main(string[] args)
         {
             var webHost = BuildWebHost(args);
+            var appConfigurator = new AppConfigurator();
 
             using (var scope = webHost.Services.CreateScope())
             {
@@ -27,6 +29,8 @@ namespace N2N.Api
                 {
                     var db = services.GetRequiredService<N2NDataContext>();
                     db.Database.Migrate();
+
+                    appConfigurator.InitRolesAndUsers(services);
                 }
                 catch (Exception ex)
                 {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Principal;
 using System.Threading.Tasks;
 using IdentityServer4.Extensions;
 using Microsoft.AspNetCore.Authorization;
@@ -84,6 +85,9 @@ namespace N2N.Api.Controllers
                     NickName = userRegistration.NickName
                 };
 
+                // because we have service permission checks 
+                System.Threading.Thread.CurrentPrincipal = new GenericPrincipal(new GenericIdentity("N2N User Registration Service"), new [] {"Admin"} );
+
                 var result = await this._apiUserService.CreateUserAsync(user, userRegistration.Password);
 
                 if (!result.Success)
@@ -91,7 +95,7 @@ namespace N2N.Api.Controllers
                     return BadRequest(result.Messages);
                 }
 
-                var response =await _authentificationService.AuthenticateUser(userRegistration.NickName, userRegistration.Password);
+                var response = await _authentificationService.AuthenticateUser(userRegistration.NickName, userRegistration.Password);
 
                 if (response.ToString() == new { }.ToString())
                 {

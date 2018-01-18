@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,11 +15,16 @@ namespace N2N.Core.DBEntities
         /// Id of promise
         /// </summary>
         public Guid PromiseId { get; set; }
+        [ForeignKey("PromiseId")]
+        public N2NPromise Promiose { get; set; }
+
 
         /// <summary>
         /// UserId Whom Promiose been given
         /// </summary>
         public Guid ToUserId { get; set; }
+        [ForeignKey("ToUserId")]
+        public N2NUser ToUser{ get; set; }
 
         /// <summary>
         /// Flag to show that promise were fulfilled
@@ -28,6 +34,6 @@ namespace N2N.Core.DBEntities
         /// <summary>
         /// Date when promise was marked as fullfield
         /// </summary>
-        public bool FulfillDate { get; set; }
+        public DateTime FulfillDate { get; set; }
     }
 }

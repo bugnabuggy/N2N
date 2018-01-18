@@ -19,5 +19,6 @@ namespace N2N.Api.Services
 
         void DeleteToken(string tokenString);
         string GetUserName(string tokenString);
+        Task<IEnumerable<string>> GetUserRolesAsync(string nickname);
     }
 }

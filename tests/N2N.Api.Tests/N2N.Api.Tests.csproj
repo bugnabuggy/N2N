@@ -257,6 +257,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppConfigurator.Tests.cs" />
+    <Compile Include="DbAndSupportClassesBootstrapper.cs" />
     <Compile Include="N2NAuthentificationService.Tests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -276,6 +278,10 @@
     <ProjectReference Include="..\..\src\N2N.Infrastructure\N2N.Infrastructure.csproj">
       <Project>{E45EAE66-10ED-4179-805A-F6A5B65F6532}</Project>
       <Name>N2N.Infrastructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\N2N.Services\N2N.Services.csproj">
+      <Project>{2D14710E-BF4B-4A05-B189-DBC94D0DEC1C}</Project>
+      <Name>N2N.Services</Name>
     </ProjectReference>
     <ProjectReference Include="..\N2N.TestData\N2N.TestData.csproj">
       <Project>{053ba1ac-81fe-49a7-b07f-5da0b87843c9}</Project>

@@ -31,10 +31,12 @@ namespace N2N.Api.Filters
             if (!authResult.Success)
             {
                 context.Result = new ObjectResult(authResult.Messages){StatusCode = (int)HttpStatusCode.Unauthorized};
+                return;
             }
 
             //set user identity for the thread
-            Thread.CurrentPrincipal = new GenericPrincipal(new N2NIdentity(authResult.Data as N2NUser, isAuthenticated: true), new string[] { });
+            var roles = authService.GetUserRolesAsync((authResult.Data as N2NUser).NickName).Result;
+            Thread.CurrentPrincipal = new GenericPrincipal(new N2NIdentity(authResult.Data as N2NUser, isAuthenticated: true), roles: roles.ToArray() );
         }
 
         public override Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)

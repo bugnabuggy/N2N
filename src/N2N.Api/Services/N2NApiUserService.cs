@@ -19,11 +19,15 @@ namespace N2N.Api.Services
     {
         private IN2NUserService _userService;
         private UserManager<N2NIdentityUser> _userManager;
+        private RoleManager<IdentityRole> _roleManager;
 
-        public N2NApiUserService(IN2NUserService userService, UserManager<N2NIdentityUser> userManager)
+        public N2NApiUserService(   IN2NUserService userService, 
+                                    UserManager<N2NIdentityUser> userManager,
+                                    RoleManager<IdentityRole> roleManager)
         {
             this._userService = userService;
             this._userManager = userManager;
+            this._roleManager = roleManager;
         }
 
         public async Task<OperationResult> CreateUserAsync(N2NUser user, string password)
@@ -32,21 +36,29 @@ namespace N2N.Api.Services
 
             OperationResult result= new OperationResult();
 
-
-            if (!this._userService.IsNicknameExists(user))
+            if (!this._userService.IsNicknameExists(user.NickName))
             {
                 user = this._userService.CheckOrRegenerateUserId(user);
 
-                var identityResult = await this._userManager.CreateAsync(new N2NIdentityUser()
+                var identityUser = new N2NIdentityUser()
                 {
                     UserName = user.NickName,
                     N2NUserId = user.Id
-                }, password);
+                };
+
+                var identityResult = await this._userManager.CreateAsync(identityUser, password);
 
                 //if operation fails, we should delete N2NUser
                 if (identityResult.Succeeded)
                 {
+                    await _userManager.AddToRoleAsync(identityUser, "User");
                     result = this._userService.CreateUser(user);
+
+                    if (!result.Success)
+                    {
+                        await _userManager.RemoveFromRoleAsync(identityUser, "User");
+                        await _userManager.DeleteAsync(identityUser);
+                    }
                 }
             } else
             {
@@ -54,6 +66,14 @@ namespace N2N.Api.Services
             }
 
             return result;
+        }
+
+        public async Task<bool> UserExistsAndConsistentAsync(string nickname)
+        {
+            var identityUserExists = await _userManager.FindByNameAsync(nickname) != null;
+            var n2nUserExists = _userService.IsNicknameExists(nickname);
+
+            return identityUserExists && n2nUserExists;
         }
     }
 }
