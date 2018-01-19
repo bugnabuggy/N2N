@@ -3,6 +3,7 @@ import { UserService } from '../userService';
 import { MatDialog } from '@angular/material';
 import { Input} from '@angular/core';
 import { Data } from '@angular/router/src/config';
+import { promiseData } from './promiseData';
 
 @Component({
     selector: 'Make-a-Promise-Success',
@@ -20,5 +21,8 @@ export class MakeaPromiseSuccessComponent implements OnInit {
     ) { }
     ngOnInit() {
         
+        var testLenght = promiseData.length; 
+       
+        var test = promiseData.slice(promiseData.length-1,promiseData.length);
     }
 }

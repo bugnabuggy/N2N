@@ -33,7 +33,7 @@ export class MakeaPromiseCreatedComponent implements OnInit {
         }
     }
 
-    savePromiseOnServer(textPromise:string,dataImplementationPromise:Data,isPublish:boolean) {
+    savePromiseOnServer(textPromise:string,dataImplementationPromise:DateTimeFormatPart,isPublish:boolean) {
 
         this.userService.isAuthorization().then(data => {
         this.isAuthorization = (JSON.parse(data._body) ==true);

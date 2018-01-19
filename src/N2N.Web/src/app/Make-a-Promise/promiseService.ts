@@ -4,6 +4,10 @@ import { Observable } from 'rxjs/Observable';
 import { StoreHeaders } from '../storeHeaders';
 import { StoreLinks } from '../storeLinks';
 import { Data } from '@angular/router/src/config';
+import { Router } from '@angular/router';
+import { promiseData } from './promiseData';
+
+
 
 
 
@@ -13,9 +17,9 @@ export class PromiseService {
     constructor(
         private http: Http,
         private _storeHeaders: StoreHeaders,
-        private _storeLinks: StoreLinks
+        private _storeLinks: StoreLinks,
+        private _router:Router
     ) { }
-
     getPromise(promiseId:string):Promise<any>{
         return this.http.get(
             this._storeLinks.SavePromiseOnServerUrl+"/"+promiseId,
@@ -26,19 +30,32 @@ export class PromiseService {
             .catch(this.handleError);
     }
 
-    savePromiseOnServer(textPromise: string, dataImplementationPromise: Data, isPublish: boolean): Promise<any> {
+    savePromiseOnServer(text: string, dueDate: DateTimeFormatPart, isPublic: boolean): void {
         var data = {
-            textPromise,
-            dataImplementationPromise,
-            isPublish
+            dueDate,
+            isPublic,
+            text
         };
-        return this.http.post(
+        var test3 =dueDate;
+        debugger
+        var test ;
+        this.http.post(
             this._storeLinks.SavePromiseOnServerUrl,
             data,
-            { headers: this._storeHeaders.jsonAndTokenHeaders }
+            { headers: this._storeHeaders.tokenHeaders }
         )
             .toPromise()
-            .then(resp => { return resp })
+            .then(resp => { 
+                debugger; 
+                test=resp.text();
+                debugger;
+                test.Id
+                promiseData.push(test);
+                var testLenght = promiseData.length; 
+        debugger;
+        var test2 = promiseData.slice(promiseData.length-1,promiseData.length);
+        
+                this._router.navigateByUrl('/Make-a-Promise-Success'); })
             .catch(this.handleError);
     }
     private handleError(error: any): Promise<any> {
