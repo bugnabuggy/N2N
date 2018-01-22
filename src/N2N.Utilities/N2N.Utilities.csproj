@@ -43,6 +43,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Localization\" />
     <Folder Include="Logging\" />
     <Folder Include="Tokens\" />
   </ItemGroup>

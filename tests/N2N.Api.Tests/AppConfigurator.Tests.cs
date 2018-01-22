@@ -43,6 +43,9 @@ namespace N2N.Api.Tests
             Assert.IsTrue(userManager.Users.Any(x => x.UserName.Equals("jokero")));
 
             Assert.IsTrue(n2nUsersRepo.Data.Count() >= 3);
+
+            var jUser = userManager.Users.FirstOrDefault(x => x.UserName.Equals("jokero"));
+            Assert.IsTrue(userManager.IsInRoleAsync(jUser,"Admin").Result);
         }
 
     }

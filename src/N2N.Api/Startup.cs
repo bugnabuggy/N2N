@@ -19,7 +19,6 @@ using N2N.Core.Entities;
 using N2N.Data.Repositories;
 using N2N.Infrastructure.DataContext;
 using N2N.Infrastructure.Models;
-using SimpleInjector;
 
 
 namespace N2N.Api
@@ -27,7 +26,6 @@ namespace N2N.Api
     public class Startup
     {
         public IConfiguration Configuration { get; }
-        private Container container = new Container();
         private AppConfigurator appConfigurator = new AppConfigurator();
 
         public Startup(IConfiguration configuration, IHostingEnvironment env)
@@ -79,10 +77,8 @@ namespace N2N.Api
 
 
             // because Simple Injector do not work for HttpContext.RequestServices.GetService
-            services.AddTransient<IRepository<N2NRefreshToken>, DbRepository<N2NRefreshToken>>();
-            services.AddTransient<IRepository<N2NToken>, DbRepository<N2NToken>>();
-            services.AddTransient<IRepository<N2NUser>, DbRepository<N2NUser>>();
-            services.AddTransient<IAuthenticationService, AuthenticationService>();
+            appConfigurator.ConfigureServices(services);
+
 
             services.AddCors(options =>
             {
@@ -94,10 +90,7 @@ namespace N2N.Api
                             .AllowAnyHeader();
                     });
             });
-
-
             
-            appConfigurator.IntegrateSimpleInjector(services, this.container);
         }
         
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -107,9 +100,6 @@ namespace N2N.Api
             app.UseDeveloperExceptionPage();
 
             appConfigurator.UseMvcAndConfigureRoutes(app);
-            appConfigurator.InitializeContainer(app, this.container);
-
-            container.Verify();
 
             app.UseAuthentication();
             

@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
 using N2N.Api.Services;
+using N2N.Core.Constants;
 using N2N.Core.Entities;
 using N2N.Infrastructure.Models;
 using N2N.Services;
@@ -21,6 +22,13 @@ namespace N2N.Api.Filters
 {
     public class N2NAutorizationAttribute : ActionFilterAttribute
     {
+        private readonly string _role;
+
+        public N2NAutorizationAttribute(string role = N2NRoles.User)
+        {
+            this._role = role;
+        }
+
         public override void OnActionExecuting(ActionExecutingContext context)
         {
             var authService = context.HttpContext.RequestServices.GetService<IAuthenticationService>();
@@ -34,8 +42,14 @@ namespace N2N.Api.Filters
                 return;
             }
 
-            //set user identity for the thread
             var roles = authService.GetUserRolesAsync((authResult.Data as N2NUser).NickName).Result;
+            if (!roles.Contains(this._role))
+            {
+                context.Result = new ObjectResult( new []{$"You are not in [{this._role}] role"}) { StatusCode = (int)HttpStatusCode.Forbidden };
+                return;
+            }
+
+            //set user identity for the thread
             Thread.CurrentPrincipal = new GenericPrincipal(new N2NIdentity(authResult.Data as N2NUser, isAuthenticated: true), roles: roles.ToArray() );
         }
 

@@ -16,7 +16,7 @@ namespace N2N.Core.DBEntities
         /// </summary>
         public Guid PromiseId { get; set; }
         [ForeignKey("PromiseId")]
-        public N2NPromise Promiose { get; set; }
+        public N2NPromise Promise { get; set; }
 
 
         /// <summary>

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using N2N.Api.Configuration;
+using N2N.Core.Constants;
 using N2N.Core.Entities;
 using N2N.Core.Models;
 using N2N.Core.Services;
@@ -30,11 +31,12 @@ namespace N2N.Api.Services
             this._roleManager = roleManager;
         }
 
-        public async Task<OperationResult> CreateUserAsync(N2NUser user, string password)
+        public async Task<OperationResult> CreateUserAsync(N2NUser user, string password, string[] roles = null)
         {
             // this all should be a transaction ↓
 
             OperationResult result= new OperationResult();
+            roles = roles ?? new[] {N2NRoles.User};
 
             if (!this._userService.IsNicknameExists(user.NickName))
             {
@@ -51,12 +53,12 @@ namespace N2N.Api.Services
                 //if operation fails, we should delete N2NUser
                 if (identityResult.Succeeded)
                 {
-                    await _userManager.AddToRoleAsync(identityUser, "User");
+                    await _userManager.AddToRolesAsync(identityUser, roles);
                     result = this._userService.CreateUser(user);
 
                     if (!result.Success)
                     {
-                        await _userManager.RemoveFromRoleAsync(identityUser, "User");
+                        await _userManager.RemoveFromRolesAsync(identityUser, roles);
                         await _userManager.DeleteAsync(identityUser);
                     }
                 }
