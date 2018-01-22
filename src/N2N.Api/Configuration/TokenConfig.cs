@@ -17,7 +17,7 @@ namespace N2N.Api.Configuration
         {
             this.ISSUER = "MyAuthServer"; // издатель токена
             this.AUDIENCE = "*";
-            this.LIFETIME = LIFETIME = 60; // время жизни токена (180 минут рекомендуемое)
+            this.LIFETIME = 60; // время жизни токена (180 минут рекомендуемое)
         }
         const string KEY = "mysupersecret_secretkey!123";   // ключ для шифрации
 

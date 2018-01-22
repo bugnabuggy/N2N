@@ -7,8 +7,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using N2N.Api.Services;
 using N2N.Core.Entities;
+using N2N.Core.Models;
+using N2N.Core.Services;
 using N2N.Data.Repositories;
 using N2N.Infrastructure.Models;
+using N2N.Infrastructure.Models.DTO;
 using N2N.Services;
 
 namespace N2N.Api.Controllers
@@ -18,14 +21,14 @@ namespace N2N.Api.Controllers
     public class PromiseController : Controller
     {
         private IRepository<N2NUser> _userRepo;
-        private IN2NPromiseService _n2NPromiseService;
-        private IAuthentificationService _authentificationService;
+        private IN2NPromiseService _N2NPromiseService;
+        private IAuthenticationService _authenticationService;
 
-        public PromiseController(IN2NPromiseService n2NPromiseService, IRepository<N2NUser> userRepo, IAuthentificationService authentificationService)
+        public PromiseController(IN2NPromiseService N2NPromiseService, IRepository<N2NUser> userRepo, IAuthenticationService authenticationService)
         {
-            this._authentificationService = authentificationService;
+            this._authenticationService = authenticationService;
             this._userRepo = userRepo;
-            this._n2NPromiseService = n2NPromiseService;
+            this._N2NPromiseService = N2NPromiseService;
         }
 
         //[HttpGet("{promiseId}")]
@@ -34,8 +37,8 @@ namespace N2N.Api.Controllers
         //    return 
         //}
 
-        [HttpPost("/Promise/SavePromise")]
-        public async Task<object> SavePromiseOnServer([FromBody] PromiseDTO promise)
+        [HttpPost]
+        public async Task<OperationResult> SavePromiseOnServer([FromBody] PromiseDTO promise)
         {
             OperationResult result = new OperationResult();
             DateTime dueDate =new DateTime() ;
@@ -43,12 +46,12 @@ namespace N2N.Api.Controllers
             {
                 var authHeader = HttpContext.Request.Headers["Authorization"];
                 var userId = this._userRepo.Data.FirstOrDefault(x =>
-                    x.NickName == this._authentificationService.GetNameUser(authHeader.ToString())).Id;
-                if (promise.DataImplementationPromise!="")
+                    x.NickName == this._authenticationService.GetUserName(authHeader.ToString())).Id;
+                if (promise.DataImplementationPromise != "")
                 {
                     dueDate = DateTime.ParseExact(promise.DataImplementationPromise, "yyyy-mm-dd", null);
                 }
-                N2NPromise newPromise= new N2NPromise()
+                N2NPromise newPromise = new N2NPromise()
                 {
                     Id = Guid.NewGuid(),
                     DueDate = dueDate,
@@ -58,11 +61,16 @@ namespace N2N.Api.Controllers
                     BlockChainTransaction = "",
                     HashIdLinkPromise = ""
                 };
-                
-                result= this._n2NPromiseService.CreatePromise(newPromise);
+
+                result.Data = this._N2NPromiseService.Add(newPromise);
+                result.Success = true;
             }
-            
-            return result.Data;
+            else
+            {
+                result.Messages = new[] {"Promise text is empty"};
+            }
+
+            return result;
         }
     }
 }

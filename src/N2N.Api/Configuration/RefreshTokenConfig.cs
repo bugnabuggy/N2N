@@ -8,7 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace N2N.Api.Configuration
 {
-    public class RefreshTokenConfig : IConfig
+    public class RefreshTokenConfig: IConfig
     {
         public string ISSUER { get; set; }
         public string AUDIENCE { get; set; }

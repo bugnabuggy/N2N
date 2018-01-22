@@ -226,6 +226,7 @@
     <Compile Include="Models\DTO\AuthenticationResponseDTO.cs" />
     <Compile Include="Models\N2NIdentity.cs" />
     <Compile Include="Models\N2NIdentityUser.cs" />
+    <Compile Include="Models\DTO\PromiseDTO.cs" />
     <Compile Include="Models\QueryResult.cs" />
     <Compile Include="Models\DTO\UserRegistrationFormDTO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

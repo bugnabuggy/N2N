@@ -51,6 +51,7 @@
     <Compile Include="Entities\N2NPromise.cs" />
     <Compile Include="Entities\N2NUser.cs" />
     <Compile Include="Entities\UserPromise.cs" />
+    <Compile Include="Interfaces\IN2NToken.cs" />
     <Compile Include="Interfaces\IOwned.cs" />
     <Compile Include="Models\OperationResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
