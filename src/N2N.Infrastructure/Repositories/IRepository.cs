@@ -15,6 +15,10 @@ namespace N2N.Data.Repositories
         T Add(T item);
         T Delete(T item);
 
+
+        IEnumerable<T> Get( Expression<Func<T, bool>> filter,
+                            Func<IQueryable<T>, IOrderedQueryable<T>> orderBy,
+                            string includeProperties);
         IEnumerable<T> Add(IEnumerable<T> items);
         IEnumerable<T> Update(IEnumerable<T> items);
         IEnumerable<T> Delete(IEnumerable<T> items);

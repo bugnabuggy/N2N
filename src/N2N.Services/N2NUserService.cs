@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using N2N.Core.Entities;
@@ -19,11 +20,33 @@ namespace N2N.Services
 
         public N2NUser CheckOrRegenerateUserId(N2NUser user)
         {
+            if(user.Id == Guid.Empty) { user.Id = Guid.NewGuid(); }
             while (this._userRepo.Data.Any( x => x.Id == user.Id))
             {
                 user.Id = Guid.NewGuid();
             }
             return user;
+        }
+
+        public IEnumerable<N2NUser> GetUsers(Expression<Func<N2NUser, bool>> filter = null,
+            Func<IQueryable<N2NUser>, IOrderedQueryable<N2NUser>> orderBy = null)
+        {
+
+            IQueryable<N2NUser> query = _userRepo.Data;
+
+            if (filter != null)
+            {
+                query = _userRepo.Data.Where(filter);
+            }
+
+            if (orderBy != null)
+            {
+                return orderBy(query).ToList();
+            }
+            else
+            {
+                return query.ToList();
+            }
         }
 
         public N2NUserService(IRepository<N2NUser> userRepo, ISecurityService security)
@@ -47,6 +70,8 @@ namespace N2N.Services
 
             if (this._security.HasAccess())
             {
+                user.Registration = DateTime.UtcNow;
+
                 //add user here
                 _userRepo.Add(user);
 
@@ -61,5 +86,7 @@ namespace N2N.Services
 
             return result;
         }
+
+        
     }
 }

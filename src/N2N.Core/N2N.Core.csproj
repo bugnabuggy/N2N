@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Constants\N2NRoles.cs" />
     <Compile Include="DBEntities\PostcardAddresses.cs" />
     <Compile Include="DBEntities\PromiseToUser.cs" />
     <Compile Include="DBEntities\UserAddresses.cs" />
@@ -52,6 +53,7 @@
     <Compile Include="Entities\N2NUser.cs" />
     <Compile Include="Entities\UserPromise.cs" />
     <Compile Include="Interfaces\IN2NToken.cs" />
+    <Compile Include="Constants\ErrorMessages.cs" />
     <Compile Include="Interfaces\IOwned.cs" />
     <Compile Include="Models\OperationResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

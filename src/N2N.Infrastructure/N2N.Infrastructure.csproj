@@ -223,6 +223,12 @@
     <Compile Include="Exceptions\N2NException.cs" />
     <Compile Include="Exceptions\NotFoundException.cs" />
     <Compile Include="Exceptions\N2NSecurityException.cs" />
+    <Compile Include="Migrations\20180122075429_Init.cs" />
+    <Compile Include="Migrations\20180122075429_Init.designer.cs">
+      <DependentUpon>20180122075429_Init.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\N2NDataContextModelSnapshot.cs" />
+    <Compile Include="Models\ApiResult.cs" />
     <Compile Include="Models\DTO\AuthenticationResponseDTO.cs" />
     <Compile Include="Models\N2NIdentity.cs" />
     <Compile Include="Models\N2NIdentityUser.cs" />
@@ -247,8 +253,6 @@
       <Name>N2N.Core</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Migrations\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
