@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Net;
+using System.Security.Principal;
+using System.Threading;
 using System.Threading.Tasks;
 using IdentityServer4.Extensions;
 using Microsoft.AspNetCore.Identity;
@@ -10,45 +13,30 @@ using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
 using N2N.Api.Services;
+using N2N.Core.Entities;
 using N2N.Infrastructure.Models;
 using N2N.Services;
 
 namespace N2N.Api.Filters
 {
-    public class N2NAutorizationFilterAttribute : ActionFilterAttribute
+    public class N2NAutorizationAttribute : ActionFilterAttribute
     {
-        
-  
-
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            
-            var service = context.HttpContext.RequestServices.GetService<IAuthentificationService>();
-            
-
-            ObjectResult result = new ObjectResult("");
-
+            var authService = context.HttpContext.RequestServices.GetService<IAuthenticationService>();
             var authHeader = context.HttpContext.Request.Headers["Authorization"];
             
+            var authResult = authService.AuthenticateByToken(authHeader);
 
-            if (authHeader.IsNullOrEmpty())
+            if (!authResult.Success)
             {
-                result = new ObjectResult("you do not have Authorization header");
-                result.StatusCode = 401;
-            }
-            else
-            {
-                
-                var tokenValidationResult = service.ValidateTokenString(authHeader.ToString());
-
-                if (!tokenValidationResult.Success)
-                {
-                    result = new ObjectResult(tokenValidationResult.Messages);
-                    result.StatusCode = 401;
-                }
+                context.Result = new ObjectResult(authResult.Messages){StatusCode = (int)HttpStatusCode.Unauthorized};
+                return;
             }
 
-            context.Result = result;
+            //set user identity for the thread
+            var roles = authService.GetUserRolesAsync((authResult.Data as N2NUser).NickName).Result;
+            Thread.CurrentPrincipal = new GenericPrincipal(new N2NIdentity(authResult.Data as N2NUser, isAuthenticated: true), roles: roles.ToArray() );
         }
 
         public override Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)

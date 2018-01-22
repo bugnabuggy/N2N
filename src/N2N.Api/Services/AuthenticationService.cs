@@ -3,48 +3,69 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
+using System.Security.Principal;
+using System.Threading;
 using System.Threading.Tasks;
+using IdentityModel;
+using IdentityServer4.Extensions;
 using IdentityServer4.Test;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using N2N.Api.Configuration;
 using N2N.Core.Entities;
+using N2N.Core.Models;
 using N2N.Data.Repositories;
 using N2N.Infrastructure.Models;
+using N2N.Infrastructure.Models.DTO;
 
 namespace N2N.Api.Services
 {
-    public class AuthentificationService : IAuthentificationService
+    public class AuthenticationService : IAuthenticationService
     {
         private UserManager<N2NIdentityUser> _userManager;
         private IRepository<N2NToken> _tokenRepo;
         private IRepository<N2NRefreshToken> _RefreshTokenRepo;
+        private IRepository<N2NUser> _userRepo;
 
-        
-        public AuthentificationService(UserManager<N2NIdentityUser> userManager, IRepository<N2NToken> tokenRepo, IRepository<N2NRefreshToken> RefreshTokenRepo)
+
+        public AuthenticationService( UserManager<N2NIdentityUser> userManager,
+                                        IRepository<N2NToken> tokenRepo,
+                                        IRepository<N2NRefreshToken> refreshTokenRepo,
+                                        IRepository<N2NUser> userRepo)
         {
             this._userManager = userManager;
             this._tokenRepo = tokenRepo;
-            this._RefreshTokenRepo = RefreshTokenRepo;
+            this._RefreshTokenRepo = refreshTokenRepo;
+            this._userRepo = userRepo;
         }
 
-        public string GetNameUser(string tokenString)
+        public string GetUserName(string tokenString)
         {
-            N2NIdentityUser user= new N2NIdentityUser();
+            N2NIdentityUser user = new N2NIdentityUser();
             var tokenClaims = new List<Claim>();
             var jwt = tokenString.Split(' ')[1];
             if (jwt != "")
             {
                 tokenClaims = new JwtSecurityTokenHandler().ReadJwtToken(jwt).Claims.ToList();   
             }
+
             return tokenClaims[0].Value;
         }
 
-        public OperationResult ValidateTokenString(string tokenString)
+        public async Task<IEnumerable<string>> GetUserRolesAsync(string nickname)
+        {
+            var identityUser = await _userManager.FindByNameAsync(nickname);
+            var roles = await _userManager.GetRolesAsync(identityUser);
+            return roles;
+        }
+
+        public OperationResult GetUserByTokenString(string tokenString)
         {
             var tokenClaims = new List<Claim>();
             var result = new OperationResult();
+            result.Messages = new List<string>();
+
             try
             {
                 var jwt = tokenString.Split(' ')[1];
@@ -53,15 +74,25 @@ namespace N2N.Api.Services
                 {
                     tokenClaims = new JwtSecurityTokenHandler().ReadJwtToken(jwt).Claims.ToList();
                 }
-                
-                if (_tokenRepo.Data.Any(x => x.Id.ToString() == tokenClaims.Find(y => y.Type == "Token Id").Value) &&
-                    _tokenRepo.Data.Any( z => z.TokenExpirationDate > DateTime.Now))
+                var token = _tokenRepo.Data.FirstOrDefault(t => t.Id.ToString() == tokenClaims.Find(y => y.Type == "Token Id").Value);
+
+                if (token != null)
                 {
-                    result.Success = true;
+                    if (token?.TokenExpirationDate > DateTime.Now)
+                    {
+                        var user = _userRepo.Data.FirstOrDefault(x => x.Id == token.N2NUserId);
+
+                        result.Data = user;
+                        result.Success = true;
+                    }
+                    else
+                    {
+                        (result.Messages as List<string>).Add("Authorization token has expired");
+                    }
                 }
                 else
                 {
-                    result.Messages = new[] { "you do not have authorization token" };
+                    (result.Messages as List<string>).Add("Token not found");
                 }
 
             }
@@ -71,6 +102,52 @@ namespace N2N.Api.Services
             }
             
             return result;
+        }
+
+        public OperationResult AuthenticateByToken(string authorizationHeader)
+        {
+            var messages = new List<string>();
+            var success = false;
+            object data = null;
+
+            if (authorizationHeader.IsNullOrEmpty())
+            {
+                messages.Add("You do not have Authorization header");
+            }
+            else
+            {
+                var tokenValidationResult = this.GetUserByTokenString(authorizationHeader);
+                if (tokenValidationResult.Success)
+                {
+                    if (tokenValidationResult.Data?.GetType() == typeof(N2NUser))
+                    {
+                        data = tokenValidationResult.Data as N2NUser;
+                        success = true;
+
+                        // methdod shoud not affect global scope!!! ↓ so comment it out
+                        //Thread.CurrentPrincipal =
+                        //    new GenericPrincipal(
+                        //        new N2NIdentity(tokenValidationResult.Data as N2NUser, isAuthenticated: true),
+                        //        new string[] { });
+
+                    }
+                    else
+                    {
+                        messages.Add("User have not been found in token validation data");
+                    }
+                }
+                else
+                {
+                    messages.AddRange(tokenValidationResult.Messages);
+                }
+            }
+
+            return new OperationResult()
+            {
+                Messages = messages,
+                Success = success,
+                Data = data
+            };
         }
 
         public void DeleteToken(string tokenString)
@@ -85,16 +162,17 @@ namespace N2N.Api.Services
            
         }
 
-        public async Task<object> Authentification(string nickName, string password)
+        public async Task<AuthenticationResponseDTO> AuthenticateUser(string nickName, string password)
         {
-            object response=  new { };
-            var access_token = await GetToken(nickName,password);
+            AuthenticationResponseDTO response = null;
+            var access_token = await GetToken(nickName, password);
             if (access_token !="")
             {
                 var refresh_token = await GetRefreshToken(nickName, password);
-                response= new
+                response= new AuthenticationResponseDTO
                 {
                     access_token = access_token,
+                    // TODO: Add expiration_date 
                     refresh_token = refresh_token
                 };
             }
@@ -103,13 +181,13 @@ namespace N2N.Api.Services
 
         public async Task<string> GetToken(string nickName, string password)
         {
-            var Token="";
+            var token = "";
             var tokenConfig = new TokenConfig();
             var lifeTime = TimeSpan.FromMinutes(tokenConfig.LIFETIME);
             var user = await this._userManager.FindByNameAsync(nickName);
             var tokenId = Guid.NewGuid();
             
-            var claimIdentity = await GetIdentity(nickName, password, tokenId);
+            var claimIdentity = await GetClaimsIdentity(nickName, password, tokenId);
             if (claimIdentity != null)
             {
                 _tokenRepo.Add(new N2NToken
@@ -118,11 +196,11 @@ namespace N2N.Api.Services
                     N2NUserId = user.N2NUserId,
                     TokenExpirationDate = DateTime.Now.AddMinutes(tokenConfig.LIFETIME)
                 });
-                Token = await GetTokenObject(claimIdentity, user.N2NUserId, tokenConfig.ISSUER,
+                token = await GetTokenObject(claimIdentity, user.N2NUserId, tokenConfig.ISSUER,
                     tokenConfig.AUDIENCE,
                     lifeTime);
             }
-            return Token;
+            return token;
         }
 
         public async Task<string> GetRefreshToken(string nickName, string password)
@@ -137,36 +215,29 @@ namespace N2N.Api.Services
                 N2NUserId = user.N2NUserId,
                 RefreshTokenExpirationDate = DateTime.Now.AddDays(tokenConfig.LIFETIME)
             });
-            var claimIdentity = await GetIdentity(nickName, password, tokenId);
+            var claimIdentity = await GetClaimsIdentity(nickName, password, tokenId);
             var refreshToken =await GetTokenObject(claimIdentity, user.N2NUserId, tokenConfig.ISSUER, tokenConfig.AUDIENCE,
                 lifeTime);
             return  refreshToken;
         }
 
-        public async Task<ClaimsIdentity> GetIdentity(string nickName, string password,Guid tokenId)
+        public async Task<ClaimsIdentity> GetClaimsIdentity(string nickName, string password, Guid tokenId)
         {
-            var access = await this._userManager.CheckPasswordAsync(this._userManager.Users.FirstOrDefault(x => x.UserName == nickName), password);
-            if (access)
+            var user = await this._userManager.FindByNameAsync(nickName);
+            if (user != null)
             {
-                
-                string roleforToken;
-                var user = await this._userManager.FindByNameAsync(nickName);
-                var role = await this._userManager.IsInRoleAsync(user, "Admin");
-                if (role != true)
+                var access = await this._userManager.CheckPasswordAsync(user, password);
+                if (access)
                 {
-                    roleforToken = "User";
-                }
-                else
-                {
-                    roleforToken = "Admin";
-                }
-                if (user != null)
-                {
+                    var isAdmin = await this._userManager.IsInRoleAsync(user, "Admin");
+                    var roleForToken = isAdmin != true ? "User" : "Admin";
+
+
                     var claims = new List<Claim>
                     {
                         new Claim(ClaimsIdentity.DefaultNameClaimType, user.UserName),
-                        new Claim(ClaimsIdentity.DefaultRoleClaimType, roleforToken),
-                        new Claim("Token Id",tokenId.ToString() )
+                        new Claim(ClaimsIdentity.DefaultRoleClaimType, roleForToken),
+                        new Claim("Token Id", tokenId.ToString() )
                     };
                     ClaimsIdentity claimsIdentity =
                         new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType,

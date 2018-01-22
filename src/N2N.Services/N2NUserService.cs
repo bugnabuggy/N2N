@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using N2N.Core.Entities;
+using N2N.Core.Models;
+using N2N.Core.Services;
 using N2N.Data.Repositories;
-using N2N.Infrastructure.Models;
-using N2N.Services;
 
 namespace N2N.Services
 {
@@ -32,9 +32,9 @@ namespace N2N.Services
             this._security = security;
         }
 
-        public bool IsNicknameExists(N2NUser user)
+        public bool IsNicknameExists(string nickname)
         {
-            var nickNameExists = this._userRepo.Data.Any(x => x.NickName == user.NickName);
+            var nickNameExists = this._userRepo.Data.Any(x => x.NickName == nickname);
 
             return nickNameExists;
         }

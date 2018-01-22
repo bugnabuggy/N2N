@@ -5,6 +5,7 @@ using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 using N2N.Core.Entities;
+using N2N.Core.Services;
 using N2N.Data.Repositories;
 using N2N.Infrastructure.Exceptions;
 using N2N.Infrastructure.Models;
@@ -57,7 +58,7 @@ namespace N2N.Services
             if (promise.N2NUserId == _securitySrv.GetCurrentN2NUserId() ||
                 _securitySrv.HasAccess())
             {
-                return _promiseRepo.Update(promise);
+                return _promiseRepo.Delete(promise);
             }
             else
             {

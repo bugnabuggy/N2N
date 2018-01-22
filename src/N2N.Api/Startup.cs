@@ -20,9 +20,7 @@ using N2N.Data.Repositories;
 using N2N.Infrastructure.DataContext;
 using N2N.Infrastructure.Models;
 using SimpleInjector;
-using SimpleInjector.Lifestyles;
-using SimpleInjector.Integration.AspNetCore;
-using SimpleInjector.Integration.AspNetCore.Mvc;
+
 
 namespace N2N.Api
 {
@@ -30,12 +28,12 @@ namespace N2N.Api
     {
         public IConfiguration Configuration { get; }
         private Container container = new Container();
+        private AppConfigurator appConfigurator = new AppConfigurator();
 
         public Startup(IConfiguration configuration, IHostingEnvironment env)
         {
             Configuration = configuration;
         }
-
 
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
@@ -79,9 +77,12 @@ namespace N2N.Api
                 .AddEntityFrameworkStores<N2NDataContext>()
                 .AddDefaultTokenProviders();
 
+
+            // because Simple Injector do not work for HttpContext.RequestServices.GetService
             services.AddTransient<IRepository<N2NRefreshToken>, DbRepository<N2NRefreshToken>>();
             services.AddTransient<IRepository<N2NToken>, DbRepository<N2NToken>>();
-            services.AddTransient<IAuthentificationService, AuthentificationService>();
+            services.AddTransient<IRepository<N2NUser>, DbRepository<N2NUser>>();
+            services.AddTransient<IAuthenticationService, AuthenticationService>();
 
             services.AddCors(options =>
             {
@@ -94,11 +95,9 @@ namespace N2N.Api
                     });
             });
 
-            
 
-
-            N2N.Api.Configuration.AppStart.IntegrateSimpleInjector(services, this.container);
             
+            appConfigurator.IntegrateSimpleInjector(services, this.container);
         }
         
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -107,8 +106,8 @@ namespace N2N.Api
             
             app.UseDeveloperExceptionPage();
 
-            N2N.Api.Configuration.AppStart.UseMvcAndConfigureRoutes(app);
-            N2N.Api.Configuration.AppStart.InitializeContainer(app, this.container);
+            appConfigurator.UseMvcAndConfigureRoutes(app);
+            appConfigurator.InitializeContainer(app, this.container);
 
             container.Verify();
 
