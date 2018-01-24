@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using N2N.Core.Entities;
+using N2N.TestData.Helpers;
 using NUnit.Framework;
 
 
@@ -17,7 +18,7 @@ namespace N2N.Infrastructure.Tests
         [Test]
         public void Should_create_database()
         {
-            var ctx = Helpers.DataContextHelper.GetDataContext();
+            var ctx = DataContextHelper.GetDataContext();
 
             ctx.N2NUsers.Add(new N2NUser()
             {
@@ -30,7 +31,7 @@ namespace N2N.Infrastructure.Tests
 
             Assert.IsTrue(ctx.N2NUsers.Any());
 
-            Helpers.DataContextHelper.disposeDataContext(ctx);
+            DataContextHelper.disposeDataContext(ctx);
         }
     }
 }

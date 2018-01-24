@@ -36,7 +36,6 @@ namespace N2N.Api.Configuration
 
         public void InitRolesAndUsers(IServiceProvider services)
         {
-            const int WAIT_TIME = 10_000;
             var roles = new List<IdentityRole>()
             {
                 new IdentityRole(N2NRoles.Admin),
@@ -57,7 +56,7 @@ namespace N2N.Api.Configuration
             {
                 if (!roleManager.RoleExistsAsync(role.Name).Result)
                 {
-                    roleManager.CreateAsync(role).Wait(WAIT_TIME);
+                    roleManager.CreateAsync(role).Wait(N2NTimingsAndValues.AsyncTaskWaitTime);
                 }
             }
 
@@ -67,7 +66,7 @@ namespace N2N.Api.Configuration
             {
                 if (!userService.UserExistsAndConsistentAsync(user.Key.NickName).Result)
                 {
-                    userService.CreateUserAsync(user.Key, user.Value, new []{ N2NRoles.User, N2NRoles.Admin }).Wait(WAIT_TIME);
+                    userService.CreateUserAsync(user.Key, user.Value, new []{ N2NRoles.User, N2NRoles.Admin }).Wait(N2NTimingsAndValues.AsyncTaskWaitTime);
                 }
             }
         }

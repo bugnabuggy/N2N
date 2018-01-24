@@ -1,18 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Hosting;
+﻿using System.Configuration;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using N2N.Infrastructure.DataContext;
 
-namespace N2N.Infrastructure.Tests.Helpers
+namespace N2N.TestData.Helpers
 {
-     static class DataContextHelper
+    public static class DataContextHelper
     {
         private static int _contextCount = 0;
         private static DbContextOptions<N2NDataContext> _options;
@@ -33,8 +25,6 @@ namespace N2N.Infrastructure.Tests.Helpers
             {
                 optionsBuilder.UseSqlServer(settings[2]);
             }
-
-
 
             _options = optionsBuilder.Options;
         }
