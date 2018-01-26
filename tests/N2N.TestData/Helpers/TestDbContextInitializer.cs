@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Principal;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
+using N2N.Api.Configuration;
 using N2N.Api.Services;
 using N2N.Core.Constants;
 using N2N.Core.Entities;
@@ -21,8 +23,14 @@ namespace N2N.Api.Tests.Helpers
         private N2NUser[] _users;
 
 
-        public void SeedData(IServiceProvider services)
+        public async Task SeedData(IServiceProvider services)
         {
+            // because we have service permission checks 
+            System.Threading.Thread.CurrentPrincipal = new GenericPrincipal(new GenericIdentity("N2N User Registration Service"), new[] { N2NRoles.Admin });
+            
+            var appConfigurator = new AppConfigurator();
+            appConfigurator.InitRolesAndUsers(services);
+
             _context = services.GetService<N2NDataContext>();
             var apiUserSrv = services.GetService<N2NApiUserService>();
 
@@ -31,10 +39,13 @@ namespace N2N.Api.Tests.Helpers
 
             foreach (var user in _users)
             {
-                var result = apiUserSrv.CreateUserAsync(user, "Password@123", new[] {N2NRoles.User});
+                var result = await apiUserSrv.CreateUserAsync(user, "Password@123", new[] {N2NRoles.User});
+                if (!result.Success)
+                {
+                    throw new Exception(string.Concat(result.Messages));
+                }
                 AddPromises(user);
-
-                //TODO: Add test postcards
+                AddPostcards(user);
 
                 _context.SaveChanges();
             }
@@ -71,9 +82,13 @@ namespace N2N.Api.Tests.Helpers
         }
 
 
-        private async Task CreatePromisesForUsers()
+        private void AddPostcards(N2NUser user)
         {
-            
+            var numberOfPostcards = _random.Next(0, 4);
+            for (int i = 0; i < numberOfPostcards; i++)
+            {
+                _context.Postcards.Add(PostcardsList.GetPostcard(user.Id));
+            }
         }
 
     }

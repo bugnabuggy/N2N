@@ -38,7 +38,7 @@ namespace N2N.Services.Tests
             _refreshTokenRepo = new MockRepository<N2NRefreshToken>(N2N.TestData.RefreshTokenList.GetList());
             _userRepo = new MockRepository<N2NUser>(N2N.TestData.N2NUsersList.GetList());
 
-            var serviceProvider = new InMemoryDatabaseDiBootstrapper().GetServiceProvider();
+            var serviceProvider = new DatabaseDiBootstrapperInMemory().GetServiceProvider();
 
             _userManager = serviceProvider.GetRequiredService<UserManager<N2NIdentityUser>>();
             _roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();

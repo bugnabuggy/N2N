@@ -27,7 +27,7 @@ namespace N2N.Api.Tests
         public void Should_init_default_users_and_roles()
         {
             var appConfigurator = new AppConfigurator();
-            var serviceProvider = new InMemoryDatabaseDiBootstrapper().GetServiceProvider();
+            var serviceProvider = new DatabaseDiBootstrapperInMemory().GetServiceProvider();
 
             System.Threading.Thread.CurrentPrincipal = new GenericPrincipal(new GenericIdentity("N2N Test Service"), new[] { N2NRoles.Admin });
 
@@ -53,7 +53,7 @@ namespace N2N.Api.Tests
         [Test]
         public void Should_return_empty_db_for_new_service_provider_and_existing_db_for_existing_provider()
         {
-            var serviceProvider = new InMemoryDatabaseDiBootstrapper().GetServiceProvider();
+            var serviceProvider = new DatabaseDiBootstrapperInMemory().GetServiceProvider();
             var context = serviceProvider.GetRequiredService<N2NDataContext>();
 
             Assert.AreEqual(context.Promises.Count(),0);
@@ -73,7 +73,7 @@ namespace N2N.Api.Tests
             Assert.AreEqual(context1.PromisesToUsers.Count(), 1);
 
             //clear database for new service provider
-            var serviceProvider2 = new InMemoryDatabaseDiBootstrapper().GetServiceProvider();
+            var serviceProvider2 = new DatabaseDiBootstrapperInMemory().GetServiceProvider();
             var context2 = serviceProvider2.GetRequiredService<N2NDataContext>();
 
             Assert.AreEqual(context2.Promises.Count(), 0);

@@ -8,7 +8,7 @@ namespace N2N.Core.Entities
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public long Id { get; set; }
+        public int Id { get; set; }
         /// <summary>
         /// Id of promise
         /// </summary>

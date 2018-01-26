@@ -43,9 +43,9 @@
   <ItemGroup>
     <Compile Include="Constants\N2NRoles.cs" />
     <Compile Include="Constants\N2NTimingsAndValues.cs" />
-    <Compile Include="DBEntities\PostcardAddresses.cs" />
+    <Compile Include="DBEntities\PostcardAddress.cs" />
+    <Compile Include="DBEntities\UserAddress .cs" />
     <Compile Include="Entities\PromiseToUser.cs" />
-    <Compile Include="DBEntities\UserAddresses.cs" />
     <Compile Include="Entities\N2NRefreshToken.cs" />
     <Compile Include="Entities\N2NToken.cs" />
     <Compile Include="Entities\Postcard.cs" />

@@ -21,8 +21,16 @@ using N2N.TestData.Helpers;
 
 namespace N2N.Api.Tests
 {
-    public class InMemoryDatabaseDiBootstrapper : IServiceProviderBootstrapper
+    public class DatabaseDiBootstrapperInMemory : IServiceProviderBootstrapper
     {
+        public N2NDataContext GetDataContext()
+        {
+            var optionsBuilder = new DbContextOptionsBuilder<N2NDataContext>();
+            optionsBuilder.UseInMemoryDatabase("TestInMemory");
+            var ctx = new N2NDataContext(optionsBuilder.Options);
+            return ctx;
+        }
+
         public ServiceProvider GetServiceProvider()
         {
             var services = new ServiceCollection();
