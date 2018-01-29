@@ -52,11 +52,11 @@ namespace N2N.Api.Tests
             return serviceProvider;
         }
 
-        public ServiceProvider GetServiceProviderWithSeedDB()
+        public async Task<ServiceProvider> GetServiceProviderWithSeedDB()
         {
             var provider = GetServiceProvider();
             var dbSeed = new TestDbContextInitializer();
-            dbSeed.SeedData(provider);
+            await dbSeed.SeedData(provider);
 
             return provider;
         }

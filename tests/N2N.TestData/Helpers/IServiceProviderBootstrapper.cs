@@ -13,6 +13,6 @@ namespace N2N.TestData.Helpers
         N2NDataContext GetDataContext();
 
         ServiceProvider GetServiceProvider();
-        ServiceProvider GetServiceProviderWithSeedDB();
+        Task<ServiceProvider> GetServiceProviderWithSeedDB();
     }
 }

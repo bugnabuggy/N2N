@@ -41,9 +41,33 @@ namespace N2N.Infrastructure.DataContext
 
             builder.Entity<PromiseToUser>()
                 .HasOne(x => x.ToUser)
-                .WithOne()
+                .WithMany()
                 .OnDelete(DeleteBehavior.Restrict);
 
+            builder.Entity<PromiseToUser>()
+                .HasOne(x => x.Promise)
+                .WithMany()
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<UserAddress>()
+                .HasOne(a => a.User)
+                .WithMany()
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<UserAddress>()
+                .HasOne(x => x.Address)
+                .WithMany()
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<PostcardAddress>()
+                .HasOne(x => x.Address)
+                .WithMany()
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<PostcardAddress>()
+                .HasOne(x => x.Address)
+                .WithOne()
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

@@ -195,6 +195,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AddressList.cs" />
     <Compile Include="AthorizationMocks.cs" />
     <Compile Include="Helpers\DatabaseDiBootstrapperSQLServer.cs" />
     <Compile Include="Helpers\HardCoddedConfig.cs" />

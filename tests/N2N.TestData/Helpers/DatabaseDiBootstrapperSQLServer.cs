@@ -3,6 +3,7 @@ using System.Collections.Specialized;
 using System.Configuration;
 using System.Reflection;
 using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features.Authentication;
 using Microsoft.AspNetCore.Identity;
@@ -37,7 +38,7 @@ namespace N2N.TestData.Helpers
             if (_contextCount < 1)
             {
                 //clean befor new test session starts
-                //ctx.Database.EnsureDeleted();
+                ctx.Database.EnsureDeleted();
                 ctx.Database.EnsureCreated();
             }
 
@@ -45,7 +46,7 @@ namespace N2N.TestData.Helpers
             return ctx;
         }
 
-        public static bool disposeDataContext(N2NDataContext ctx)
+        public static bool DisposeDataContext(N2NDataContext ctx)
         {
             if (_contextCount < 2)
             {
@@ -82,11 +83,11 @@ namespace N2N.TestData.Helpers
             return serviceProvider;
         }
 
-        public ServiceProvider GetServiceProviderWithSeedDB()
+        public async Task<ServiceProvider> GetServiceProviderWithSeedDB()
         {
             var provider = GetServiceProvider();
             var dbSeed = new TestDbContextInitializer();
-            dbSeed.SeedData(provider);
+            await dbSeed.SeedData(provider);
 
             return provider;
         }

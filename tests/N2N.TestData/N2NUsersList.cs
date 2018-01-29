@@ -1,14 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using N2N.Core.Entities;
 
 namespace N2N.TestData
 {
     public class N2NUsersList
     {
+        public static N2NUser GetUser()
+        {
+            return new N2NUser()
+            {
+                Id = Guid.NewGuid(),
+                NickName = "User",
+                Registration = DateTime.UtcNow,
+                Email = "test@test.xcom",
+                FirstName = "Te",
+                LastName = "St",
+                PhoneNumber = "+123456789"
+            };
+        }
+
         public static IEnumerable<N2NUser> GetList()
         {
             return new List<N2NUser>()

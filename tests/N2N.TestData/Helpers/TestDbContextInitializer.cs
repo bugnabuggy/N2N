@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using N2N.Api.Configuration;
 using N2N.Api.Services;
 using N2N.Core.Constants;
+using N2N.Core.DBEntities;
 using N2N.Core.Entities;
 using N2N.Infrastructure.DataContext;
 using N2N.Infrastructure.Models;
@@ -44,16 +45,16 @@ namespace N2N.Api.Tests.Helpers
                 {
                     throw new Exception(string.Concat(result.Messages));
                 }
-                AddPromises(user);
-                AddPostcards(user);
-
-                _context.SaveChanges();
+                AddPromises(user, _context);
+                AddPostcards(user, _context);
+                AddAddressess(user, _context);
             }
         }
 
-        private void AddPromises(N2NUser user)
+        public void AddPromises(N2NUser user, N2NDataContext context)
         {
-            var numberOfPromises = _random.Next(0, 4);
+            //var numberOfPromises = _random.Next(1, 4);
+            var numberOfPromises = 3;
             for (int i = 0; i < numberOfPromises; i++)
             {
                 var promise = new N2NPromise()
@@ -61,13 +62,14 @@ namespace N2N.Api.Tests.Helpers
                     Id = Guid.NewGuid(),
                     N2NUserId = user.Id,
                     DueDate = DateTime.UtcNow.AddMonths(_random.Next(1, 6)),
-                    IsPublic = _random.Next(0, 4) == 1 ? true : false, // make promise public with given probobility
+                    IsPublic = _random.Next(0, 2) == 1 ? true : false, // make promise public with given probobility
                     Text = $"TEEEEEEXT for user [{user.NickName}] and promise [{i}]"
                 };
-                _context.Promises.Add(promise);
+                context.Promises.Add(promise);
 
                 // make generated promise to another user with given probobility
-                if (_random.Next(0, 2) == 1)
+                //if (_random.Next(0, 2) == 1)
+                if (i % 2 == 1)
                 {
                     var toUser = new PromiseToUser()
                     {
@@ -76,20 +78,51 @@ namespace N2N.Api.Tests.Helpers
                         IsFulfilled = _random.Next(0,1) == 1,
                         FulfillDate = DateTime.UtcNow.AddMonths(1)
                     };
-                    _context.PromisesToUsers.Add(toUser);
+                    context.PromisesToUsers.Add(toUser);
                 }
+                context.SaveChanges();
             }
+            
         }
 
 
-        private void AddPostcards(N2NUser user)
+        public void AddPostcards(N2NUser user, N2NDataContext context)
         {
-            var numberOfPostcards = _random.Next(0, 4);
+            //var numberOfPostcards = _random.Next(1, 2);
+            var numberOfPostcards = 2;
             for (int i = 0; i < numberOfPostcards; i++)
             {
-                _context.Postcards.Add(PostcardsList.GetPostcard(user.Id));
+                var postcard = PostcardsList.GetPostcard(user.Id);
+                var address = AddressList.GetAddress(user);
+
+                context.Postcards.Add(postcard);
+                context.Addresses.Add(address);
+
+                var postcardAddress = new PostcardAddress()
+                { 
+                    AddressId =  address.Id,
+                    PostcardId = postcard.Id
+                };
+                context.PostcardAddresseses.Add(postcardAddress);
             }
+            context.SaveChanges();
         }
 
+        public void AddAddressess(N2NUser user, N2NDataContext context)
+        {
+            //var addrssesNum = _random.Next(1, 2);
+            var addrssesNum = 2;
+            for (int i = 0; i < addrssesNum; i++)
+            {
+                var address = AddressList.GetAddress(user);
+                context.Addresses.Add(address);
+                context.SaveChanges();
+
+                var userAddress = new UserAddress() {AddressId = address.Id, N2NUserId = user.Id};
+                context.UserAddresseses.Add(userAddress);
+                context.SaveChanges();
+            }
+            
+        }
     }
 }
