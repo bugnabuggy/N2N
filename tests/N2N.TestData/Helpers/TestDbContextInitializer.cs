@@ -45,10 +45,17 @@ namespace N2N.Api.Tests.Helpers
                 {
                     throw new Exception(string.Concat(result.Messages));
                 }
+            }
+
+            //to avoid foreing keys insert conflicts
+            foreach (var user in _users)
+            {
                 AddPromises(user, _context);
                 AddPostcards(user, _context);
                 AddAddressess(user, _context);
             }
+
+            
         }
 
         public void AddPromises(N2NUser user, N2NDataContext context)

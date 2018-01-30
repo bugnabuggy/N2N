@@ -11,8 +11,8 @@ using System;
 namespace N2N.Infrastructure.Migrations
 {
     [DbContext(typeof(N2NDataContext))]
-    [Migration("20180126101245_RefactoringBeforeTestSeedDatabase")]
-    partial class RefactoringBeforeTestSeedDatabase
+    [Migration("20180130084417_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -140,7 +140,8 @@ namespace N2N.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AddressId");
+                    b.HasIndex("AddressId")
+                        .IsUnique();
 
                     b.HasIndex("PostcardId");
 
@@ -300,8 +301,7 @@ namespace N2N.Infrastructure.Migrations
 
                     b.HasIndex("PromiseId");
 
-                    b.HasIndex("ToUserId")
-                        .IsUnique();
+                    b.HasIndex("ToUserId");
 
                     b.ToTable("PromisesToUsers");
                 });
@@ -407,9 +407,9 @@ namespace N2N.Infrastructure.Migrations
             modelBuilder.Entity("N2N.Core.DBEntities.PostcardAddress", b =>
                 {
                     b.HasOne("N2N.Core.Entities.N2NAddress", "Address")
-                        .WithMany()
-                        .HasForeignKey("AddressId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .WithOne()
+                        .HasForeignKey("N2N.Core.DBEntities.PostcardAddress", "AddressId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("N2N.Core.Entities.Postcard", "Postcard")
                         .WithMany()
@@ -422,12 +422,12 @@ namespace N2N.Infrastructure.Migrations
                     b.HasOne("N2N.Core.Entities.N2NAddress", "Address")
                         .WithMany()
                         .HasForeignKey("AddressId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("N2N.Core.Entities.N2NUser", "User")
                         .WithMany()
                         .HasForeignKey("N2NUserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("N2N.Core.Entities.N2NAddress", b =>
@@ -459,11 +459,11 @@ namespace N2N.Infrastructure.Migrations
                     b.HasOne("N2N.Core.Entities.N2NPromise", "Promise")
                         .WithMany()
                         .HasForeignKey("PromiseId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("N2N.Core.Entities.N2NUser", "ToUser")
-                        .WithOne()
-                        .HasForeignKey("N2N.Core.Entities.PromiseToUser", "ToUserId")
+                        .WithMany()
+                        .HasForeignKey("ToUserId")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 #pragma warning restore 612, 618

@@ -201,6 +201,50 @@ namespace N2N.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Addresses",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    AddressLine1 = table.Column<string>(nullable: true),
+                    AddressLine2 = table.Column<string>(nullable: true),
+                    City = table.Column<string>(nullable: true),
+                    Country = table.Column<string>(nullable: true),
+                    N2NUserId = table.Column<Guid>(nullable: false),
+                    PostalCode = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Addresses", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Addresses_N2NUsers_N2NUserId",
+                        column: x => x.N2NUserId,
+                        principalTable: "N2NUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Postcards",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    N2NUserId = table.Column<Guid>(nullable: false),
+                    Picture = table.Column<string>(nullable: true),
+                    Text = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Postcards", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Postcards_N2NUsers_N2NUserId",
+                        column: x => x.N2NUserId,
+                        principalTable: "N2NUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Promises",
                 columns: table => new
                 {
@@ -223,10 +267,62 @@ namespace N2N.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "UserAddresseses",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    AddressId = table.Column<int>(nullable: false),
+                    N2NUserId = table.Column<Guid>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserAddresseses", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UserAddresseses_Addresses_AddressId",
+                        column: x => x.AddressId,
+                        principalTable: "Addresses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_UserAddresseses_N2NUsers_N2NUserId",
+                        column: x => x.N2NUserId,
+                        principalTable: "N2NUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PostcardAddresseses",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    AddressId = table.Column<int>(nullable: false),
+                    PostcardId = table.Column<Guid>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PostcardAddresseses", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PostcardAddresseses_Addresses_AddressId",
+                        column: x => x.AddressId,
+                        principalTable: "Addresses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_PostcardAddresseses_Postcards_PostcardId",
+                        column: x => x.PostcardId,
+                        principalTable: "Postcards",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "PromisesToUsers",
                 columns: table => new
                 {
-                    Id = table.Column<long>(nullable: false)
+                    Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     FulfillDate = table.Column<DateTime>(nullable: false),
                     IsFulfilled = table.Column<bool>(nullable: false),
@@ -241,7 +337,7 @@ namespace N2N.Infrastructure.Migrations
                         column: x => x.PromiseId,
                         principalTable: "Promises",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_PromisesToUsers_N2NUsers_ToUserId",
                         column: x => x.ToUserId,
@@ -249,6 +345,11 @@ namespace N2N.Infrastructure.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Addresses_N2NUserId",
+                table: "Addresses",
+                column: "N2NUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -290,6 +391,22 @@ namespace N2N.Infrastructure.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_PostcardAddresseses_AddressId",
+                table: "PostcardAddresseses",
+                column: "AddressId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PostcardAddresseses_PostcardId",
+                table: "PostcardAddresseses",
+                column: "PostcardId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Postcards_N2NUserId",
+                table: "Postcards",
+                column: "N2NUserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Promises_N2NUserId",
                 table: "Promises",
                 column: "N2NUserId");
@@ -302,8 +419,17 @@ namespace N2N.Infrastructure.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_PromisesToUsers_ToUserId",
                 table: "PromisesToUsers",
-                column: "ToUserId",
-                unique: true);
+                column: "ToUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserAddresseses_AddressId",
+                table: "UserAddresseses",
+                column: "AddressId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserAddresseses_N2NUserId",
+                table: "UserAddresseses",
+                column: "N2NUserId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -330,7 +456,13 @@ namespace N2N.Infrastructure.Migrations
                 name: "N2NTokens");
 
             migrationBuilder.DropTable(
+                name: "PostcardAddresseses");
+
+            migrationBuilder.DropTable(
                 name: "PromisesToUsers");
+
+            migrationBuilder.DropTable(
+                name: "UserAddresseses");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
@@ -339,7 +471,13 @@ namespace N2N.Infrastructure.Migrations
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
+                name: "Postcards");
+
+            migrationBuilder.DropTable(
                 name: "Promises");
+
+            migrationBuilder.DropTable(
+                name: "Addresses");
 
             migrationBuilder.DropTable(
                 name: "N2NUsers");
