@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using N2N.Api.Filters;
 using N2N.Core.Constants;
 using N2N.Core.Entities;
+using N2N.Core.Models;
 using N2N.Core.Services;
 using N2N.Infrastructure.Models;
 
@@ -16,10 +17,12 @@ namespace N2N.Api.Controllers
     public class UsersController : Controller
     {
         private readonly IN2NUserService _userService;
+        private readonly IUsersStatisticsService _usersStatistics;
 
-        public UsersController(IN2NUserService userService)
+        public UsersController(IN2NUserService userService, IUsersStatisticsService usersStatistics)
         {
             this._userService = userService;
+            this._usersStatistics = usersStatistics;
         }
 
         [HttpGet("/users")]
@@ -32,6 +35,20 @@ namespace N2N.Api.Controllers
             {
                 Count = users.Count,
                 Data = users,
+                PageSize = 0
+            };
+        }
+
+        [HttpGet("/users/statistics")]
+        [N2NAutorization(N2NRoles.Admin)]
+        public ApiResult<UserStatistics> GetUsesrStatistics()
+        {
+            //TODO: implement filters 
+            var statistics = _usersStatistics.GetUsersStatistics(filter: null, orderBy: null).ToList();
+            return new ApiResult<UserStatistics>()
+            {
+                Count = statistics.Count,
+                Data = statistics,
                 PageSize = 0
             };
         }

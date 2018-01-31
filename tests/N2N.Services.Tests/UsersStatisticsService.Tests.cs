@@ -8,36 +8,40 @@ using N2N.Infrastructure.DataContext;
 using N2N.TestData.Helpers;
 using NUnit.Framework;
 using NUnit.Framework.Internal;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace N2N.Services.Tests
 {
     [TestFixture]
     public class UsersStatisticsServiceTests
     {
-        private N2NDataContext ctx = null;
+        //have to have this and startUp + tearDown to be sure test db will be created and deleted
+        private N2NDataContext _ctx;
+
         [OneTimeSetUp]
-        public void Setup()
+        public void StartUp()
         {
-            //ctx = DatabaseDiBootstrapperSQLServer.GetDataContext();
+            this._ctx = DatabaseDiBootstrapperSQLServer.GetDataContext();
         }
 
         [OneTimeTearDown]
         public void TearDown()
         {
-            //DatabaseDiBootstrapperSQLServer.DisposeDataContext(ctx);
+            DatabaseDiBootstrapperSQLServer.DisposeDataContext(_ctx);
         }
 
         [Test]
-        public void Should_return_list_of_users_statistics()
+        public async Task Should_return_list_of_users_statistics()
         {
-            var context = new DatabaseDiBootstrapperInMemory().GetDataContext();
+            var provider = await new DatabaseDiBootstrapperSQLServer().GetServiceProviderWithSeedDB();
+            var usersStatisticsSrv = new UsersStatisticsService(provider.GetService<N2NDataContext>());
 
-            var usersStatisticsSrv = new UsersStatisticsService(context);
+            var userStatistics = usersStatisticsSrv.GetUsersStatistics().ToList();
 
-            var userStatistics = usersStatisticsSrv.GetUsersStatistics();
-
-            Assert.IsTrue(userStatistics.Count() == 4);
-
+            Assert.IsTrue(userStatistics.Count == 7); //seeded users + 4 tests users
+            Assert.IsTrue(userStatistics.Any(x=>x.ToUserPromisesCount > 0));
+            Assert.IsTrue(userStatistics.Any(x => x.PromisesCount > 0));
+            Assert.IsTrue(userStatistics.Any(x => x.PostcardsCount > 0));
         }
     }
 }

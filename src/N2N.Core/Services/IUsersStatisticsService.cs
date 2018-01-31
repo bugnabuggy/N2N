@@ -11,8 +11,8 @@ namespace N2N.Core.Services
 {
     public interface IUsersStatisticsService
     {
-        IEnumerable<UserStatistics> GetUsersStatistics( Expression<Func<UserStatistics, bool>> filter,
-                                                        Func<IQueryable<UserStatistics>, IOrderedQueryable<UserStatistics>> orderBy
+        IEnumerable<UserStatistics> GetUsersStatistics( Expression<Func<UserStatistics, bool>> filter, Func<IQueryable<UserStatistics>,
+                                                        IOrderedQueryable<UserStatistics>> orderBy
             );
     }
 }
