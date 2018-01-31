@@ -28,6 +28,7 @@ namespace N2N.Infrastructure.DataContext
 
         public DbSet<Postcard> Postcards{ get; set; }
         public DbSet<N2NAddress> Addresses{ get; set; }
+
         public DbSet<UserAddress> UserAddresseses{ get; set; }
         public DbSet<PostcardAddress> PostcardAddresseses { get; set; }
 
