@@ -223,13 +223,9 @@
     <Compile Include="Exceptions\N2NException.cs" />
     <Compile Include="Exceptions\NotFoundException.cs" />
     <Compile Include="Exceptions\N2NSecurityException.cs" />
-    <Compile Include="Migrations\20180122075429_Init.cs" />
-    <Compile Include="Migrations\20180122075429_Init.designer.cs">
-      <DependentUpon>20180122075429_Init.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\20180123042414_Initial.cs" />
-    <Compile Include="Migrations\20180123042414_Initial.designer.cs">
-      <DependentUpon>20180123042414_Initial.cs</DependentUpon>
+    <Compile Include="Migrations\20180130084417_Init.cs" />
+    <Compile Include="Migrations\20180130084417_Init.Designer.cs">
+      <DependentUpon>20180130084417_Init.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\N2NDataContextModelSnapshot.cs" />
     <Compile Include="Models\ApiResult.cs" />

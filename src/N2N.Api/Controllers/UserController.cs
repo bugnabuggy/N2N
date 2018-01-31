@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Isam.Esent.Interop;
 using N2N.Api.Filters;
 using N2N.Api.Services;
+using N2N.Core.Constants;
 using N2N.Core.Entities;
 using N2N.Infrastructure.Models;
 using N2N.Infrastructure.Models.DTO;
@@ -98,7 +99,7 @@ namespace N2N.Api.Controllers
                 };
 
                 // because we have service permission checks 
-                System.Threading.Thread.CurrentPrincipal = new GenericPrincipal(new GenericIdentity("N2N User Registration Service"), new [] {"Admin"} );
+                System.Threading.Thread.CurrentPrincipal = new GenericPrincipal(new GenericIdentity("N2N User Registration Service"), new [] { N2NRoles.Admin } );
 
                 var result = await this._apiUserService.CreateUserAsync(user, userRegistration.Password);
 

@@ -1,16 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using N2N.Core.Entities;
 
-namespace N2N.Core.DBEntities
+namespace N2N.Core.Entities
 {
     public class PromiseToUser
     {
-        public long Id { get; set; }
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
         /// <summary>
         /// Id of promise
         /// </summary>

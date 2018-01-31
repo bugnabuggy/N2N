@@ -7,12 +7,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features.Authentication;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Moq;
 using N2N.Api.Tests;
 using N2N.Core.Entities;
 using N2N.Data.Repositories;
@@ -24,7 +22,7 @@ using NUnit.Framework.Internal;
 
 namespace N2N.Services.Tests
 {
-    [TestFixture()]
+    [TestFixture]
     class N2NAuthentificationServiceTests
     {
         private IRepository<N2NToken> _tokenRepo;
@@ -34,13 +32,13 @@ namespace N2N.Services.Tests
         private RoleManager<IdentityRole> _roleManager;
 
         [SetUp]
-        public async Task Start()
+        public void Start()
         {
             _tokenRepo = new MockRepository<N2NToken>(N2N.TestData.TokenList.GetList());
             _refreshTokenRepo = new MockRepository<N2NRefreshToken>(N2N.TestData.RefreshTokenList.GetList());
             _userRepo = new MockRepository<N2NUser>(N2N.TestData.N2NUsersList.GetList());
 
-            var serviceProvider = await new DbAndSupportClassesBootstrapper().GetServiceProvider();
+            var serviceProvider = new DatabaseDiBootstrapperInMemory().GetServiceProvider();
 
             _userManager = serviceProvider.GetRequiredService<UserManager<N2NIdentityUser>>();
             _roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();

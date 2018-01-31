@@ -128,27 +128,65 @@ namespace N2N.Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("N2N.Core.DBEntities.PromiseToUser", b =>
+            modelBuilder.Entity("N2N.Core.DBEntities.PostcardAddress", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<DateTime>("FulfillDate");
+                    b.Property<int>("AddressId");
 
-                    b.Property<bool>("IsFulfilled");
-
-                    b.Property<Guid>("PromiseId");
-
-                    b.Property<Guid>("ToUserId");
+                    b.Property<Guid>("PostcardId");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PromiseId");
-
-                    b.HasIndex("ToUserId")
+                    b.HasIndex("AddressId")
                         .IsUnique();
 
-                    b.ToTable("PromisesToUsers");
+                    b.HasIndex("PostcardId");
+
+                    b.ToTable("PostcardAddresseses");
+                });
+
+            modelBuilder.Entity("N2N.Core.DBEntities.UserAddress", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("AddressId");
+
+                    b.Property<Guid>("N2NUserId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AddressId");
+
+                    b.HasIndex("N2NUserId");
+
+                    b.ToTable("UserAddresseses");
+                });
+
+            modelBuilder.Entity("N2N.Core.Entities.N2NAddress", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("AddressLine1");
+
+                    b.Property<string>("AddressLine2");
+
+                    b.Property<string>("City");
+
+                    b.Property<string>("Country");
+
+                    b.Property<Guid>("N2NUserId");
+
+                    b.Property<string>("PostalCode");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("N2NUserId");
+
+                    b.ToTable("Addresses");
                 });
 
             modelBuilder.Entity("N2N.Core.Entities.N2NPromise", b =>
@@ -225,6 +263,46 @@ namespace N2N.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("N2NUsers");
+                });
+
+            modelBuilder.Entity("N2N.Core.Entities.Postcard", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<Guid>("N2NUserId");
+
+                    b.Property<string>("Picture");
+
+                    b.Property<string>("Text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("N2NUserId");
+
+                    b.ToTable("Postcards");
+                });
+
+            modelBuilder.Entity("N2N.Core.Entities.PromiseToUser", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("FulfillDate");
+
+                    b.Property<bool>("IsFulfilled");
+
+                    b.Property<Guid>("PromiseId");
+
+                    b.Property<Guid>("ToUserId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PromiseId");
+
+                    b.HasIndex("ToUserId");
+
+                    b.ToTable("PromisesToUsers");
                 });
 
             modelBuilder.Entity("N2N.Infrastructure.Models.N2NIdentityUser", b =>
@@ -325,17 +403,38 @@ namespace N2N.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("N2N.Core.DBEntities.PromiseToUser", b =>
+            modelBuilder.Entity("N2N.Core.DBEntities.PostcardAddress", b =>
                 {
-                    b.HasOne("N2N.Core.Entities.N2NPromise", "Promise")
-                        .WithMany()
-                        .HasForeignKey("PromiseId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("N2N.Core.Entities.N2NUser", "ToUser")
+                    b.HasOne("N2N.Core.Entities.N2NAddress", "Address")
                         .WithOne()
-                        .HasForeignKey("N2N.Core.DBEntities.PromiseToUser", "ToUserId")
+                        .HasForeignKey("N2N.Core.DBEntities.PostcardAddress", "AddressId")
                         .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("N2N.Core.Entities.Postcard", "Postcard")
+                        .WithMany()
+                        .HasForeignKey("PostcardId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("N2N.Core.DBEntities.UserAddress", b =>
+                {
+                    b.HasOne("N2N.Core.Entities.N2NAddress", "Address")
+                        .WithMany()
+                        .HasForeignKey("AddressId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("N2N.Core.Entities.N2NUser", "User")
+                        .WithMany()
+                        .HasForeignKey("N2NUserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("N2N.Core.Entities.N2NAddress", b =>
+                {
+                    b.HasOne("N2N.Core.Entities.N2NUser", "User")
+                        .WithMany()
+                        .HasForeignKey("N2NUserId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("N2N.Core.Entities.N2NPromise", b =>
@@ -344,6 +443,27 @@ namespace N2N.Infrastructure.Migrations
                         .WithMany()
                         .HasForeignKey("N2NUserId")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("N2N.Core.Entities.Postcard", b =>
+                {
+                    b.HasOne("N2N.Core.Entities.N2NUser", "User")
+                        .WithMany()
+                        .HasForeignKey("N2NUserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("N2N.Core.Entities.PromiseToUser", b =>
+                {
+                    b.HasOne("N2N.Core.Entities.N2NPromise", "Promise")
+                        .WithMany()
+                        .HasForeignKey("PromiseId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("N2N.Core.Entities.N2NUser", "ToUser")
+                        .WithMany()
+                        .HasForeignKey("ToUserId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 #pragma warning restore 612, 618
         }

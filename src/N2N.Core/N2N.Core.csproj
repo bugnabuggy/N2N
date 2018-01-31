@@ -42,25 +42,27 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Constants\N2NRoles.cs" />
-    <Compile Include="DBEntities\PostcardAddresses.cs" />
-    <Compile Include="DBEntities\PromiseToUser.cs" />
-    <Compile Include="DBEntities\UserAddresses.cs" />
+    <Compile Include="Constants\N2NTimingsAndValues.cs" />
+    <Compile Include="DBEntities\PostcardAddress.cs" />
+    <Compile Include="DBEntities\UserAddress .cs" />
+    <Compile Include="Entities\PromiseToUser.cs" />
     <Compile Include="Entities\N2NRefreshToken.cs" />
     <Compile Include="Entities\N2NToken.cs" />
     <Compile Include="Entities\Postcard.cs" />
     <Compile Include="Entities\N2NAddress.cs" />
     <Compile Include="Entities\N2NPromise.cs" />
     <Compile Include="Entities\N2NUser.cs" />
-    <Compile Include="Entities\UserPromise.cs" />
     <Compile Include="Interfaces\IN2NToken.cs" />
     <Compile Include="Constants\ErrorMessages.cs" />
     <Compile Include="Interfaces\IOwned.cs" />
     <Compile Include="Models\OperationResult.cs" />
+    <Compile Include="Models\UserStatistics.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\IN2NPromiseService.cs" />
     <Compile Include="Services\IN2NUserService.cs" />
     <Compile Include="Services\IPostCardService.cs" />
     <Compile Include="Services\ISecurityService.cs" />
+    <Compile Include="Services\IUsersStatisticsService.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
