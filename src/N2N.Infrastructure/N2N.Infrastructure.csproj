@@ -227,6 +227,10 @@
     <Compile Include="Migrations\20180122075429_Init.designer.cs">
       <DependentUpon>20180122075429_Init.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\20180123042414_Initial.cs" />
+    <Compile Include="Migrations\20180123042414_Initial.designer.cs">
+      <DependentUpon>20180123042414_Initial.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\N2NDataContextModelSnapshot.cs" />
     <Compile Include="Models\ApiResult.cs" />
     <Compile Include="Models\DTO\AuthenticationResponseDTO.cs" />

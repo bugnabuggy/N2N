@@ -160,57 +160,31 @@ namespace N2N.Api.Services
         public async Task<AuthenticationResponseDTO> AuthenticateUser(string nickName, string password)
         {
             AuthenticationResponseDTO response = null;
-            ////var access_token = await GetToken(nickName, password);
-            //if (access_token !="")
-            //{
-            //    //var refresh_token = await GetRefreshToken(nickName, password);
-            //    //response= new AuthenticationResponseDTO
-            //    //{
-            //    //    access_token = access_token,
-            //    //    // TODO: Add expiration_date 
-            //    //    refresh_token = refresh_token
-            //    //};
-            //}
+            var  tokenConfig = new TokenConfig(_tokenRepo);
+            var access_token = await GetToken(tokenConfig,nickName, password);
+            if (access_token != "")
+            {
+                var refreshTokenConfig = new RefreshTokenConfig(_RefreshTokenRepo);
+                var refresh_token = await GetToken(refreshTokenConfig, nickName, password);
+                response = new AuthenticationResponseDTO
+                {
+                    access_token = access_token,
+                    // TODO: Add expiration_date 
+                    refresh_token = refresh_token
+                };
+            }
             return response;
         }
 
-        //public async Task<string> GetToken(string nickName, string password)
-        //{
-          
-        //    var tokenId = Guid.NewGuid();
-        //    var claimIdentity = await GetClaimsIdentity(nickName, password, tokenId);
-        //    //var token = await GetTokenObject(tokenConfig);
-        //    return token;
-        //}
-
-        public async Task<Config> GetRefreshToken(object typeConfig, Guid tokenId, string nickName)
+        public async Task<string> GetToken(TokenBaseConfig config, string nickName, string password)
         {
-            Config newConfig = new Config();
-            var user = await this._userManager.FindByNameAsync(nickName);
-            if (typeConfig is TokenConfig)
-            {
-                var tokenConfig = new TokenConfig();
-                var lifeTime = DateTime.Now.AddMinutes(tokenConfig.LIFETIME);
-                _tokenRepo.Add(new N2NToken
-                {
-                    Id = tokenId,
-                    N2NUserId = user.N2NUserId,
-                    TokenExpirationDate = lifeTime
-                });
-            }
-            else
-            {
-                var tokenConfig = new RefreshTokenConfig();
-                var lifeTime = DateTime.Now.AddMinutes(tokenConfig.LIFETIME);
-                _RefreshTokenRepo.Add(new N2NRefreshToken()
-                {
-                    Id = tokenId,
-                    N2NUserId = user.N2NUserId,
-                    TokenExpirationDate = lifeTime
-                });
-            }
+            var tokenId = Guid.NewGuid();
+            var user = await this._userManager.FindByNameAsync(nickName);  
+            DataForConfiguration tokenConfig = await config.GetConfig(user, tokenId);
+            tokenConfig.Identity = await GetClaimsIdentity(nickName, password, tokenId);
+            var token = await GetTokenObject(tokenConfig);
 
-            return  newConfig;
+            return token;
         }
 
         public async Task<ClaimsIdentity> GetClaimsIdentity(string nickName, string password, Guid tokenId)
@@ -241,7 +215,7 @@ namespace N2N.Api.Services
             return null;
         }
 
-        public async Task<string> GetTokenObject(Config tokenConfing) 
+        public async Task<string> GetTokenObject(DataForConfiguration tokenConfing) 
         {
 
             string response="";

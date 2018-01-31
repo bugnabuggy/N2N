@@ -8,6 +8,6 @@ export class StoreLinks {
     public СheckUserUrl = 'http://localhost:63354/User';
     public logInUrl='http://localhost:63354/User/LogIn';
     public isAuthorizationUrl='http://localhost:63354/User/IsAuthorization';
-    public SavePromiseOnServerUrl='http://localhost:63354/Promise/SavePromise';
+    public SavePromiseOnServerUrl='http://localhost:63354/Promise';
 
 }
