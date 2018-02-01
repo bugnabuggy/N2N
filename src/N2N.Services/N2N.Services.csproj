@@ -204,6 +204,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="N2NPostCardService.cs" />
     <Compile Include="N2NPromiseService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="N2NUserService.cs" />

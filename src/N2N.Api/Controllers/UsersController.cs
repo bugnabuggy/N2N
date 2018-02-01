@@ -53,7 +53,7 @@ namespace N2N.Api.Controllers
             };
         }
 
-        [HttpGet("/usesr/{id}", Name = "Get")]
+        [HttpGet("/users/{id}")]
         public string Get(int id)
         {
             return "value";
