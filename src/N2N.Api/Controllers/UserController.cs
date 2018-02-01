@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Isam.Esent.Interop;
 using N2N.Api.Filters;
 using N2N.Api.Services;
 using N2N.Core.Constants;
@@ -33,12 +34,23 @@ namespace N2N.Api.Controllers
             this._apiUserService = apiUserService;
         }
 
+        [HttpGet("/user/IsAuthorization")]
+        public async Task<bool> IsAuthorization()
+        {
+            var authHeader = HttpContext.Request.Headers["Authorization"];
+            if (authHeader != "Bearer undefined")
+            {
+                return true;
+            }
+            return false;
+        }
+
         //[N2NAutorizationFilter]
         [HttpGet("/user")]
         public JsonResult СheckUser()
         {
             var authHeader = HttpContext.Request.Headers["Authorization"];
-            if (authHeader!="Bearer")
+            if (authHeader!= "Bearer undefined")
             {
                 string welcome_message = "Welcome " + _authentificationService.GetUserName(authHeader.ToString());
                 return Json(welcome_message);

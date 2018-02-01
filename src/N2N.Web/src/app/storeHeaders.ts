@@ -12,6 +12,9 @@ export class StoreHeaders {
         'Content-Type': 'application/json charset=utf-8',
         "Authorization": 'Bearer ' + localStorage.getItem('Token')
       });
+      public tokenHeaders = new Headers({
+        "Authorization": 'Bearer ' + localStorage.getItem('Token')
+      });
 
       public refrechJsonAndTokenHeaders(){
           this.jsonAndTokenHeaders=new Headers({

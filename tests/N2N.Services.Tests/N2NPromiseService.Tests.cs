@@ -32,8 +32,6 @@ namespace N2N.Services.Tests
             _adminSecurSrv.Setup(x => x.GetCurrentN2NUserId()).Returns(Guid.Empty);
             _adminSecurSrv.Setup(x => x.HasAccess()).Returns(true);
 
-            var promise = 
-
             _repo = new Mock<IRepository<N2NPromise>>();
             _repo.Setup(x=>x.Data).Returns(new List<N2NPromise>()
             {
@@ -54,7 +52,8 @@ namespace N2N.Services.Tests
                 .Returns((N2NPromise x) =>
                 {
                     promiseSpy = x;
-                    return x ; });
+                    return x ; 
+                });
 
             var promise = new N2NPromise() { N2NUserId = Guid.Empty, Text = "Tests"};
 

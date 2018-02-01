@@ -39,7 +39,7 @@ namespace N2N.TestData.Helpers
             {
                 //clean befor new test session starts
                 ctx.Database.EnsureDeleted();
-                ctx.Database.Migrate();
+                ctx.Database.EnsureCreated();
             }
 
             _contextCount++;

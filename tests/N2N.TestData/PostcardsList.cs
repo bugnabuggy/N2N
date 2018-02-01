@@ -11,7 +11,7 @@ namespace N2N.TestData
     {
         private static Random _random = new Random();
 
-        private static Guid getRandomUserId(Guid[] usersIdslist)
+        private static Guid GetRandomUserId(Guid[] usersIdslist)
         {
             var max = usersIdslist.Length-1;
             Guid guid = usersIdslist[_random.Next(max)];
@@ -39,7 +39,7 @@ namespace N2N.TestData
                 new Postcard()
                 {
                     Id =  Guid.NewGuid(),
-                    N2NUserId = getRandomUserId(usersIdslist),
+                    N2NUserId = GetRandomUserId(usersIdslist),
                     Text = "some postcard text",
                     Picture = "this is link or base64 picture"
                 }

@@ -15,6 +15,7 @@ namespace N2N.Core.Entities
         public DateTime? DueDate { get; set; }
         public bool IsPublic { get; set; }
         public string BlockChainTransaction { get; set; }
+        public string HashIdLinkPromise { get; set; }
 
         public Guid N2NUserId { get; set; }
         [ForeignKey("N2NUserId")]
