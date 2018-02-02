@@ -7,9 +7,11 @@ using System.Security.Principal;
 using System.Threading;
 using System.Threading.Tasks;
 using IdentityServer4.Extensions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
 using N2N.Api.Services;
@@ -31,6 +33,9 @@ namespace N2N.Api.Filters
 
         public override void OnActionExecuting(ActionExecutingContext context)
         {
+
+            if(context.Filters.Any(x=>x is IAllowAnonymousFilter)) { return; }
+
             var authService = context.HttpContext.RequestServices.GetService<IAuthenticationService>();
             var authHeader = context.HttpContext.Request.Headers["Authorization"];
             

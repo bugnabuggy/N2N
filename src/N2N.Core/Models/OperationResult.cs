@@ -6,7 +6,7 @@ namespace N2N.Core.Models
     public abstract class OperationResultBase
     {
         public bool Success { get; set; }
-        public IEnumerable<string> Messages { get; set; }
+        public IList<string> Messages { get; set; }
     }
 
     public class OperationResult: OperationResultBase

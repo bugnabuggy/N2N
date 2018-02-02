@@ -157,7 +157,7 @@ namespace N2N.Api.Services
            
         }
 
-        public async Task<AuthenticationResponseDTO> AuthenticateUser(string nickName, string password)
+        public async Task<OperationResult<AuthenticationResponseDTO>> AuthenticateUserAsync(string nickName, string password)
         {
             AuthenticationResponseDTO response = null;
             var  tokenConfig = new TokenConfig(_tokenRepo);
@@ -173,7 +173,7 @@ namespace N2N.Api.Services
                     refresh_token = refresh_token
                 };
             }
-            return response;
+            return new OperationResult<AuthenticationResponseDTO>(){ Data = response};
         }
 
         public async Task<string> GetToken(TokenBaseConfig config, string nickName, string password)

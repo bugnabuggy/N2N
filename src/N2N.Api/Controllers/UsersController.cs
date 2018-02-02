@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using N2N.Api.Filters;
@@ -14,6 +15,7 @@ using N2N.Infrastructure.Models;
 namespace N2N.Api.Controllers
 {
     [Produces("application/json")]
+    [N2NAutorization(N2NRoles.Admin)]
     public class UsersController : Controller
     {
         private readonly IN2NUserService _userService;
@@ -26,7 +28,6 @@ namespace N2N.Api.Controllers
         }
 
         [HttpGet("/users")]
-        [N2NAutorization(N2NRoles.Admin)]
         public ApiResult<N2NUser> Get()
         {
             //TODO: implement filters 
@@ -40,7 +41,6 @@ namespace N2N.Api.Controllers
         }
 
         [HttpGet("/users/statistics")]
-        [N2NAutorization(N2NRoles.Admin)]
         public ApiResult<UserStatistics> GetUsesrStatistics()
         {
             //TODO: implement filters 
@@ -54,6 +54,7 @@ namespace N2N.Api.Controllers
         }
 
         [HttpGet("/users/{id}")]
+        [AllowAnonymous]
         public string Get(int id)
         {
             return "value";

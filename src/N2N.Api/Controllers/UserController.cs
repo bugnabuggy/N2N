@@ -60,23 +60,23 @@ namespace N2N.Api.Controllers
 
 
         [HttpPost("/user/logIn")]
-        public async Task<IActionResult> LogIn([FromBody] UserRegistrationFormDTO userRegistration)
+        public async Task<IActionResult> LogIn([FromBody] UserLoginDTO loginForm)
         {
 
-            if (!userRegistration.NickName.IsNullOrEmpty() &&
-                !userRegistration.Password.IsNullOrEmpty() &&
-                !userRegistration.Captcha.IsNullOrEmpty())
+            if (!loginForm.NickName.IsNullOrEmpty() &&
+                !loginForm.Password.IsNullOrEmpty() &&
+                !loginForm.Captcha.IsNullOrEmpty())
             {
                 var response =
-                    await _authentificationService.AuthenticateUser(userRegistration.NickName,
-                        userRegistration.Password);
+                    await _authentificationService.AuthenticateUserAsync(loginForm.NickName,
+                        loginForm.Password);
 
-                if (response.ToString() == new { }.ToString())
+                if (response.Data.ToString() == new { }.ToString())
                 {
                     return BadRequest("Invalid username or password.");
 
                 }
-                return Ok(response);
+                return Ok(response.Data);
             }
             else
             {
@@ -108,15 +108,15 @@ namespace N2N.Api.Controllers
                     return BadRequest(result.Messages);
                 }
 
-                var response = await _authentificationService.AuthenticateUser(userRegistration.NickName, userRegistration.Password);
+                var response = await _authentificationService.AuthenticateUserAsync(userRegistration.NickName, userRegistration.Password);
 
-                if (response.ToString() == new { }.ToString())
+                if (response.Data.ToString() == new { }.ToString())
                 {
                     return BadRequest("Invalid username or password.");
                    
                 }
                 
-                return Ok(response);
+                return Ok(response.Data);
             }
             else
             {

@@ -10,13 +10,12 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using N2N.Api.Configuration;
-using N2N.Api.Tests.Helpers;
 using N2N.Infrastructure.DataContext;
 using N2N.Infrastructure.Models;
 
 namespace N2N.TestData.Helpers
 {
-    public class DatabaseDiBootstrapperSQLServer : IServiceProviderBootstrapper
+    public class DatabaseDiBootstrapperSqlServer : IServiceProviderBootstrapper
     {
         private static int _contextCount = 0;
         private static DbContextOptions<N2NDataContext> _options;
@@ -24,7 +23,7 @@ namespace N2N.TestData.Helpers
         //private static NameValueCollection _settings = ConfigurationManager.AppSettings;
 
 
-        static DatabaseDiBootstrapperSQLServer( )
+        static DatabaseDiBootstrapperSqlServer( )
         {
             var optionsBuilder = new DbContextOptionsBuilder<N2NDataContext>();
             optionsBuilder.UseSqlServer(HardCoddedConfig.ConnectionString);

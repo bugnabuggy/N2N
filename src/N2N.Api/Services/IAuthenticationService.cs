@@ -12,13 +12,14 @@ namespace N2N.Api.Services
 {
     public interface IAuthenticationService
     {
-        Task<AuthenticationResponseDTO> AuthenticateUser(string nickName, string password);
+        Task<OperationResult<AuthenticationResponseDTO>> AuthenticateUserAsync(string nickName, string password);
+        Task<IEnumerable<string>> GetUserRolesAsync(string nickname);
 
         OperationResult GetUserByTokenString(string tokenString);
         OperationResult AuthenticateByToken(string authorizationHeader);
 
         void DeleteToken(string tokenString);
         string GetUserName(string tokenString);
-        Task<IEnumerable<string>> GetUserRolesAsync(string nickname);
+        
     }
 }

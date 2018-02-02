@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using N2N.Api.Tests;
 using N2N.Infrastructure.DataContext;
 using N2N.TestData.Helpers;
 using NUnit.Framework;
@@ -21,19 +20,19 @@ namespace N2N.Services.Tests
         [OneTimeSetUp]
         public void StartUp()
         {
-            this._ctx = DatabaseDiBootstrapperSQLServer.GetDataContext();
+            this._ctx = DatabaseDiBootstrapperSqlServer.GetDataContext();
         }
 
         [OneTimeTearDown]
         public void TearDown()
         {
-            DatabaseDiBootstrapperSQLServer.DisposeDataContext(_ctx);
+            DatabaseDiBootstrapperSqlServer.DisposeDataContext(_ctx);
         }
 
         [Test]
         public async Task Should_return_list_of_users_statistics()
         {
-            var provider = await new DatabaseDiBootstrapperSQLServer().GetServiceProviderWithSeedDB();
+            var provider = await new DatabaseDiBootstrapperSqlServer().GetServiceProviderWithSeedDB();
             var usersStatisticsSrv = new UsersStatisticsService(provider.GetService<N2NDataContext>());
 
             var userStatistics = usersStatisticsSrv.GetUsersStatistics().ToList();

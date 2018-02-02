@@ -4,8 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
-using N2N.Api.Tests;
-using N2N.Api.Tests.Helpers;
 using N2N.Core.Entities;
 using N2N.Infrastructure.DataContext;
 using N2N.TestData;
@@ -24,20 +22,20 @@ namespace N2N.Infrastructure.Tests
         [OneTimeSetUp]
         public void Startup()
         {
-            _ctx = DatabaseDiBootstrapperSQLServer.GetDataContext();
+            _ctx = DatabaseDiBootstrapperSqlServer.GetDataContext();
         }
 
         [OneTimeTearDown]
         public void TearDown()
         {
-            DatabaseDiBootstrapperSQLServer.DisposeDataContext(_ctx);
+            DatabaseDiBootstrapperSqlServer.DisposeDataContext(_ctx);
         }
 
         //[Ignore("too slow")]
         [Test]
         public void Should_create_database()
         {
-            var ctx = DatabaseDiBootstrapperSQLServer.GetDataContext();
+            var ctx = DatabaseDiBootstrapperSqlServer.GetDataContext();
 
             ctx.N2NUsers.Add(new N2NUser()
             {
@@ -50,7 +48,7 @@ namespace N2N.Infrastructure.Tests
 
             Assert.IsTrue(ctx.N2NUsers.Any());
 
-            DatabaseDiBootstrapperSQLServer.DisposeDataContext(ctx);
+            DatabaseDiBootstrapperSqlServer.DisposeDataContext(ctx);
         }
 
         private void CheckContext(N2NDataContext ctx)
@@ -77,7 +75,7 @@ namespace N2N.Infrastructure.Tests
         [Test]
         public async Task Should_get_seeded_sqlContext()
         {
-            var provider = await new DatabaseDiBootstrapperSQLServer().GetServiceProviderWithSeedDB();
+            var provider = await new DatabaseDiBootstrapperSqlServer().GetServiceProviderWithSeedDB();
             var ctx = provider.GetService<N2NDataContext>();
 
             CheckContext(ctx);

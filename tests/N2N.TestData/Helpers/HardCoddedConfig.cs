@@ -10,5 +10,6 @@ namespace N2N.TestData.Helpers
     {
         public const string ConnectionString = "Server=(localdb)\\mssqllocaldb;Database=n2n-test;Trusted_Connection=True;MultipleActiveResultSets=true";
         public const int AsyncOperationWaitTime = 10_000;
+        public const string DefaultPassword = "Password@123";
     }
 }

@@ -37,48 +37,52 @@ namespace N2N.Api
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            var tokenConfig = new TokenConfig();
+            //var tokenConfig = new TokenConfig();
 
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options =>
-                {
-                    options.RequireHttpsMetadata = false;
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        // укзывает, будет ли валидироваться издатель при валидации токена
-                        ValidateIssuer = true,
-                        // строка, представляющая издателя
-                        ValidIssuer = tokenConfig.ISSUER,
+            //services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            //    .AddJwtBearer(options =>
+            //    {
+            //        options.RequireHttpsMetadata = false;
+            //        options.TokenValidationParameters = new TokenValidationParameters
+            //        {
+            //            // укзывает, будет ли валидироваться издатель при валидации токена
+            //            ValidateIssuer = true,
+            //            // строка, представляющая издателя
+            //            ValidIssuer = tokenConfig.ISSUER,
 
-                        // будет ли валидироваться потребитель токена
-                        ValidateAudience = true,
-                        // установка потребителя токена
-                        ValidAudience = tokenConfig.AUDIENCE,
-                        // будет ли валидироваться время существования
-                        ValidateLifetime = true,
+            //            // будет ли валидироваться потребитель токена
+            //            ValidateAudience = true,
+            //            // установка потребителя токена
+            //            ValidAudience = tokenConfig.AUDIENCE,
+            //            // будет ли валидироваться время существования
+            //            ValidateLifetime = true,
 
-                        // установка ключа безопасности
-                        IssuerSigningKey = TokenConfig.GetSymmetricSecurityKey(),
-                        // валидация ключа безопасности
-                        ValidateIssuerSigningKey = true,
-                        ClockSkew = TimeSpan.Zero
+            //            // установка ключа безопасности
+            //            IssuerSigningKey = TokenConfig.GetSymmetricSecurityKey(),
+            //            // валидация ключа безопасности
+            //            ValidateIssuerSigningKey = true,
+            //            ClockSkew = TimeSpan.Zero
 
-                    };
-                });
+            //        };
+            //    });
 
             services.AddDbContext<N2NDataContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddMvc();
 
-            services.AddIdentity<N2NIdentityUser, IdentityRole>()
+            services.AddIdentity<N2NIdentityUser, IdentityRole>(
+                    options =>
+                    {
+                        options.Password.RequireDigit = true;
+                        options.Password.RequireNonAlphanumeric = false;
+                        options.Password.RequireUppercase = false;
+                        options.Password.RequiredLength = 5;
+                    })
                 .AddEntityFrameworkStores<N2NDataContext>()
                 .AddDefaultTokenProviders();
 
-
-            // because Simple Injector do not work for HttpContext.RequestServices.GetService
             appConfigurator.ConfigureServices(services);
-
 
             services.AddCors(options =>
             {

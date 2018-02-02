@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 using N2N.Data.Repositories;
 
-namespace N2N.TestData.SupportClasses
+namespace N2N.TestData.Helpers
 {
     public class MockRepository<T> : IRepository<T> where T : class
     {

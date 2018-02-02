@@ -16,7 +16,7 @@ using N2N.Core.Entities;
 using N2N.Data.Repositories;
 using N2N.Infrastructure.DataContext;
 using N2N.Infrastructure.Models;
-using N2N.TestData.SupportClasses;
+using N2N.TestData.Helpers;
 using NUnit.Framework;
 using NUnit.Framework.Internal;
 

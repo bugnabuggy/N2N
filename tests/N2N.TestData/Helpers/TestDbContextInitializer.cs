@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Security.Principal;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using N2N.Api.Configuration;
 using N2N.Api.Services;
@@ -11,10 +9,8 @@ using N2N.Core.Constants;
 using N2N.Core.DBEntities;
 using N2N.Core.Entities;
 using N2N.Infrastructure.DataContext;
-using N2N.Infrastructure.Models;
-using N2N.TestData;
 
-namespace N2N.Api.Tests.Helpers
+namespace N2N.TestData.Helpers
 {
     public class TestDbContextInitializer
     {
@@ -40,7 +36,7 @@ namespace N2N.Api.Tests.Helpers
 
             foreach (var user in _users)
             {
-                var result = await apiUserSrv.CreateUserAsync(user, "Password@123", new[] {N2NRoles.User});
+                var result = await apiUserSrv.CreateUserAsync(user, HardCoddedConfig.DefaultPassword, new[] {N2NRoles.User});
                 if (!result.Success)
                 {
                     throw new Exception(string.Concat(result.Messages));
