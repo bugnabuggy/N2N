@@ -92,7 +92,7 @@ namespace N2N.Api.Configuration
 
             services.AddTransient<IPostCardService, N2NPostCardService>();
             services.AddTransient<IUsersStatisticsService, UsersStatisticsService>();
-
+            services.AddTransient<IN2NTokenService, TokenService>();
         }
     }
 }

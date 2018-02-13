@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -17,25 +18,20 @@ namespace N2N.Api.Services
     public class TonyAuthService : IAuthenticationService
     {
         private UserManager<N2NIdentityUser> _userManager;
-        private IRepository<N2NToken> _tokenRepo;
-        private IRepository<N2NRefreshToken> _refreshTokenRepo;
         private IRepository<N2NUser> _userRepo;
-        private ITokenGenerator _tokenGenerator;
+        private IN2NTokenService _tokenService;
         private IConfiguration _configuration;
+        
 
         public TonyAuthService(UserManager<N2NIdentityUser> userManager,
             IRepository<N2NUser> userRepo,
-            IRepository<N2NToken> tokenRepo,
-            IRepository<N2NRefreshToken> refreshTokenRepo,
-            ITokenGenerator tokenGenerator,
+            IN2NTokenService tokenService,
             IConfiguration configuration)
         {
 
             this._userManager = userManager;
-            this._tokenRepo = tokenRepo;
-            this._refreshTokenRepo = refreshTokenRepo;
             this._userRepo = userRepo;
-            this._tokenGenerator = tokenGenerator;
+            this._tokenService = tokenService;
             this._configuration = configuration;
         }
 
@@ -66,53 +62,31 @@ namespace N2N.Api.Services
                 goto end;
             }
 
-            
-
             try
             {
-                //generate token        
-                var n2nTokenRecord = new N2NToken()
+                //generate tokens        
+                DateTime tokenExpirationDate;
+                var token = _tokenService.GetN2NToken(n2nUser.Id, n2nUser.NickName, out tokenExpirationDate);
+                DateTime refreshTokenExpirationDate;
+                var refreshToken = _tokenService.GetN2NRefreshToken(n2nUser.Id, n2nUser.NickName, out refreshTokenExpirationDate);
+
+                result.Data = new AuthenticationResponseDTO()
                 {
-                    Id = Guid.NewGuid(),
-                    N2NUserId = n2nUser.Id,
-                    IdRefreshToken = Guid.Empty,
-                    TokenExpirationDate = DateTime.UtcNow.AddMinutes(int.Parse(_configuration["Token:Lifetime"]))
+                    access_token = new JwtSecurityTokenHandler().WriteToken(token),
+                    expiration_date = tokenExpirationDate,
+                    refresh_token = new JwtSecurityTokenHandler().WriteToken(refreshToken)
                 };
-                var n2nRefreshToken = new N2NRefreshToken()
-                {
-                    Id = Guid.NewGuid(),
-                    N2NUserId = n2nUser.Id
-                };
-                _tokenRepo.Add(n2nTokenRecord);
-                _refreshTokenRepo.Add(n2nRefreshToken);
-
-                var tokenClaims = GetClaims(nickName, n2nTokenRecord.Id);
-
-                var tokenConfig = new N2NTokenConfig();
-                var refreshTokenConfig = new N2NTokenConfig();
-
-                var token = _tokenGenerator.GetToken(tokenConfig);
-                var refreshToken = _tokenGenerator.GetToken(refreshTokenConfig);
 
             }
             catch (Exception exp)
             {
-
+                //add logging here
+                throw exp;
             }
 
             //return result
             end:
             return result;
-        }
-
-        private IEnumerable<Claim> GetClaims(string nickname, Guid tokenId)
-        {
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimsIdentity.DefaultNameClaimType, nickname),
-                new Claim("Token Id", tokenId.ToString())
-            };
-            return claims;
         }
 
         public Task<IEnumerable<string>> GetUserRolesAsync(string nickname)
