@@ -70,6 +70,7 @@ namespace N2N.Api.Services
                 DateTime refreshTokenExpirationDate;
                 var refreshToken = _tokenService.GetN2NRefreshToken(n2nUser.Id, n2nUser.NickName, out refreshTokenExpirationDate);
 
+                result.Success = true;
                 result.Data = new AuthenticationResponseDTO()
                 {
                     access_token = new JwtSecurityTokenHandler().WriteToken(token),
@@ -89,9 +90,11 @@ namespace N2N.Api.Services
             return result;
         }
 
-        public Task<IEnumerable<string>> GetUserRolesAsync(string nickname)
+        public async Task<IEnumerable<string>> GetUserRolesAsync(string nickname)
         {
-            throw new NotImplementedException();
+            var identityUser = await _userManager.FindByNameAsync(nickname);
+            var roles = await _userManager.GetRolesAsync(identityUser);
+            return roles;
         }
 
         public OperationResult GetUserByTokenString(string tokenString)

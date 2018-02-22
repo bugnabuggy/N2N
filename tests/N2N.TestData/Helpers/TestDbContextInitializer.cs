@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Security.Principal;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using N2N.Api.Configuration;
 using N2N.Api.Services;
@@ -9,6 +10,7 @@ using N2N.Core.Constants;
 using N2N.Core.DBEntities;
 using N2N.Core.Entities;
 using N2N.Infrastructure.DataContext;
+using N2N.Infrastructure.Models;
 
 namespace N2N.TestData.Helpers
 {
@@ -30,6 +32,9 @@ namespace N2N.TestData.Helpers
 
             _context = services.GetService<N2NDataContext>();
             var apiUserSrv = services.GetService<N2NApiUserService>();
+
+            var _userManager = services.GetService<UserManager<N2NIdentityUser>>();
+            _userManager.CreateAsync(N2N.TestData.N2NUsersList.GetN2NIdentityUser(), HardCoddedConfig.DefaultPassword);
 
             //create users, create promises for users
             _users = N2NUsersList.GetList().ToArray();

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Principal;
 using System.Threading.Tasks;
-using IdentityServer4.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -63,9 +62,9 @@ namespace N2N.Api.Controllers
         public async Task<IActionResult> LogIn([FromBody] UserLoginDTO loginForm)
         {
 
-            if (!loginForm.NickName.IsNullOrEmpty() &&
-                !loginForm.Password.IsNullOrEmpty() &&
-                !loginForm.Captcha.IsNullOrEmpty())
+            if (!string.IsNullOrEmpty(loginForm.NickName) &&
+                !string.IsNullOrEmpty(loginForm.Password) &&
+                !string.IsNullOrEmpty(loginForm.Captcha))
             {
                 var response =
                     await _authentificationService.AuthenticateUserAsync(loginForm.NickName,
@@ -88,9 +87,9 @@ namespace N2N.Api.Controllers
         public async Task<IActionResult> Register([FromBody] UserRegistrationFormDTO userRegistration)
         {
           
-            if (!userRegistration.NickName.IsNullOrEmpty() && 
-                !userRegistration.Password.IsNullOrEmpty() && 
-                !userRegistration.Captcha.IsNullOrEmpty() )
+            if (!string.IsNullOrEmpty(userRegistration.NickName) && 
+                !string.IsNullOrEmpty(userRegistration.Password) && 
+                !string.IsNullOrEmpty(userRegistration.Captcha) )
             {
                 N2NUser user = new N2NUser()
                 {

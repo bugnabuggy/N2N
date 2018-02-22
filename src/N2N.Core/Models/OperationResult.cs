@@ -5,6 +5,11 @@ namespace N2N.Core.Models
 
     public abstract class OperationResultBase
     {
+        public OperationResultBase()
+        {
+            this.Messages = new List<string>();
+        }
+
         public bool Success { get; set; }
         public IList<string> Messages { get; set; }
     }

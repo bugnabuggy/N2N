@@ -1,11 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using N2N.Core.Entities;
+using N2N.Infrastructure.Models;
 
 namespace N2N.TestData
 {
     public class N2NUsersList
     {
+        public static N2NIdentityUser GetN2NIdentityUser()
+        {
+            return new N2NIdentityUser()
+            {
+                UserName = "NoN2N"
+            };
+        }
+
         public static N2NUser GetUser()
         {
             return new N2NUser()

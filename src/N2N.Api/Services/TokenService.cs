@@ -29,7 +29,10 @@ namespace N2N.Api.Services
 
         public JwtSecurityToken GetN2NToken(Guid userId, string nickname, out DateTime expirationDate)
         {
-            expirationDate = DateTime.UtcNow.AddMinutes(int.Parse(_configuration["Token:Lifetime"]));
+            var lifetime = 30;
+            lifetime = int.TryParse(_configuration["Token:Lifetime"], out lifetime) ? lifetime : 30;
+
+            expirationDate = DateTime.UtcNow.AddMinutes(lifetime);
 
             var n2nTokenRecord = new N2NToken()
             {
@@ -55,7 +58,10 @@ namespace N2N.Api.Services
 
         public JwtSecurityToken GetN2NRefreshToken(Guid userId, string nickname, out DateTime expirationDate)
         {
-            expirationDate = DateTime.UtcNow.AddMinutes(int.Parse(_configuration["RefreshToken:Lifetime"]));
+            var lifetime = 43200;
+            lifetime = int.TryParse(_configuration["RefreshToken:Lifetime"], out lifetime) ? lifetime : 43200;
+
+            expirationDate = DateTime.UtcNow.AddMinutes(lifetime);
 
             var n2nRefreshTokenRecord = new N2NRefreshToken()
             {

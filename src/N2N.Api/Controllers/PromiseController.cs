@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using IdentityServer4.Extensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using N2N.Api.Services;
@@ -42,7 +41,7 @@ namespace N2N.Api.Controllers
         {
             OperationResult result = new OperationResult();
             DateTime dueDate =new DateTime() ;
-            if (!promise.TextPromise.IsNullOrEmpty())
+            if (!string.IsNullOrEmpty(promise.TextPromise))
             {
                 var authHeader = HttpContext.Request.Headers["Authorization"];
                 var userId = this._userRepo.Data.FirstOrDefault(x =>

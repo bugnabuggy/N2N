@@ -4,7 +4,6 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using IdentityServer4.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.IdentityModel.Tokens;
@@ -105,7 +104,7 @@ namespace N2N.Api.Services
             var success = false;
             object data = null;
 
-            if (authorizationHeader.IsNullOrEmpty())
+            if (string.IsNullOrEmpty(authorizationHeader))
             {
                 messages.Add("You do not have Authorization header");
             }
