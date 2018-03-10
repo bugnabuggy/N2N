@@ -13,6 +13,6 @@ namespace N2N.Core.Entities
         public Guid N2NUserId {get; set;}
         public DateTime TokenExpirationDate { get; set; }
 
-        public Guid IdRefreshToken { get; set; }
+        public Guid RefreshTokenId { get; set; }
     }
 }

@@ -65,10 +65,12 @@ namespace N2N.Api.Services
             try
             {
                 //generate tokens        
-                DateTime tokenExpirationDate;
-                var token = _tokenService.GetN2NToken(n2nUser.Id, n2nUser.NickName, out tokenExpirationDate);
                 DateTime refreshTokenExpirationDate;
                 var refreshToken = _tokenService.GetN2NRefreshToken(n2nUser.Id, n2nUser.NickName, out refreshTokenExpirationDate);
+                
+                DateTime tokenExpirationDate;
+                var token = _tokenService.GetN2NToken(n2nUser.Id, n2nUser.NickName, Guid.Empty, out tokenExpirationDate);
+                
 
                 result.Success = true;
                 result.Data = new AuthenticationResponseDTO()
@@ -102,7 +104,12 @@ namespace N2N.Api.Services
             throw new NotImplementedException();
         }
 
-        public OperationResult AuthenticateByToken(string authorizationHeader)
+        public OperationResult<N2NUser> AuthenticateByToken(string authorizationHeader)
+        {
+            throw new NotImplementedException();
+        }
+
+        public OperationResult RefreshAccessToken(string refreshTokenString)
         {
             throw new NotImplementedException();
         }

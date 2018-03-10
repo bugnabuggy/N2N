@@ -60,7 +60,7 @@ namespace N2N.Api.Configuration
                 }
             }
 
-            System.Threading.Thread.CurrentPrincipal = new GenericPrincipal( new GenericIdentity("N2N system initialization"), new []{ N2NRoles.Admin } );
+            System.Threading.Thread.CurrentPrincipal = N2NSystem.GetN2NSystemPrincipal();
 
             foreach (var user in users)
             {
@@ -80,7 +80,7 @@ namespace N2N.Api.Configuration
             services.AddTransient<IRepository<N2NRefreshToken>, DbRepository<N2NRefreshToken>>();
             services.AddTransient<IRepository<N2NToken>, DbRepository<N2NToken>>();
             services.AddTransient<IRepository<N2NUser>, DbRepository<N2NUser>>();
-            services.AddTransient<IAuthenticationService, AuthenticationService>();
+            services.AddTransient<IAuthenticationService, TonyAuthService>();
 
             services.AddTransient<IRepository<N2NUser>, DbRepository<N2NUser>>();
             services.AddTransient<IRepository<N2NToken>, DbRepository<N2NToken>>();

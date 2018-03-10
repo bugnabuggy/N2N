@@ -42,9 +42,21 @@ namespace N2N.Api.Tests
             var user = TestData.N2NUsersList.GetList().ToArray()[0];
             DateTime expirationDate;
 
-            var token = tokenSrv.GetN2NToken(user.Id, user.NickName, out expirationDate);
+            var token = tokenSrv.GetN2NToken(user.Id, user.NickName, Guid.Empty, out expirationDate);
 
             Assert.IsTrue(_tokenRepo.Data.Any(t=>t.Id.Equals(Guid.Parse(token.Id))));
+        }
+
+        [Test]
+        public void Should_generate_N2NRefreshToken_string_and_add_it_to_database()
+        {
+            var tokenSrv = new TokenService(_tokenRepo, _refreshTokenRepo, _configuration);
+            var user = TestData.N2NUsersList.GetList().ToArray()[0];
+            DateTime expirationDate;
+
+            var token = tokenSrv.GetN2NRefreshToken(user.Id, user.NickName, out expirationDate);
+
+            Assert.IsTrue(_refreshTokenRepo.Data.Any(t => t.Id.Equals(Guid.Parse(token.Id))));
         }
     }
 }

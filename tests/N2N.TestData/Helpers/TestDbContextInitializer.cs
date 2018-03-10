@@ -34,7 +34,7 @@ namespace N2N.TestData.Helpers
             var apiUserSrv = services.GetService<N2NApiUserService>();
 
             var _userManager = services.GetService<UserManager<N2NIdentityUser>>();
-            _userManager.CreateAsync(N2N.TestData.N2NUsersList.GetN2NIdentityUser(), HardCoddedConfig.DefaultPassword);
+            await _userManager.CreateAsync(N2N.TestData.N2NUsersList.GetN2NIdentityUser(), HardCoddedConfig.DefaultPassword);
 
             //create users, create promises for users
             _users = N2NUsersList.GetList().ToArray();

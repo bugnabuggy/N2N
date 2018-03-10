@@ -10,8 +10,8 @@ namespace N2N.Api.Configuration
     {
         public string Issuer { get; set; }
         public string Audience { get; set; }
-        public DateTime ValidTill { get; set; }
         public DateTime ValidFrom { get; set; }
+        public DateTime ValidTill { get; set; }
 
         public IEnumerable<Claim> Claims { get; set; }
     }

@@ -4,6 +4,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using N2N.Core.Entities;
 using N2N.Core.Models;
 using N2N.Infrastructure.Models;
 using N2N.Infrastructure.Models.DTO;
@@ -16,7 +17,8 @@ namespace N2N.Api.Services
         Task<IEnumerable<string>> GetUserRolesAsync(string nickname);
 
         OperationResult GetUserByTokenString(string tokenString);
-        OperationResult AuthenticateByToken(string authorizationHeader);
+        OperationResult<N2NUser> AuthenticateByToken(string authorizationHeader);
+        OperationResult RefreshAccessToken(string refreshTokenString);
 
         void DeleteToken(string tokenString);
         string GetUserName(string tokenString);

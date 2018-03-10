@@ -32,6 +32,7 @@ namespace N2N.Data.Repositories
         public T Add(T entity)
         {
             _table.Add(entity);
+            _table.Add(entity);
             _ctx.SaveChanges();
             return entity;
         }

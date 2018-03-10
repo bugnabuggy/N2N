@@ -10,7 +10,7 @@ namespace N2N.Api.Services
     public interface IN2NTokenService
     {
         JwtSecurityToken GetToken(N2NTokenConfig config);
-        JwtSecurityToken GetN2NToken(Guid userId, string nickname, out DateTime expirationDate);
+        JwtSecurityToken GetN2NToken(Guid userId, string nickname, Guid refreshTokenId, out DateTime expirationDate);
         JwtSecurityToken GetN2NRefreshToken(Guid userId, string nickname, out DateTime expirationDate);
     }
 }
