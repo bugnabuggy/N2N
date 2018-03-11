@@ -23,7 +23,7 @@ namespace N2N.Api.Tests
 
 
         [OneTimeSetUp]
-        public async void TestSetUp()
+        public async Task TestSetUp()
         {
             var provider = await new DatabaseDiBootstrapperInMemory().GetServiceProviderWithSeedDB();
             

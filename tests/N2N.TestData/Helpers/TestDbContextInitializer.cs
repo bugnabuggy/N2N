@@ -16,7 +16,7 @@ namespace N2N.TestData.Helpers
 {
     public class TestDbContextInitializer
     {
-        //
+        private static bool _isInitialized = false;
         private Random _random = new Random();
         private N2NDataContext _context;
         private N2NUser[] _users;
@@ -24,8 +24,14 @@ namespace N2N.TestData.Helpers
 
         public async Task SeedData(IServiceProvider services)
         {
+            if (TestDbContextInitializer._isInitialized)
+            {
+                return;
+            }
+            TestDbContextInitializer._isInitialized = true;
+
             // because we have service permission checks 
-            System.Threading.Thread.CurrentPrincipal = new GenericPrincipal(new GenericIdentity("N2N User Registration Service"), new[] { N2NRoles.Admin });
+            System.Threading.Thread.CurrentPrincipal = N2NSystem.GetN2NSystemPrincipal();
             
             var appConfigurator = new AppConfigurator();
             appConfigurator.InitRolesAndUsers(services);

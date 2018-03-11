@@ -15,12 +15,21 @@ namespace N2N.Data.Repositories
         T Add(T item);
         T Delete(T item);
 
-
-        IEnumerable<T> Get( Expression<Func<T, bool>> filter,
+        IEnumerable<T> Get(Expression<Func<T, bool>> filter,
                             Func<IQueryable<T>, IOrderedQueryable<T>> orderBy,
                             string includeProperties);
+
         IEnumerable<T> Add(IEnumerable<T> items);
         IEnumerable<T> Update(IEnumerable<T> items);
         IEnumerable<T> Delete(IEnumerable<T> items);
+
+
+        Task<T> AddAsync(T item);
+        Task<IEnumerable<T>> AddAsync(IEnumerable<T> items);
+
+        Task<IEnumerable<T>> GetAsync(Expression<Func<T, bool>> filter,
+                            Func<IQueryable<T>, IOrderedQueryable<T>> orderBy,
+                            string includeProperties);
+
     }
 }

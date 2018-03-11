@@ -89,7 +89,8 @@ namespace N2N.Api.Services
             var claims = new List<Claim>
             {
                 new Claim(ClaimsIdentity.DefaultNameClaimType, nickname),
-                new Claim("JWT ID", tokenId.ToString())
+                //new Claim("JWT ID", tokenId.ToString()),
+                new Claim("jti", tokenId.ToString())
             };
             return claims;
         }
@@ -103,8 +104,9 @@ namespace N2N.Api.Services
                     expires: config.ValidTill,
                     notBefore: config.ValidFrom
                 );
-
+            
             return token;
         }
     }
 }
+

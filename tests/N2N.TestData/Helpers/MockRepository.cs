@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 using N2N.Data.Repositories;
 
 namespace N2N.TestData.Helpers
@@ -46,6 +47,21 @@ namespace N2N.TestData.Helpers
         }
 
         public IEnumerable<T> Delete(IEnumerable<T> items)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<T> AddAsync(T item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<T>> AddAsync(IEnumerable<T> items)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<T>> GetAsync(Expression<Func<T, bool>> filter, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy, string includeProperties)
         {
             throw new NotImplementedException();
         }

@@ -32,7 +32,6 @@ namespace N2N.Data.Repositories
         public T Add(T entity)
         {
             _table.Add(entity);
-            _table.Add(entity);
             _ctx.SaveChanges();
             return entity;
         }
@@ -44,10 +43,10 @@ namespace N2N.Data.Repositories
             return entity;
         }
 
-         public IEnumerable<T> Get(
-            Expression<Func<T, bool>> filter = null,
-            Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
-            string includeProperties = "")
+        public IEnumerable<T> Get(
+           Expression<Func<T, bool>> filter = null,
+           Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
+           string includeProperties = "")
         {
             IQueryable<T> query = this.Data;
 
@@ -92,5 +91,49 @@ namespace N2N.Data.Repositories
             _ctx.SaveChanges();
             return items;
         }
+
+        public async Task<T> AddAsync(T item)
+        {
+            await _table.AddAsync(item);
+            _ctx.SaveChanges();
+            return item;
+        }
+
+        public async Task<IEnumerable<T>> AddAsync(IEnumerable<T> items)
+        {
+            await _table.AddRangeAsync(items);
+            _ctx.SaveChanges();
+            return items;
+        }
+
+        public async Task<IEnumerable<T>> GetAsync(
+                Expression<Func<T, bool>> filter,
+                Func<IQueryable<T>, IOrderedQueryable<T>> orderBy,
+                string includeProperties)
+        {
+            IQueryable<T> query = this.Data;
+
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+
+            foreach (var includeProperty in includeProperties.Split
+                (new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+            {
+                query = query.Include(includeProperty);
+            }
+
+            if (orderBy != null)
+            {
+                return await orderBy(query).ToListAsync();
+            }
+            else
+            {
+                return await query.ToListAsync();
+            }
+        }
+
+
     }
 }
