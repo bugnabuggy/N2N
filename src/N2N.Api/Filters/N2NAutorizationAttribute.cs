@@ -38,7 +38,7 @@ namespace N2N.Api.Filters
             var authService = context.HttpContext.RequestServices.GetService<IAuthenticationService>();
             var authHeader = context.HttpContext.Request.Headers["Authorization"];
             
-            var authResult = authService.AuthenticateByToken(authHeader);
+            var authResult = authService.AuthenticateByAuthHeader(authHeader);
 
             if (!authResult.Success)
             {

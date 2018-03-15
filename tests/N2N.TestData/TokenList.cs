@@ -1,14 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
+using Moq;
+using N2N.Api.Services;
 using N2N.Core.Entities;
+using N2N.TestData.Helpers;
 
 namespace N2N.TestData
 {
     public class TokenList
     {
+
+        public static string GetTokenString(N2NUser user, IN2NTokenService tokenSvc)
+        {
+            var refreshToken = TestData.RefreshTokenList.GetList()[0];
+
+            var token = tokenSvc.GetN2NToken(user.Id, user.NickName, refreshToken.Id, out DateTime expiration);
+            return new JwtSecurityTokenHandler().WriteToken(token) ;
+        }
+
         public static List<N2NToken> GetList()
         {
             return new List<N2NToken>

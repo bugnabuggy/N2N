@@ -17,7 +17,8 @@ namespace N2N.Api.Services
         Task<IEnumerable<string>> GetUserRolesAsync(string nickname);
 
         OperationResult GetUserByTokenString(string tokenString);
-        OperationResult<N2NUser> AuthenticateByToken(string authorizationHeader);
+        OperationResult<N2NUser> AuthenticateByTokenString(string token);
+        OperationResult<N2NUser> AuthenticateByAuthHeader(string authorizationHeader);
         OperationResult RefreshAccessToken(string refreshTokenString);
 
         void DeleteToken(string tokenString);

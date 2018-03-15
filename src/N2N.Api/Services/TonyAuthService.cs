@@ -104,9 +104,39 @@ namespace N2N.Api.Services
             throw new NotImplementedException();
         }
 
-        public OperationResult<N2NUser> AuthenticateByToken(string authorizationHeader)
+        public OperationResult<N2NUser> AuthenticateByTokenString(string token)
         {
             throw new NotImplementedException();
+        }
+
+        public OperationResult<N2NUser> AuthenticateByAuthHeader(string authorizationHeader)
+        {
+            var result = new OperationResult<N2NUser>(){Messages = new List<string>()};
+            if (string.IsNullOrEmpty(authorizationHeader))
+            {
+                result.Messages.Add("You do not have Authorization header");
+            }
+            else
+            {
+                try
+                {
+                    var parts = authorizationHeader.Split(' ');
+                    var schema = parts[0];
+                    var jwt = parts[1];
+                    if (! schema.Equals("Bearer", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        throw new Exception("");
+                    }
+                    result = this.AuthenticateByTokenString(jwt);
+
+                }
+                catch (Exception exp)
+                {
+                    result.Messages.Add("Your Authorization header is corruped or do not use Bearer scheme");
+                    if(!string.IsNullOrEmpty(exp.Message)) {result.Messages.Add(exp.Message);}
+                }
+            }
+            return result;
         }
 
         public OperationResult RefreshAccessToken(string refreshTokenString)
