@@ -15,7 +15,7 @@ namespace N2N.TestData
             };
         }
 
-        public static N2NUser GetUser()
+        public static N2NUser GetNotInDbUser()
         {
             return new N2NUser()
             {

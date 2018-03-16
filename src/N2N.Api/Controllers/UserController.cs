@@ -67,10 +67,10 @@ namespace N2N.Api.Controllers
                 !string.IsNullOrEmpty(loginForm.Captcha))
             {
                 var response =
-                    await _authentificationService.AuthenticateUserAsync(loginForm.NickName,
+                    await _authentificationService.LoginUserAsync(loginForm.NickName,
                         loginForm.Password);
 
-                if (response.Data.ToString() == new { }.ToString())
+                if (!response.Success)
                 {
                     return BadRequest("Invalid username or password.");
 
@@ -107,7 +107,7 @@ namespace N2N.Api.Controllers
                     return BadRequest(result.Messages);
                 }
 
-                var response = await _authentificationService.AuthenticateUserAsync(userRegistration.NickName, userRegistration.Password);
+                var response = await _authentificationService.LoginUserAsync(userRegistration.NickName, userRegistration.Password);
 
                 if (response.Data.ToString() == new { }.ToString())
                 {

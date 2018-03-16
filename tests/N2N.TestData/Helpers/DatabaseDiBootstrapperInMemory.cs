@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Moq;
 using N2N.Api.Configuration;
 using N2N.Infrastructure.DataContext;
 using N2N.Infrastructure.Models;
@@ -35,6 +37,8 @@ namespace N2N.TestData.Helpers
 
             var appConfigurator = new AppConfigurator();
             appConfigurator.ConfigureServices(services);
+
+            services.AddSingleton<IConfiguration>(c => new Mock<IConfiguration>().Object);
 
             var serviceProvider = services.BuildServiceProvider();
 

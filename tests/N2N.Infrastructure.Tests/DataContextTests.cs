@@ -84,7 +84,7 @@ namespace N2N.Infrastructure.Tests
         [Test]
         public void Should_add_addresses_to_test_database()
         {
-            var user = N2NUsersList.GetUser();
+            var user = N2NUsersList.GetNotInDbUser();
             var inMemoryContext = new DatabaseDiBootstrapperInMemory().GetDataContext();
             var initializer = new TestDbContextInitializer();
 

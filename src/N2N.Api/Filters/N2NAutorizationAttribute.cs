@@ -36,6 +36,8 @@ namespace N2N.Api.Filters
             if(context.Filters.Any(x=>x is IAllowAnonymousFilter)) { return; }
 
             var authService = context.HttpContext.RequestServices.GetService<IAuthenticationService>();
+
+
             var authHeader = context.HttpContext.Request.Headers["Authorization"];
             
             var authResult = authService.AuthenticateByAuthHeader(authHeader);

@@ -58,6 +58,7 @@
     <Compile Include="Interfaces\IN2NToken.cs" />
     <Compile Include="Constants\ErrorMessages.cs" />
     <Compile Include="Interfaces\IOwned.cs" />
+    <Compile Include="Models\Condition.cs" />
     <Compile Include="Models\OperationResult.cs" />
     <Compile Include="Models\UserStatistics.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

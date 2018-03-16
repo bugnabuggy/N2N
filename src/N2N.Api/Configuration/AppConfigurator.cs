@@ -80,7 +80,7 @@ namespace N2N.Api.Configuration
             services.AddTransient<IRepository<N2NRefreshToken>, DbRepository<N2NRefreshToken>>();
             services.AddTransient<IRepository<N2NToken>, DbRepository<N2NToken>>();
             services.AddTransient<IRepository<N2NUser>, DbRepository<N2NUser>>();
-            services.AddTransient<IAuthenticationService, TonyAuthService>();
+            services.AddTransient<IAuthenticationService, AuthenticationService>();
 
             services.AddTransient<IRepository<N2NUser>, DbRepository<N2NUser>>();
             services.AddTransient<IRepository<N2NToken>, DbRepository<N2NToken>>();

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace N2N.Infrastructure.Models.DTO
 {
-    public class AuthenticationResponseDTO
+    public class LoginResponseDTO
     {
         public string access_token { get; set; }
         public DateTime expiration_date { get; set; }

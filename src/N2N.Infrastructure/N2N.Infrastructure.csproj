@@ -229,7 +229,7 @@
     </Compile>
     <Compile Include="Migrations\N2NDataContextModelSnapshot.cs" />
     <Compile Include="Models\ApiResult.cs" />
-    <Compile Include="Models\DTO\AuthenticationResponseDTO.cs" />
+    <Compile Include="Models\DTO\LoginResponseDTO.cs" />
     <Compile Include="Models\DTO\N2NPostcardDTO.cs" />
     <Compile Include="Models\DTO\UserLoginDTO.cs" />
     <Compile Include="Models\N2NIdentity.cs" />

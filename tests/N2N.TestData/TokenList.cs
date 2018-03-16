@@ -17,9 +17,7 @@ namespace N2N.TestData
 
         public static string GetTokenString(N2NUser user, IN2NTokenService tokenSvc)
         {
-            var refreshToken = TestData.RefreshTokenList.GetList()[0];
-
-            var token = tokenSvc.GetN2NToken(user.Id, user.NickName, refreshToken.Id, out DateTime expiration);
+            var token = tokenSvc.GetN2NToken(user.Id, user.NickName, Guid.Empty, out DateTime expiration);
             return new JwtSecurityTokenHandler().WriteToken(token) ;
         }
 

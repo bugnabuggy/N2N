@@ -45,7 +45,7 @@ namespace N2N.Api.Tests
             _configuration = configuration.Object;
 
             _tokenService = new TokenService(_tokenRepo, _refreshTokenRepo, _configuration);
-            _authSrv = new TonyAuthService(_userManager, _userRepo, _tokenService, _configuration);
+            _authSrv = new AuthenticationService(_userManager, _userRepo, _tokenRepo, _tokenService, _configuration);
         }
 
         [OneTimeTearDown]
@@ -61,11 +61,11 @@ namespace N2N.Api.Tests
             var refreshTokenCount = _refreshTokenRepo.Data.Count();
 
             var authResult =
-                await _authSrv.AuthenticateUserAsync(TestData.N2NUsersList.GetList().ToArray()[0].NickName, HardCoddedConfig.DefaultPassword);
+                await _authSrv.LoginUserAsync(TestData.N2NUsersList.GetList().ToArray()[0].NickName, HardCoddedConfig.DefaultPassword);
 
             Assert.IsTrue(authResult.Data != null);
             Assert.IsTrue(authResult.Success);
-            var tokenResultDTO = authResult.Data as AuthenticationResponseDTO;
+            var tokenResultDTO = authResult.Data as LoginResponseDTO;
 
             Assert.IsTrue(!tokenResultDTO.access_token.IsNullOrEmpty());
             Assert.IsTrue(!tokenResultDTO.refresh_token.IsNullOrEmpty());
@@ -79,7 +79,7 @@ namespace N2N.Api.Tests
         public async Task Should_return_failde_result_if_user_not_exists()
         {
             var authResult =
-                await _authSrv.AuthenticateUserAsync("nouser", HardCoddedConfig.DefaultPassword);
+                await _authSrv.LoginUserAsync("nouser", HardCoddedConfig.DefaultPassword);
 
             Assert.IsFalse(authResult.Success);
             Assert.AreEqual(authResult.Messages.FirstOrDefault(), "Password is wrong or user not exists");
@@ -89,7 +89,7 @@ namespace N2N.Api.Tests
         public async Task Should_return_failed_result_if_password_is_wrong()
         {
             var authResult =
-                await _authSrv.AuthenticateUserAsync(TestData.N2NUsersList.GetList().ToArray()[0].NickName, "nopassword");
+                await _authSrv.LoginUserAsync(TestData.N2NUsersList.GetList().ToArray()[0].NickName, "nopassword");
 
             Assert.IsFalse(authResult.Success);
             Assert.AreEqual(authResult.Messages.FirstOrDefault(), "Password is wrong or user not exists");
@@ -99,7 +99,7 @@ namespace N2N.Api.Tests
         public async Task Should_return_failed_result_if_security_user_exists_but_n2nuser_not()
         {
             var authResult =
-                await _authSrv.AuthenticateUserAsync(TestData.N2NUsersList.GetN2NIdentityUser().UserName, HardCoddedConfig.DefaultPassword);
+                await _authSrv.LoginUserAsync(TestData.N2NUsersList.GetN2NIdentityUser().UserName, HardCoddedConfig.DefaultPassword);
 
             Assert.IsFalse(authResult.Success);
             Assert.AreEqual(authResult.Messages.FirstOrDefault(), "Identity user exists but N2NUser not found in the database");
@@ -107,26 +107,21 @@ namespace N2N.Api.Tests
 
 
         [Test]
-        public void Should_faile_auhtneticate_by_Authorization_header_if_it_is_empty_or_not_Bearer_type()
+        public void Should_fail_auhtnetication_by_Authorization_header_if_it_is_empty_or_not_Bearer_type()
         {
-            var user = TestData.N2NUsersList.GetUser();
-            var authHeader = "";
-
-            var result = _authSrv.AuthenticateByAuthHeader(authHeader);
+            var result = _authSrv.AuthenticateByAuthHeader("");
 
             Assert.IsFalse(result.Success);
             Assert.AreEqual(result.Messages.Count, 1);
             Assert.AreEqual(result.Messages[0], "You do not have Authorization header");
 
-            authHeader = "hjkhkjsdhfjkshhjkhj";
-            result = _authSrv.AuthenticateByAuthHeader(authHeader);
+            result = _authSrv.AuthenticateByAuthHeader("hjkhkjsdhfjkshhjkhj");
 
             Assert.IsFalse(result.Success);
             Assert.AreEqual(result.Messages.Count, 2);
             Assert.AreEqual(result.Messages[0], "Your Authorization header is corruped or do not use Bearer scheme");
 
-            authHeader = "Basic hjkhkjsdhfjkshhjkhj";
-            result = _authSrv.AuthenticateByAuthHeader(authHeader);
+            result = _authSrv.AuthenticateByAuthHeader("Basic hjkhkjsdhfjkshhjkhj");
 
             Assert.IsFalse(result.Success);
             Assert.AreEqual(result.Messages.Count, 1);
@@ -134,18 +129,37 @@ namespace N2N.Api.Tests
         }
 
         [Test]
-        public void Should_auhtneticate_by_Authorization_header()
+        public void Should_authenticate_by_Authorization_header()
         {
-            var authSrv = new TonyAuthService(_userManager, _userRepo, _tokenService, _configuration);
-            var user = TestData.N2NUsersList.GetUser();
+            var user = TestData.N2NUsersList.GetList().FirstOrDefault();
             var tokenString = TestData.TokenList.GetTokenString(user, _tokenService);
             var authHeader = "Bearer " + tokenString;
 
-            var result = authSrv.AuthenticateByAuthHeader(authHeader);
+            var result = _authSrv.AuthenticateByAuthHeader(authHeader);
 
             Assert.IsTrue(result.Success);
         }
 
-        
+        [Test]
+        public void Should_authenticate_by_token_string()
+        {
+            var user = TestData.N2NUsersList.GetList().FirstOrDefault();
+            var tokenString = TestData.TokenList.GetTokenString(user, _tokenService);
+
+            var result = _authSrv.AuthenticateByTokenString(tokenString);
+
+            Assert.IsTrue(result.Success);
+            Assert.IsInstanceOf<N2NUser>(result.Data);
+        }
+
+        [Test]
+        public void Should_fail_if_token_expired_or_not_start_effective()
+        {
+            var oldTokenString = TestData.AthorizationMocks.GetTokenString();
+
+            var result = _authSrv.AuthenticateByTokenString(oldTokenString);
+            Assert.IsFalse(result.Success);
+        }
+
     }
 }

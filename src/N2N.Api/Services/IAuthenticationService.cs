@@ -13,7 +13,7 @@ namespace N2N.Api.Services
 {
     public interface IAuthenticationService
     {
-        Task<OperationResult<AuthenticationResponseDTO>> AuthenticateUserAsync(string nickName, string password);
+        Task<OperationResult<LoginResponseDTO>> LoginUserAsync(string nickName, string password);
         Task<IEnumerable<string>> GetUserRolesAsync(string nickname);
 
         OperationResult GetUserByTokenString(string tokenString);
