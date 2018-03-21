@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using N2N.Core.Entities;
 using N2N.Core.Models;
 using N2N.Core.Services;
-using N2N.Data.Repositories;
+using N2N.Infrastructure.Repositories;
 
 namespace N2N.Services
 {
@@ -17,6 +17,11 @@ namespace N2N.Services
         private IRepository<N2NUser> _userRepo;
         private ISecurityService _security;
 
+        public N2NUserService(IRepository<N2NUser> userRepo, ISecurityService security)
+        {
+            this._userRepo = userRepo;
+            this._security = security;
+        }
 
         public N2NUser CheckOrRegenerateUserId(N2NUser user)
         {
@@ -49,11 +54,7 @@ namespace N2N.Services
             }
         }
 
-        public N2NUserService(IRepository<N2NUser> userRepo, ISecurityService security)
-        {
-            this._userRepo = userRepo;
-            this._security = security;
-        }
+        
 
         public bool IsNicknameExists(string nickname)
         {

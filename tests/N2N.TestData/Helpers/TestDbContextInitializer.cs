@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Security.Principal;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using N2N.Api.Configuration;
@@ -24,15 +25,18 @@ namespace N2N.TestData.Helpers
 
         public async Task SeedData(IServiceProvider services)
         {
-            if (TestDbContextInitializer._isInitialized)
-            {
-                return;
-            }
-            TestDbContextInitializer._isInitialized = true;
+            //if (TestDbContextInitializer._isInitialized)
+            //{
+            //    return;
+            //}
 
-            // because we have service permission checks 
-            System.Threading.Thread.CurrentPrincipal = N2NSystem.GetN2NSystemPrincipal();
-            
+            //TestDbContextInitializer._isInitialized = true;
+
+            // because we have service permission checks, principal should be an admin
+            var HttpContext = services.GetService<IHttpContextAccessor>();
+            HttpContext.HttpContext.User = N2NSystem.GetN2NSystemPrincipal();
+
+
             var appConfigurator = new AppConfigurator();
             appConfigurator.InitRolesAndUsers(services);
 

@@ -14,14 +14,15 @@ using NUnit.Framework;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using N2N.Api.Filters;
-using N2N.Data.Repositories;
+using N2N.Core.Interfaces;
+using N2N.Infrastructure.Repositories;
 using N2N.Infrastructure.Models.DTO;
 using N2N.TestData.Helpers;
 
 namespace N2N.Api.Tests
 {
     [TestFixture()]
-    class TonyAuthServiceTests
+    class AuthenticationServiceTests
     {
         private UserManager<N2NIdentityUser> _userManager;
         private IRepository<N2NUser> _userRepo;  
@@ -45,7 +46,7 @@ namespace N2N.Api.Tests
             _configuration = configuration.Object;
 
             _tokenService = new TokenService(_tokenRepo, _refreshTokenRepo, _configuration);
-            _authSrv = new AuthenticationService(_userManager, _userRepo, _tokenRepo, _tokenService, _configuration);
+            _authSrv = new AuthenticationService(_userManager, _userRepo, _tokenRepo, _refreshTokenRepo, _tokenService);
         }
 
         [OneTimeTearDown]
@@ -107,21 +108,21 @@ namespace N2N.Api.Tests
 
 
         [Test]
-        public void Should_fail_auhtnetication_by_Authorization_header_if_it_is_empty_or_not_Bearer_type()
+        public async Task Should_fail_auhtnetication_by_Authorization_header_if_it_is_empty_or_not_Bearer_type()
         {
-            var result = _authSrv.AuthenticateByAuthHeader("");
+            var result = await _authSrv.AuthenticateByAuthHeaderAsync("");
 
             Assert.IsFalse(result.Success);
             Assert.AreEqual(result.Messages.Count, 1);
             Assert.AreEqual(result.Messages[0], "You do not have Authorization header");
 
-            result = _authSrv.AuthenticateByAuthHeader("hjkhkjsdhfjkshhjkhj");
+            result = await _authSrv.AuthenticateByAuthHeaderAsync("hjkhkjsdhfjkshhjkhj");
 
             Assert.IsFalse(result.Success);
             Assert.AreEqual(result.Messages.Count, 2);
             Assert.AreEqual(result.Messages[0], "Your Authorization header is corruped or do not use Bearer scheme");
 
-            result = _authSrv.AuthenticateByAuthHeader("Basic hjkhkjsdhfjkshhjkhj");
+            result = await _authSrv.AuthenticateByAuthHeaderAsync("Basic hjkhkjsdhfjkshhjkhj");
 
             Assert.IsFalse(result.Success);
             Assert.AreEqual(result.Messages.Count, 1);
@@ -129,37 +130,107 @@ namespace N2N.Api.Tests
         }
 
         [Test]
-        public void Should_authenticate_by_Authorization_header()
+        public async Task Should_authenticate_by_Authorization_header()
         {
             var user = TestData.N2NUsersList.GetList().FirstOrDefault();
             var tokenString = TestData.TokenList.GetTokenString(user, _tokenService);
             var authHeader = "Bearer " + tokenString;
 
-            var result = _authSrv.AuthenticateByAuthHeader(authHeader);
+            var result = await _authSrv.AuthenticateByAuthHeaderAsync(authHeader);
 
             Assert.IsTrue(result.Success);
         }
 
         [Test]
-        public void Should_authenticate_by_token_string()
+        public async Task Should_authenticate_by_token_string()
         {
             var user = TestData.N2NUsersList.GetList().FirstOrDefault();
             var tokenString = TestData.TokenList.GetTokenString(user, _tokenService);
 
-            var result = _authSrv.AuthenticateByTokenString(tokenString);
+            var result = await _authSrv.AuthenticateByTokenStringAsync(tokenString);
 
             Assert.IsTrue(result.Success);
             Assert.IsInstanceOf<N2NUser>(result.Data);
         }
 
         [Test]
-        public void Should_fail_if_token_expired_or_not_start_effective()
+        public async Task Should_fail_if_token_expired_or_not_start_effective()
         {
             var oldTokenString = TestData.AthorizationMocks.GetTokenString();
 
-            var result = _authSrv.AuthenticateByTokenString(oldTokenString);
+            var result = await _authSrv.AuthenticateByTokenStringAsync(oldTokenString);
             Assert.IsFalse(result.Success);
         }
 
+        [Test]
+        public async Task Should_refresh_access_token()
+        {
+            var refreshToken =  _authSrv.LoginUserAsync(
+                TestData.N2NUsersList.GetList().ToArray()[0].NickName,
+                TestData.Helpers.HardCoddedConfig.DefaultPassword)
+                    .Result
+                    .Data
+                    .refresh_token;
+
+            var result = await _authSrv.RefreshAccessTokenAsync(refreshToken);
+
+            Assert.IsTrue(result.Success);
+            Assert.IsNotNull(result.Data);
+        }
+
+        [Test]
+        public async Task Should_fail_when_token_string_is_wrong()
+        {
+            var refreshToken = ( await _authSrv.LoginUserAsync(
+                    TestData.N2NUsersList.GetList().ToArray()[0].NickName,
+                    TestData.Helpers.HardCoddedConfig.DefaultPassword))
+                .Data
+                .access_token;
+
+            var result = await _authSrv.RefreshAccessTokenAsync(refreshToken);
+
+            Assert.IsFalse(result.Success);
+            Assert.IsNull(result.Data);
+        }
+
+        [Test]
+        public async Task Should_fail_when_refresh_token_expired()
+        {
+            var refreshToken = TestData.AthorizationMocks.GetExpiredRefreshToken(_refreshTokenRepo, _tokenService);
+
+            var result = await _authSrv.RefreshAccessTokenAsync(refreshToken);
+
+            Assert.IsFalse(result.Success);
+            Assert.IsNull(result.Data);
+        }
+
+        [Test]
+        public async Task Should_delete_tokens()
+        {
+            var loginResult = await _authSrv.LoginUserAsync(
+                TestData.N2NUsersList.GetList().ToArray()[0].NickName,
+                TestData.Helpers.HardCoddedConfig.DefaultPassword
+                );
+
+            // access token
+            var authResult = await _authSrv.AuthenticateByTokenStringAsync(loginResult.Data.access_token);
+            Assert.IsTrue(authResult.Success);
+
+            var delTokenResult = await _authSrv.DeleteTokenAsync<N2NToken>(loginResult.Data.access_token, _tokenRepo);
+            Assert.IsTrue(delTokenResult.Success);
+
+            authResult = await _authSrv.AuthenticateByTokenStringAsync(loginResult.Data.access_token);
+            Assert.IsFalse(authResult.Success);
+
+            // refresh token
+         var refreshResult = await _authSrv.RefreshAccessTokenAsync(loginResult.Data.refresh_token);
+            Assert.IsTrue(refreshResult.Success);
+
+            var delRefreshResult = await _authSrv.DeleteTokenAsync<N2NRefreshToken>(loginResult.Data.refresh_token, _refreshTokenRepo);
+            Assert.IsTrue(delRefreshResult.Success);
+
+            refreshResult = await _authSrv.RefreshAccessTokenAsync(loginResult.Data.refresh_token);
+            Assert.IsFalse(refreshResult.Success);
+        }
     }
 }

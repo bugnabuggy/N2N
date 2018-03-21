@@ -33,7 +33,7 @@ namespace N2N.TestData.Helpers
 
             var httpContext = new DefaultHttpContext();
             httpContext.Features.Set<IHttpAuthenticationFeature>(new HttpAuthenticationFeature());
-            services.AddSingleton<IHttpContextAccessor>(h => new HttpContextAccessor { HttpContext = httpContext });
+            services.AddTransient<IHttpContextAccessor>(h => new HttpContextAccessor { HttpContext = httpContext });
 
             var appConfigurator = new AppConfigurator();
             appConfigurator.ConfigureServices(services);

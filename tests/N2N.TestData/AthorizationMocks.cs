@@ -1,8 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using N2N.Api.Configuration;
+using N2N.Api.Services;
+using N2N.Core.Entities;
+using N2N.Infrastructure.Repositories;
 
 namespace N2N.TestData
 {
@@ -19,6 +25,26 @@ namespace N2N.TestData
         public static string GetAuthorizationHeaderTokenString()
         {
             return "Bearer " + AthorizationMocks._token;
+        }
+
+        public static string GetExpiredRefreshToken(IRepository<N2NRefreshToken> refreshTokenRepo, IN2NTokenService tokenService)
+        {
+            var refreshToken = new N2NRefreshToken()
+            {
+                Id = Guid.NewGuid(),
+                N2NUserId = TestData.N2NUsersList.GetList().ToArray()[0].Id,
+                TokenExpirationDate = DateTime.UtcNow.AddDays(-60)
+            };
+            refreshTokenRepo.Add(refreshToken);
+            var token = tokenService.GetToken(new N2NTokenConfig()
+            {
+                Claims =  new List<Claim>() { new Claim("jti", refreshToken.Id.ToString())},
+                ValidFrom = DateTime.UtcNow.AddDays(-90),
+                ValidTill = DateTime.UtcNow.AddDays(-60)
+            });
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+
         }
     }
 }

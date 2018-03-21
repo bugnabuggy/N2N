@@ -13,7 +13,7 @@
 //using Microsoft.Extensions.Options;
 //using N2N.Api.Tests;
 //using N2N.Core.Entities;
-//using N2N.Data.Repositories;
+//using N2N.Infrastructure.Repositories;
 //using N2N.Infrastructure.DataContext;
 //using N2N.Infrastructure.Models;
 //using N2N.TestData.Helpers;
@@ -49,7 +49,7 @@
 //        {
 //            var authSrv = new N2N.Api.Services.AuthenticationService(_userManager, _tokenRepo, _refreshTokenRepo, _userRepo);
 
-//            var userName = authSrv.GetUserName(N2N.TestData.AthorizationMocks.GetAuthorizationHeaderTokenString());
+//            var userName = authSrv.GetUserNameAsync(N2N.TestData.AthorizationMocks.GetAuthorizationHeaderTokenString());
 
 //            Assert.AreEqual(userName, "An");
 //        }

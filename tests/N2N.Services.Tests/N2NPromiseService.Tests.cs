@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Moq;
 using N2N.Core.Entities;
 using N2N.Core.Services;
-using N2N.Data.Repositories;
+using N2N.Infrastructure.Repositories;
 using N2N.Infrastructure.Exceptions;
 using NUnit.Framework;
 

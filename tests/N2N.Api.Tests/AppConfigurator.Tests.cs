@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using N2N.Api.Configuration;
@@ -11,7 +12,7 @@ using N2N.Api.Services;
 using N2N.Core.Constants;
 using N2N.Core.Entities;
 using N2N.Core.Services;
-using N2N.Data.Repositories;
+using N2N.Infrastructure.Repositories;
 using N2N.Infrastructure.DataContext;
 using N2N.Infrastructure.Models;
 using N2N.TestData.Helpers;
@@ -30,7 +31,8 @@ namespace N2N.Api.Tests
             var appConfigurator = new AppConfigurator();
             var serviceProvider = new DatabaseDiBootstrapperInMemory().GetServiceProvider();
 
-            System.Threading.Thread.CurrentPrincipal = new GenericPrincipal(new GenericIdentity("N2N Test Service"), new[] { N2NRoles.Admin });
+            //var httpContext = serviceProvider.GetService<IHttpContextAccessor>();
+            //httpContext.HttpContext.User = N2NSystem.GetN2NSystemPrincipal();
 
             appConfigurator.InitRolesAndUsers(serviceProvider);
 

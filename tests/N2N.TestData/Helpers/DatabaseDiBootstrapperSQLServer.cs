@@ -17,6 +17,8 @@ namespace N2N.TestData.Helpers
 {
     public class DatabaseDiBootstrapperSqlServer : IServiceProviderBootstrapper
     {
+        private static object _contextLock = new object();
+        private static bool _contextInitialized = false;
         private static int _contextCount = 0;
         private static DbContextOptions<N2NDataContext> _options;
         // not for resharper or vs studio test runners, have to be separat test runner project! to use config
@@ -37,8 +39,19 @@ namespace N2N.TestData.Helpers
             if (_contextCount < 1)
             {
                 //clean befor new test session starts
-                ctx.Database.EnsureDeleted();
-                ctx.Database.EnsureCreated();
+                //ctx.Database.EnsureDeleted();
+                //ctx.Database.EnsureCreated();
+            }
+
+            lock (_contextLock)
+            {
+                if (!_contextInitialized)
+                {
+                    _contextInitialized = true;
+                    ctx.Database.EnsureDeleted();
+                    ctx.Database.EnsureCreated();
+                }
+
             }
 
             _contextCount++;
@@ -49,7 +62,8 @@ namespace N2N.TestData.Helpers
         {
             if (_contextCount < 2)
             {
-                ctx.Database.EnsureDeleted();
+                // leave it for investigate information after test run
+                //ctx.Database.EnsureDeleted();
             }
             ctx.Dispose();
 

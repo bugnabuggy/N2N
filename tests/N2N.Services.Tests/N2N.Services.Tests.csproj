@@ -210,6 +210,7 @@
     <Compile Include="N2NPromiseService.Tests.cs" />
     <Compile Include="PostcardService.Tests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SecurityService.Tests.cs" />
     <Compile Include="UsersStatisticsService.Tests.cs" />
   </ItemGroup>
   <ItemGroup>

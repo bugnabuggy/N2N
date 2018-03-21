@@ -8,7 +8,7 @@ using N2N.Api.Services;
 using N2N.Core.Entities;
 using N2N.Core.Models;
 using N2N.Core.Services;
-using N2N.Data.Repositories;
+using N2N.Infrastructure.Repositories;
 using N2N.Infrastructure.Models;
 using N2N.Infrastructure.Models.DTO;
 using N2N.Services;
@@ -44,8 +44,9 @@ namespace N2N.Api.Controllers
             if (!string.IsNullOrEmpty(promise.TextPromise))
             {
                 var authHeader = HttpContext.Request.Headers["Authorization"];
+                var nickname = await this._authenticationService.GetUserNameAsync(authHeader.ToString());
                 var userId = this._userRepo.Data.FirstOrDefault(x =>
-                    x.NickName == this._authenticationService.GetUserName(authHeader.ToString())).Id;
+                    x.NickName == nickname).Id;
                 if (promise.DataImplementationPromise != "")
                 {
                     dueDate = DateTime.ParseExact(promise.DataImplementationPromise, "yyyy-mm-dd", null);

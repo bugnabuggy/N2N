@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using N2N.Api.Configuration;
 using N2N.Core.Entities;
-using N2N.Data.Repositories;
+using N2N.Infrastructure.Repositories;
 
 namespace N2N.Api.Services
 {

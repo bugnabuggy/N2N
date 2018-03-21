@@ -3,14 +3,18 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.Isam.Esent.Interop;
 using N2N.Api.Configuration;
 using N2N.Core.Entities;
+using N2N.Core.Interfaces;
 using N2N.Core.Models;
-using N2N.Data.Repositories;
+using N2N.Infrastructure.Repositories;
 using N2N.Infrastructure.Models;
 using N2N.Infrastructure.Models.DTO;
 
@@ -21,22 +25,23 @@ namespace N2N.Api.Services
         private UserManager<N2NIdentityUser> _userManager;
         private IRepository<N2NUser> _userRepo;
         private IRepository<N2NToken> _tokenRepo;
+        private IRepository<N2NRefreshToken> _refreshTokenRepo;
         private IN2NTokenService _tokenService;
-        private IConfiguration _configuration;
         
 
         public AuthenticationService(UserManager<N2NIdentityUser> userManager,
             IRepository<N2NUser> userRepo,
             IRepository<N2NToken> tokenRepo,
-            IN2NTokenService tokenService,
-            IConfiguration configuration)
+            IRepository<N2NRefreshToken> refreshTokenRepo,
+            IN2NTokenService tokenService
+            )
         {
 
             this._userManager = userManager;
             this._userRepo = userRepo;
             this._tokenRepo = tokenRepo;
+            this._refreshTokenRepo = refreshTokenRepo;
             this._tokenService = tokenService;
-            this._configuration = configuration;
         }
 
         public async Task<OperationResult<LoginResponseDTO>> LoginUserAsync(string nickName, string password)
@@ -83,7 +88,6 @@ namespace N2N.Api.Services
                     expiration_date = tokenExpirationDate,
                     refresh_token = new JwtSecurityTokenHandler().WriteToken(refreshToken)
                 };
-
             }
             catch (Exception exp)
             {
@@ -103,60 +107,59 @@ namespace N2N.Api.Services
             return roles;
         }
 
-        public OperationResult GetUserByTokenString(string tokenString)
-        {
-            throw new NotImplementedException();
-        }
-
-        public OperationResult<N2NUser> AuthenticateByTokenString(string jwt)
+        public async Task<OperationResult<N2NUser>> AuthenticateByTokenStringAsync(string jwt)
         {
             var result = new OperationResult<N2NUser>() {Messages = new List<string>()};
-            var tokenClaims = new List<Claim>();
-            JwtSecurityToken token;
 
             if (string.IsNullOrWhiteSpace(jwt))
             {
                 result.Messages.Add("Token string is empty");
                 goto end;
             }
-            
-            token = new JwtSecurityTokenHandler().ReadJwtToken(jwt);
-            tokenClaims = token.Claims.ToList();
-
-            if (token.ValidTo < DateTime.UtcNow)
+            try
             {
-                result.Messages.Add("Token has expired");
-                goto end;
-            }
+                JwtSecurityToken token = new JwtSecurityTokenHandler().ReadJwtToken(jwt);
 
-            if (token.ValidFrom > DateTime.UtcNow)
+                if (token.ValidTo < DateTime.UtcNow)
+                {
+                    result.Messages.Add("Token has expired");
+                    goto end;
+                }
+
+                if (token.ValidFrom > DateTime.UtcNow)
+                {
+                    result.Messages.Add("Token effective date has not come yet");
+                    goto end;
+                }
+
+                var n2nToken = await _tokenRepo.Data.FirstOrDefaultAsync(t => t.Id.ToString() == token.Id);
+                if (n2nToken == null)
+                {
+                    result.Messages.Add("Token record not found");
+                    goto end;
+                }
+
+                var user = await _userRepo.Data.FirstOrDefaultAsync(u => u.Id == n2nToken.N2NUserId);
+                if (user == null)
+                {
+                    result.Messages.Add("Token is valid, but no associated user found in database");
+                    goto end;
+                }
+
+                result.Data = user;
+                result.Success = true;
+            }
+            catch (Exception exp)
             {
-                result.Messages.Add("Token effective date has not come yet");
-                goto end;
+                result.Messages.Add("Token string is corrupted");
+                result.Messages.Add(exp.Message);
             }
-
-            var n2nToken = _tokenRepo.Data.FirstOrDefault(t => t.Id.ToString() == token.Id);
-            if (n2nToken == null)
-            {
-                result.Messages.Add("Token record not found");
-                goto end;
-            }
-
-            var user = _userRepo.Data.FirstOrDefault(u => u.Id == n2nToken.N2NUserId);
-            if (user == null)
-            {
-                result.Messages.Add("Token is valid, but no associated user found in database");
-                goto end;
-            }
-
-            result.Data = user;
-            result.Success = true;
 
             end:
             return result;
         }
 
-        public OperationResult<N2NUser> AuthenticateByAuthHeader(string authorizationHeader)
+        public async Task<OperationResult<N2NUser>> AuthenticateByAuthHeaderAsync(string authorizationHeader)
         {
             var result = new OperationResult<N2NUser>(){Messages = new List<string>()};
             if (string.IsNullOrEmpty(authorizationHeader))
@@ -174,7 +177,7 @@ namespace N2N.Api.Services
                     {
                         throw new Exception("");
                     }
-                    result = this.AuthenticateByTokenString(jwt);
+                    result = await this.AuthenticateByTokenStringAsync(jwt);
 
                 }
                 catch (Exception exp)
@@ -186,19 +189,89 @@ namespace N2N.Api.Services
             return result;
         }
 
-        public OperationResult RefreshAccessToken(string refreshTokenString)
+        public async Task<OperationResult<AccessTokenDTO>> RefreshAccessTokenAsync(string refreshTokenString)
         {
-            throw new NotImplementedException();
+            var result = new OperationResult<AccessTokenDTO>() {Messages = new List<string>()};
+
+            try
+            {
+                var token = new JwtSecurityTokenHandler().ReadJwtToken(refreshTokenString);
+
+                var tokenId = Guid.Parse(token.Id);
+                var n2nRefreshToken = await _refreshTokenRepo.Data.FirstOrDefaultAsync(x => x.Id.Equals(tokenId));
+
+                if (n2nRefreshToken == null)
+                {
+                    result.Messages.Add($"Refresh token with id [{tokenId}] not found in database");
+                    goto end;
+                }
+
+                if (n2nRefreshToken.TokenExpirationDate < DateTime.UtcNow)
+                {
+                    result.Messages.Add($"Refresh token has expired");
+                    goto end;
+                }
+
+                //remove all effective access tokens created with this refresh token
+                var accessTokens = await _tokenRepo.GetAsync(x => x.RefreshTokenId.Equals(tokenId) && x.TokenExpirationDate > DateTime.UtcNow, null, null);
+                //var accessTokens = _tokenRepo.Data.Where(x => x.RefreshTokenId.Equals(tokenId) && x.TokenExpirationDate > DateTime.UtcNow);
+                _tokenRepo.Delete(accessTokens);
+
+                var nickName = token.Claims.FirstOrDefault(x => x.Type.Equals(ClaimsIdentity.DefaultNameClaimType))?.Value;
+
+                var accessToken = _tokenService.GetN2NToken(n2nRefreshToken.N2NUserId,
+                    nickName,
+                    tokenId,
+                    out DateTime expirationDate
+                );
+
+                var accessTokenString = new JwtSecurityTokenHandler().WriteToken(accessToken);
+
+                result.Success = true;
+                result.Data = new AccessTokenDTO()
+                {
+                    access_token = accessTokenString,
+                    expiration_date = expirationDate
+                };
+
+            }
+            catch (Exception exp)
+            {
+                result.Messages.Add("Refresh token string is corrupted");
+                result.Messages.Add(exp.Message);
+            }
+
+            end:
+            return result;
         }
 
-        public void DeleteToken(string tokenString)
+        public async Task<OperationResult<T>> DeleteTokenAsync<T>(string tokenString, IRepository<T> _repo) where T :  class, IN2NToken
         {
-            throw new NotImplementedException();
+            var result = new OperationResult<T>() {Messages = new List<string>()};
+            try
+            {
+                var token = new JwtSecurityTokenHandler().ReadJwtToken(tokenString);
+                var tokenId = Guid.Parse(token.Id);
+
+                var n2nToken = await _repo.Data.FirstOrDefaultAsync(x => x.Id.Equals(tokenId));
+                _repo.Delete(n2nToken);
+
+                result.Success = true;
+                result.Data = n2nToken;
+            }
+            catch (Exception exp)
+            {
+                result.Messages.Add(exp.Message);    
+            }
+
+            return result;
         }
 
-        public string GetUserName(string tokenString)
+        public async Task<string> GetUserNameAsync(string tokenString)
         {
-            throw new NotImplementedException();
+            var user = await this.AuthenticateByTokenStringAsync(tokenString);
+                    
+            return user.Data.NickName;
         }
     }
 }

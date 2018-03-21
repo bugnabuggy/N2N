@@ -5,9 +5,11 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using N2N.Core.Entities;
+using N2N.Core.Interfaces;
 using N2N.Core.Models;
 using N2N.Infrastructure.Models;
 using N2N.Infrastructure.Models.DTO;
+using N2N.Infrastructure.Repositories;
 
 namespace N2N.Api.Services
 {
@@ -16,13 +18,12 @@ namespace N2N.Api.Services
         Task<OperationResult<LoginResponseDTO>> LoginUserAsync(string nickName, string password);
         Task<IEnumerable<string>> GetUserRolesAsync(string nickname);
 
-        OperationResult GetUserByTokenString(string tokenString);
-        OperationResult<N2NUser> AuthenticateByTokenString(string token);
-        OperationResult<N2NUser> AuthenticateByAuthHeader(string authorizationHeader);
-        OperationResult RefreshAccessToken(string refreshTokenString);
+        Task<OperationResult<N2NUser>> AuthenticateByTokenStringAsync(string token);
+        Task<OperationResult<N2NUser>> AuthenticateByAuthHeaderAsync(string authorizationHeader);
+        Task<OperationResult<AccessTokenDTO>> RefreshAccessTokenAsync(string refreshTokenString);
 
-        void DeleteToken(string tokenString);
-        string GetUserName(string tokenString);
+        Task<OperationResult<T>> DeleteTokenAsync<T>(string tokenString, IRepository<T> _repo) where T : class, IN2NToken;
+        Task<string> GetUserNameAsync(string tokenString);
         
     }
 }

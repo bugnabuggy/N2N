@@ -13,7 +13,7 @@ using N2N.Api.Services;
 using N2N.Core.Constants;
 using N2N.Core.Entities;
 using N2N.Core.Services;
-using N2N.Data.Repositories;
+using N2N.Infrastructure.Repositories;
 using N2N.Infrastructure.DataContext;
 using N2N.Infrastructure.Models;
 using N2N.Services;
@@ -49,6 +49,12 @@ namespace N2N.Api.Configuration
                 {new N2NUser(){NickName = "Administrator"}, "Password@123"}
             };
 
+            var httpContextAccessor = services.GetService<IHttpContextAccessor>();
+            //TODO: make a non reference copy ↓
+            var principal = httpContextAccessor.HttpContext.User;
+            var obj = new object();
+            httpContextAccessor.HttpContext.User = N2NSystem.GetN2NSystemPrincipal();
+
             var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
             var userService = services.GetRequiredService<N2NApiUserService>();
 
@@ -60,8 +66,6 @@ namespace N2N.Api.Configuration
                 }
             }
 
-            System.Threading.Thread.CurrentPrincipal = N2NSystem.GetN2NSystemPrincipal();
-
             foreach (var user in users)
             {
                 if (!userService.UserExistsAndConsistentAsync(user.Key.NickName).Result)
@@ -69,6 +73,8 @@ namespace N2N.Api.Configuration
                     userService.CreateUserAsync(user.Key, user.Value, new []{ N2NRoles.User, N2NRoles.Admin }).Wait(N2NTimingsAndValues.AsyncTaskWaitTime);
                 }
             }
+
+            httpContextAccessor.HttpContext.User = principal;
         }
 
         /// <summary>
@@ -93,6 +99,10 @@ namespace N2N.Api.Configuration
             services.AddTransient<IPostCardService, N2NPostCardService>();
             services.AddTransient<IUsersStatisticsService, UsersStatisticsService>();
             services.AddTransient<IN2NTokenService, TokenService>();
+
+            services.AddTransient<IPrincipal>(provider => 
+                provider.GetService<IHttpContextAccessor>()?.HttpContext?.User 
+            );
         }
     }
 }

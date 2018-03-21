@@ -15,7 +15,7 @@ using Microsoft.IdentityModel.Tokens;
 using N2N.Api.Configuration;
 using N2N.Api.Services;
 using N2N.Core.Entities;
-using N2N.Data.Repositories;
+using N2N.Infrastructure.Repositories;
 using N2N.Infrastructure.DataContext;
 using N2N.Infrastructure.Models;
 

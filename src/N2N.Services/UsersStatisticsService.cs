@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using N2N.Core.Entities;
 using N2N.Core.Models;
 using N2N.Core.Services;
-using N2N.Data.Repositories;
+using N2N.Infrastructure.Repositories;
 using N2N.Infrastructure.DataContext;
 
 namespace N2N.Services

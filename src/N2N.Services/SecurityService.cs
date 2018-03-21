@@ -14,11 +14,18 @@ namespace N2N.Services
 {
     public class SecurityService : ISecurityService
     {
+        private readonly IPrincipal _principal;
+
+        public SecurityService(IPrincipal principal)
+        {
+            this._principal = principal;
+        }
+
         public Guid GetCurrentN2NUserId()
         {
-            if (Thread.CurrentPrincipal.Identity is N2NIdentity)
+            if (_principal.Identity is N2NIdentity)
             {
-                return (Thread.CurrentPrincipal.Identity as N2NIdentity).N2NUser.Id;
+                return (_principal.Identity as N2NIdentity).N2NUser.Id;
             }
             else
             {
@@ -28,8 +35,7 @@ namespace N2N.Services
 
         public bool HasAccess()
         {
-            var principal = System.Threading.Thread.CurrentPrincipal;
-            return principal.IsInRole("Admin");
+            return _principal.IsInRole("Admin");
         }
 
         public bool HasAccess(IIdentity identity)
@@ -40,8 +46,7 @@ namespace N2N.Services
 
         public bool HasAccess(IOwned property)
         {
-            var principal = System.Threading.Thread.CurrentPrincipal;
-            return property.N2NUserId == (principal.Identity as N2NIdentity).N2NUser.Id;
+            return property.N2NUserId == (_principal.Identity as N2NIdentity).N2NUser.Id;
         }
 
         public bool HasAccess(IOwned property, N2NIdentity identity)

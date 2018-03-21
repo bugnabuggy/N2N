@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace N2N.Data.Repositories
+namespace N2N.Infrastructure.Repositories
 {
     public interface IRepository<T>
     {

@@ -51,7 +51,7 @@ namespace N2N.Api.Controllers
             var authHeader = HttpContext.Request.Headers["Authorization"];
             if (authHeader!= "Bearer undefined")
             {
-                string welcome_message = "Welcome " + _authentificationService.GetUserName(authHeader.ToString());
+                string welcome_message = "Welcome " + _authentificationService.GetUserNameAsync(authHeader.ToString());
                 return Json(welcome_message);
             }
             return Json("You not authentification");
@@ -128,7 +128,7 @@ namespace N2N.Api.Controllers
         public void LogOut()
         {
             var authHeader = HttpContext.Request.Headers["Authorization"];
-            this._authentificationService.DeleteToken(authHeader.ToString());
+            //this._authentificationService.DeleteTokenAsync(authHeader.ToString());
         }
 
     }

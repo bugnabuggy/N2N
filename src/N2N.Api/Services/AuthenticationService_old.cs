@@ -10,7 +10,7 @@
 //using N2N.Api.Configuration;
 //using N2N.Core.Entities;
 //using N2N.Core.Models;
-//using N2N.Data.Repositories;
+//using N2N.Infrastructure.Repositories;
 //using N2N.Infrastructure.Models;
 //using N2N.Infrastructure.Models.DTO;
 
@@ -35,7 +35,7 @@
 //            this._userRepo = userRepo;
 //        }
 //        //ToDo
-//        public string GetUserName(string tokenString)
+//        public string GetUserNameAsync(string tokenString)
 //        {
 //            var tokenClaims = new List<Claim>();
 //            var jwt = tokenString.Split(' ')[1];
@@ -144,12 +144,12 @@
 //            };
 //        }
 
-//        public OperationResult RefreshAccessToken(string refreshTokenString)
+//        public OperationResult RefreshAccessTokenAsync(string refreshTokenString)
 //        {
 //            throw new NotImplementedException();
 //        }
 
-//        public void DeleteToken(string tokenString)
+//        public void DeleteTokenAsync(string tokenString)
 //        {
 //            var tokenClaims = new List<Claim>();
 //            var jwt = tokenString.Split(' ')[1];
