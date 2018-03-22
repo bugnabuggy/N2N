@@ -65,9 +65,14 @@ namespace N2N.Services
 
         public OperationResult CreateUser(N2NUser user)
         {
-            var result = new OperationResult();
+            var result = new OperationResult(){Messages = new List<string>()};
 
             //TODO: add verification of user fields
+            if (string.IsNullOrWhiteSpace(user.NickName))
+            {
+                result.Messages.Add("Can't create user without nickname");
+                goto end;
+            }
 
             if (this._security.HasAccess())
             {
@@ -78,13 +83,14 @@ namespace N2N.Services
 
                 result.Data = user;
                 result.Success = true;
-                result.Messages = new[] { $"User was created with Id = ${user.Id}" };
+                result.Messages.Add( $"User was created with Id = ${user.Id}" );
             }
             else
             {
-                result.Messages = new []{ "You dont have permissions to create user" };
+                result.Messages.Add("You dont have permissions to create user");
             }
 
+            end:
             return result;
         }
 

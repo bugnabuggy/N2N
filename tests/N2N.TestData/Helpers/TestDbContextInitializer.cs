@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Security.Claims;
 using System.Security.Principal;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -33,8 +34,10 @@ namespace N2N.TestData.Helpers
             //TestDbContextInitializer._isInitialized = true;
 
             // because we have service permission checks, principal should be an admin
-            var HttpContext = services.GetService<IHttpContextAccessor>();
-            HttpContext.HttpContext.User = N2NSystem.GetN2NSystemPrincipal();
+            
+            var httpContextAccessor = services.GetService<IHttpContextAccessor>();
+            var principal = new ClaimsPrincipal(httpContextAccessor.HttpContext.User);
+            httpContextAccessor.HttpContext.User = N2NSystem.GetN2NSystemPrincipal();
 
 
             var appConfigurator = new AppConfigurator();
@@ -66,7 +69,8 @@ namespace N2N.TestData.Helpers
                 AddAddressess(user, _context);
             }
 
-            
+            //return default principal back;
+            httpContextAccessor.HttpContext.User = principal;
         }
 
         public void AddPromises(N2NUser user, N2NDataContext context)

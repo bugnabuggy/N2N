@@ -31,9 +31,6 @@ namespace N2N.Api.Tests
             var appConfigurator = new AppConfigurator();
             var serviceProvider = new DatabaseDiBootstrapperInMemory().GetServiceProvider();
 
-            //var httpContext = serviceProvider.GetService<IHttpContextAccessor>();
-            //httpContext.HttpContext.User = N2NSystem.GetN2NSystemPrincipal();
-
             appConfigurator.InitRolesAndUsers(serviceProvider);
 
             var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();

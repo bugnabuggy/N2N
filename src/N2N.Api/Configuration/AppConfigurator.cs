@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Security.Principal;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
@@ -50,9 +51,8 @@ namespace N2N.Api.Configuration
             };
 
             var httpContextAccessor = services.GetService<IHttpContextAccessor>();
-            //TODO: make a non reference copy ↓
-            var principal = httpContextAccessor.HttpContext.User;
-            var obj = new object();
+            // Make a user N2N System user to initialize the database
+            var principal = new ClaimsPrincipal(httpContextAccessor.HttpContext.User);
             httpContextAccessor.HttpContext.User = N2NSystem.GetN2NSystemPrincipal();
 
             var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();

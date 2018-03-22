@@ -245,6 +245,16 @@ namespace N2N.Api.Services
             return result;
         }
 
+        public async Task<OperationResult<N2NToken>> DeleteAccessToken(string tokenString)
+        {
+            return await this.DeleteTokenAsync<N2NToken>(tokenString, this._tokenRepo);
+        }
+
+        public async Task<OperationResult<N2NRefreshToken>> DeleteRefreshToken(string tokenString)
+        {
+            return await this.DeleteTokenAsync<N2NRefreshToken>(tokenString, this._refreshTokenRepo);
+        }
+
         public async Task<OperationResult<T>> DeleteTokenAsync<T>(string tokenString, IRepository<T> _repo) where T :  class, IN2NToken
         {
             var result = new OperationResult<T>() {Messages = new List<string>()};

@@ -5,6 +5,7 @@ using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
+using N2N.Core.Enums;
 using N2N.Core.Interfaces;
 using N2N.Core.Services;
 using N2N.Infrastructure.Exceptions;
@@ -52,6 +53,11 @@ namespace N2N.Services
         public bool HasAccess(IOwned property, N2NIdentity identity)
         {
             return property.N2NUserId == identity.N2NUser.Id;
+        }
+
+        public bool HasAccess(N2NActions action, N2NIdentity identity)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -55,6 +55,7 @@
     <Compile Include="Entities\N2NAddress.cs" />
     <Compile Include="Entities\N2NPromise.cs" />
     <Compile Include="Entities\N2NUser.cs" />
+    <Compile Include="Enums\N2NActions.cs" />
     <Compile Include="Interfaces\IN2NToken.cs" />
     <Compile Include="Constants\ErrorMessages.cs" />
     <Compile Include="Interfaces\IOwned.cs" />
