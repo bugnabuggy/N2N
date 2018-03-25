@@ -1,0 +1,40 @@
+<!-- <div class='container-fluid'>
+  <div class='row'>
+      <div class='col-sm-5'>
+          <nav-menu></nav-menu>
+      </div>
+      <div class='col-sm-7 body-content '>
+          <router-outlet></router-outlet>
+      </div>
+  </div>
+</div> -->
+
+<div class='container-fluid '>
+       <top-header></top-header>
+    <div class='row full-height'>
+        
+
+        <nav class='sidebar col-sm-4 col-lg-3 d-none d-sm-block'>
+            <div class='row user-info d-sm-grid '>
+                <div class='n2n-logo d-none d-lg-flex'>
+                    <h1>N2N</h1>
+                    <div>Log Out</div>
+                </div>
+                <div class='n2n-userpic'>
+                        <img src="https://pbs.twimg.com/profile_images/700963642997608448/_v8Bb_W__400x400.jpg" alt="User" class="img-thumbnail img-fluid rounded-circle">
+                    <p>Profile</p>
+                </div>
+            </div>
+            
+            <div>One</div>
+            <div>two</div>
+            <div>three</div>
+        </nav>
+
+
+        <div class='main col'>
+          <router-outlet></router-outlet>
+        </div>
+    </div>
+
+</div>

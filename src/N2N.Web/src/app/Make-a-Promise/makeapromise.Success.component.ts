@@ -1,5 +1,5 @@
 import { Component, HostListener, OnInit } from '@angular/core';
-import { UserService } from '../userService';
+import { UserService } from '../services/userService';
 import { MatDialog } from '@angular/material';
 import { Input} from '@angular/core';
 import { Data } from '@angular/router/src/config';

@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material';
 
 import {LogInComponent} from '../login/login.component';
-import {UserService} from '../userService';
+import {UserService} from '../services/userService';
 import {StoreHeaders} from '../storeHeaders'
 
 @Component({

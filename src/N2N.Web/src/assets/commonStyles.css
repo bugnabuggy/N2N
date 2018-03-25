@@ -1,0 +1,74 @@
+* {
+    padding: 0;
+    margin: 0;
+}
+
+html, body, app-root{
+    display: grid;
+    min-height: 100%;
+}
+
+.sidebar {
+    background: tan;
+}
+
+.main {
+    background: thistle;
+}
+
+.full-height {
+    min-height: 100%;
+}
+
+.user-info {
+    display: grid;
+    grid-template-columns: 2fr 2fr;
+    min-height: 150px;
+    border: plum 1px solid;
+    background: snow;
+}
+
+@media (max-width: 991px) {
+    .user-info{
+        display: flex;
+        overflow: hidden;
+    }
+}
+
+.user-info>div {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.n2n-logo {
+    background: cornsilk;
+}
+
+.n2n-logo h1 {
+    font-size: 350%;
+}
+
+.n2n-userpic{
+    width: 100%;
+}
+
+.n2n-userpic img{
+    max-height: 150px;
+}
+
+.n2n-userpic p {
+    text-align: center;
+}
+
+header{
+    padding-top: 5px;
+}
+
+/* 
+html, body, app-root {
+    display: flex;
+    min-height: 100%;
+} */

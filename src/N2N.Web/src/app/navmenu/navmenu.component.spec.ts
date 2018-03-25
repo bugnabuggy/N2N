@@ -7,7 +7,7 @@ import { HttpModule } from '@angular/http';
 
 import {StoreHeaders} from '../storeHeaders';
 import {StoreLinks} from '../storeLinks';
-import {UserService} from '../userService';
+import {UserService} from '../services/userService';
 
 import { By }           from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';

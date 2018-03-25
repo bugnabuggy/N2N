@@ -1,0 +1,85 @@
+import { Injectable } from '@angular/core';
+import { Headers, Http } from '@angular/http';
+import { Observable } from 'rxjs/Observable';
+import {StoreHeaders} from '../storeHeaders';
+import {StoreLinks} from '../storeLinks';
+
+
+@Injectable()
+export class UserService {
+  // URL to web api
+  constructor(
+    private http: Http,
+    private _storeHeaders:StoreHeaders,
+    private _storeLinks:StoreLinks
+  ) { }
+
+  isAuthorization(): Promise<any>{
+    return this.http.get(
+      this._storeLinks.isAuthorizationUrl,
+      { headers: this._storeHeaders.jsonAndTokenHeaders }
+    )
+    .toPromise()
+    .then(resp => {  return resp })
+    .catch(this.handleError);
+  }
+
+  sendUserDataForRegistration(nickName: string, password: string, captcha: string): Promise<any> {
+
+    var dataUser = {
+      nickName,
+      password,
+      captcha
+    };
+    return this.http.post(
+        this._storeLinks.registerUrl,
+        dataUser,
+        { headers: this._storeHeaders.jsonHeader }
+      )
+      .toPromise()
+      .then(resp => {  return resp })
+      .catch(this.handleError);
+  }
+
+  checkUser(){
+    
+    return this.http.get(
+      this._storeLinks.СheckUserUrl,
+      { headers: this._storeHeaders.jsonAndTokenHeaders }
+    )
+    .toPromise()
+    .then(resp => {  return resp.json })
+    .catch(this.handleError);
+  }
+
+  logIn(nickName: string, password: string, captcha: string): Promise<any>{
+    var data = {
+      nickName,
+      password,
+      captcha
+    };
+    return this.http.post(
+        this._storeLinks.logInUrl,
+        data,
+        { headers: this._storeHeaders.jsonHeader }
+      )
+      .toPromise()
+      .then(resp => { debugger; return resp })
+      .catch(this.handleError);
+  }
+
+  logOut(): Promise<any>{
+    return this.http.delete(
+      this._storeLinks.logoutUrl,
+      { headers:  this._storeHeaders.jsonAndTokenHeaders}
+    )
+    .toPromise()
+    .then(resp=> {debugger; localStorage.setItem('Token',"");return resp;})
+  }
+
+  private handleError(error: any): Promise<any> {
+
+    return Promise.reject(error);
+  }
+
+}

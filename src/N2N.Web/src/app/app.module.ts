@@ -4,7 +4,7 @@ import { FormsModule,ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { HttpClientModule } from '@angular/common/http';
 
-import { AppComponent } from './app.component';
+import { AppComponent } from './components/app.component';
 import { NavMenuComponent } from './navmenu/navmenu.component';
 import { MakeaPromiseCreatedComponent } from './Make-a-Promise/makeapromise.created.component';
 import { MakeaPromiseSuccessComponent } from './Make-a-Promise/makeapromise.Success.component';
@@ -14,7 +14,7 @@ import {LogInComponent} from './login/login.component';
 import {RegistrationComponent} from './registration/registration.component';
 import {HomePageComponent} from './home-Page/homePage.component';
 
-import {UserService} from './userService';
+import {UserService} from './services/userService';
 import {StoreHeaders} from './storeHeaders';
 import {StoreLinks} from './storeLinks';
 import {Web3Service} from './Web3Service';
@@ -25,9 +25,12 @@ import { AppRoutingModule } from './app-routing.module';
 import {MatDialogModule,MatButtonModule,MatInputModule,MatCardModule,MatCheckboxModule} from '@angular/material';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
+import {COMPONENT_DECLORATIONS } from './imports';
+
 @NgModule({
   declarations: [
     AppComponent,
+    COMPONENT_DECLORATIONS,
     NavMenuComponent,
     MakeaPromiseCreatedComponent,
     MakeaPromiseSuccessComponent,
@@ -50,7 +53,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
     HttpModule,
     ReactiveFormsModule
   ],
-  entryComponents: [LogInComponent,RegistrationComponent],
+  entryComponents: [LogInComponent, RegistrationComponent],
   providers: [UserService,StoreHeaders,StoreLinks,Web3Service,PromiseService],
   bootstrap: [AppComponent]
 })

@@ -52,7 +52,9 @@ namespace N2N.Api.Configuration
 
             var httpContextAccessor = services.GetService<IHttpContextAccessor>();
             // Make a user N2N System user to initialize the database
-            var principal = new ClaimsPrincipal(httpContextAccessor.HttpContext.User);
+            var stubHttpContext = httpContextAccessor.HttpContext ?? new DefaultHttpContext();
+            httpContextAccessor.HttpContext = stubHttpContext;
+            var principal = new ClaimsPrincipal(stubHttpContext.User);
             httpContextAccessor.HttpContext.User = N2NSystem.GetN2NSystemPrincipal();
 
             var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();

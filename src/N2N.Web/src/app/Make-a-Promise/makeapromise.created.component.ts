@@ -1,5 +1,5 @@
 import { Component, HostListener, OnInit } from '@angular/core';
-import { UserService } from '../userService';
+import { UserService } from '../services/userService';
 import { MatDialog } from '@angular/material';
 
 import { LogInComponent } from '../login/login.component';
