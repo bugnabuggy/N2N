@@ -30,13 +30,13 @@ namespace N2N.Api.Tests
         private N2NAutorizationAttribute _filter;
         
         //private IN2NTokenService _tokenService;
-        //private ServiceProvider _serviceProvider;
+        private ServiceProvider _serviceProvider;
 
 
         [SetUp]
         public async Task SetUp()
         {
-            //_serviceProvider = await new DatabaseDiBootstrapperInMemory().GetServiceProviderWithSeedDB();
+            _serviceProvider = await new DatabaseDiBootstrapperInMemory().GetServiceProviderWithSeedDB();
             //_tokenService = _serviceProvider.GetService<IN2NTokenService>();
 
             _filter = new N2NAutorizationAttribute();
@@ -46,7 +46,7 @@ namespace N2N.Api.Tests
         [Test]
         public async Task Should_pass_all_if_action_has_IAllowAnonymous_attribute()
         {
-            ServiceProvider _serviceProvider = await new DatabaseDiBootstrapperInMemory().GetServiceProviderWithSeedDB();
+            //ServiceProvider _serviceProvider = await new DatabaseDiBootstrapperInMemory().GetServiceProviderWithSeedDB();
             var filterMetadata = new List<IFilterMetadata>() {new AllowAnonymousFilter()};
             var actionContext = new ActionContext(
                 new DefaultHttpContext() { RequestServices = _serviceProvider },
@@ -71,7 +71,7 @@ namespace N2N.Api.Tests
         [Test]
         public async Task Should_return_http_401_if_not_authorized_successfully()
         {
-            ServiceProvider _serviceProvider = await new DatabaseDiBootstrapperInMemory().GetServiceProviderWithSeedDB();
+            //ServiceProvider _serviceProvider = await new DatabaseDiBootstrapperInMemory().GetServiceProviderWithSeedDB();
             var filterMetadata = new List<IFilterMetadata>() {};
             var actionContext = new ActionContext(
                 new DefaultHttpContext() { RequestServices = _serviceProvider },
@@ -102,7 +102,7 @@ namespace N2N.Api.Tests
         [Test]
         public async Task Should_set_principal_and_roles_for_user_via_token()
         {
-            ServiceProvider _serviceProvider = await new DatabaseDiBootstrapperInMemory().GetServiceProviderWithSeedDB();
+            //ServiceProvider _serviceProvider = await new DatabaseDiBootstrapperInMemory().GetServiceProviderWithSeedDB();
             IN2NTokenService _tokenService = _serviceProvider.GetService<IN2NTokenService>();
             var filterMetadata = new List<IFilterMetadata>() {};
             var actionContext = new ActionContext(
