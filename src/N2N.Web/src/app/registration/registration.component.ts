@@ -19,18 +19,18 @@ export class RegistrationComponent {
               private _storeHeaders:StoreHeaders
             ) {}
 
-  sendRegistrationData(nickname: string, password: string, confiramtion: string, capcha: string): void {
+  sendRegistrationData(nickname: string, password: string, confiramtion: string, captcha: string): void {
     var nickname: string = nickname.trim();
     var password: string = password.trim();
     var confiramtion: string = confiramtion.trim();
-    var capcha: string = capcha.trim();
+    var captcha: string = captcha.trim();
   
-    if (nickname != "" && password != "" && capcha != "")
+    if (nickname != "" && password != "" && captcha != "")
      {
         
       if (password == confiramtion) 
       {
-        this._userService.sendUserDataForRegistration(nickname, password, capcha)
+        this._userService.sendUserDataForRegistration(nickname, password, captcha)
           .then(data => 
             {
             localStorage.setItem("Token", JSON.parse(data._body).access_token);

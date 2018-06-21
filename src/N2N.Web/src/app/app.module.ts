@@ -6,15 +6,19 @@ import { HttpClientModule } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
 import { NavMenuComponent } from './navmenu/navmenu.component';
-import { MakeaPromiseComponent } from './Make-a-Promise/makeapromise.component';
+import { MakeaPromiseCreatedComponent } from './Make-a-Promise/makeapromise.created.component';
+import { MakeaPromiseSuccessComponent } from './Make-a-Promise/makeapromise.Success.component';
 import { SenfGiftComponent } from './Send-Gift/senfgift.component';
 import {SendPostcardComponent} from './Send-Postcard/sendpostcard.component'
 import {LogInComponent} from './login/login.component';
 import {RegistrationComponent} from './registration/registration.component';
+import {HomePageComponent} from './home-Page/homePage.component';
 
 import {UserService} from './userService';
-import {StoreHeaders} from './storeHeaders'
-import {StoreLinks} from './storeLinks'
+import {StoreHeaders} from './storeHeaders';
+import {StoreLinks} from './storeLinks';
+import {Web3Service} from './Web3Service';
+import {PromiseService} from './Make-a-Promise/promiseService';
 
 import { AppRoutingModule } from './app-routing.module';
 
@@ -25,11 +29,13 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
   declarations: [
     AppComponent,
     NavMenuComponent,
-    MakeaPromiseComponent,
+    MakeaPromiseCreatedComponent,
+    MakeaPromiseSuccessComponent,
     SenfGiftComponent,
     SendPostcardComponent,
     LogInComponent,
-    RegistrationComponent
+    RegistrationComponent,
+    HomePageComponent
   ],
   imports: [
     BrowserModule,
@@ -45,7 +51,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
     ReactiveFormsModule
   ],
   entryComponents: [LogInComponent,RegistrationComponent],
-  providers: [UserService,StoreHeaders,StoreLinks],
+  providers: [UserService,StoreHeaders,StoreLinks,Web3Service,PromiseService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

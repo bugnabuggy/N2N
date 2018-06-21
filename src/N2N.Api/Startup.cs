@@ -19,23 +19,19 @@ using N2N.Core.Entities;
 using N2N.Data.Repositories;
 using N2N.Infrastructure.DataContext;
 using N2N.Infrastructure.Models;
-using SimpleInjector;
-using SimpleInjector.Lifestyles;
-using SimpleInjector.Integration.AspNetCore;
-using SimpleInjector.Integration.AspNetCore.Mvc;
+
 
 namespace N2N.Api
 {
     public class Startup
     {
         public IConfiguration Configuration { get; }
-        private Container container = new Container();
+        private AppConfigurator appConfigurator = new AppConfigurator();
 
         public Startup(IConfiguration configuration, IHostingEnvironment env)
         {
             Configuration = configuration;
         }
-
 
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
@@ -79,9 +75,10 @@ namespace N2N.Api
                 .AddEntityFrameworkStores<N2NDataContext>()
                 .AddDefaultTokenProviders();
 
-            services.AddTransient<IRepository<N2NRefreshToken>, DbRepository<N2NRefreshToken>>();
-            services.AddTransient<IRepository<N2NToken>, DbRepository<N2NToken>>();
-            services.AddTransient<IAuthentificationService, AuthentificationService>();
+
+            // because Simple Injector do not work for HttpContext.RequestServices.GetService
+            appConfigurator.ConfigureServices(services);
+
 
             services.AddCors(options =>
             {
@@ -93,36 +90,18 @@ namespace N2N.Api
                             .AllowAnyHeader();
                     });
             });
-
-            
-
-
-            N2N.Api.Configuration.AppStart.IntegrateSimpleInjector(services, this.container);
             
         }
         
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            //if (env.IsDevelopment())
-            //{
-                app.UseDeveloperExceptionPage();
-            //}
+            
+            app.UseDeveloperExceptionPage();
 
-            N2N.Api.Configuration.AppStart.UseMvcAndConfigureRoutes(app);
-            N2N.Api.Configuration.AppStart.InitializeContainer(app, this.container);
-
-            container.Verify();
+            appConfigurator.UseMvcAndConfigureRoutes(app);
 
             app.UseAuthentication();
-
-            var optionsBuilder = new DbContextOptionsBuilder<N2NDataContext>();
-            optionsBuilder.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
-
-            using (var db = new N2NDataContext(optionsBuilder.Options))
-            {
-                N2N.Api.Configuration.AppStart.BootstrapDb(db);
-            }
             
         }
 

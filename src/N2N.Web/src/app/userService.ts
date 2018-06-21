@@ -14,16 +14,26 @@ export class UserService {
     private _storeLinks:StoreLinks
   ) { }
 
-  sendUserDataForRegistration(nickName: string, password: string, capcha: string): Promise<any> {
+  isAuthorization(): Promise<any>{
+    return this.http.get(
+      this._storeLinks.isAuthorizationUrl,
+      { headers: this._storeHeaders.jsonAndTokenHeaders }
+    )
+    .toPromise()
+    .then(resp => {  return resp })
+    .catch(this.handleError);
+  }
 
-    var data = {
+  sendUserDataForRegistration(nickName: string, password: string, captcha: string): Promise<any> {
+
+    var dataUser = {
       nickName,
       password,
-      capcha
+      captcha
     };
     return this.http.post(
         this._storeLinks.registerUrl,
-        data,
+        dataUser,
         { headers: this._storeHeaders.jsonHeader }
       )
       .toPromise()
@@ -42,11 +52,11 @@ export class UserService {
     .catch(this.handleError);
   }
 
-  logIn(nickName: string, password: string, capcha: string): Promise<any>{
+  logIn(nickName: string, password: string, captcha: string): Promise<any>{
     var data = {
       nickName,
       password,
-      capcha
+      captcha
     };
     return this.http.post(
         this._storeLinks.logInUrl,
