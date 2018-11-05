@@ -46,7 +46,7 @@ namespace N2N.Api.Tests
             _configuration = configuration.Object;
 
             _tokenService = new TokenService(_tokenRepo, _refreshTokenRepo, _configuration);
-            _authSrv = new AuthenticationService(_userManager, _userRepo, _tokenRepo, _refreshTokenRepo, _tokenService);
+            _authSrv = new AuthenticationService(_userManager, _userRepo, _tokenRepo, _refreshTokenRepo, _tokenService, null);
         }
 
         [OneTimeTearDown]

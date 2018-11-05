@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -18,7 +19,7 @@ using N2N.Core.Entities;
 using N2N.Infrastructure.Repositories;
 using N2N.Infrastructure.DataContext;
 using N2N.Infrastructure.Models;
-
+using System.Reflection;
 
 namespace N2N.Api
 {
@@ -44,13 +45,55 @@ namespace N2N.Api
             services.AddIdentity<N2NIdentityUser, IdentityRole>(
                     options =>
                     {
-                        options.Password.RequireDigit = true;
+                        options.Password.RequireDigit = false;
                         options.Password.RequireNonAlphanumeric = false;
                         options.Password.RequireUppercase = false;
+                        options.Password.RequireLowercase = false;
                         options.Password.RequiredLength = 5;
                     })
                 .AddEntityFrameworkStores<N2NDataContext>()
                 .AddDefaultTokenProviders();
+
+            services.AddIdentityServer()
+                .AddDeveloperSigningCredential()
+                .AddInMemoryApiResources(IdentityServer.GetApis())
+                .AddInMemoryClients(IdentityServer.GetClients())
+                .AddAspNetIdentity<N2NIdentityUser>()
+                .AddOperationalStore(options =>
+                {
+                    options.ConfigureDbContext = builder =>
+                        builder.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"),
+                            sql => sql.MigrationsAssembly(typeof(N2NDataContext).GetTypeInfo().Assembly.GetName().Name));
+
+                    // this enables automatic token cleanup. this is optional.
+                    options.EnableTokenCleanup = true;
+                    options.TokenCleanupInterval = 30;
+                });
+
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.Events.OnRedirectToLogin = context =>
+                {
+                    context.Response.StatusCode = 401;
+                    return Task.CompletedTask;
+                };
+            });
+
+
+            services.AddAuthentication(o =>
+                {
+                    o.DefaultScheme = IdentityServerAuthenticationDefaults.AuthenticationScheme;
+                    o.DefaultAuthenticateScheme = IdentityServerAuthenticationDefaults.AuthenticationScheme;
+                })
+                .AddIdentityServerAuthentication(options =>
+                {
+
+                    options.Authority = Configuration["ServerUrl"];
+                    options.RequireHttpsMetadata = false;
+
+                    options.ApiName = SiteConstants.ApiName;
+                });
 
             appConfigurator.ConfigureServices(services);
 
@@ -75,8 +118,9 @@ namespace N2N.Api
 
             appConfigurator.UseMvcAndConfigureRoutes(app);
 
-            app.UseAuthentication();
-            
+            //app.UseAuthentication();
+            app.UseIdentityServer();
+
         }
 
     }

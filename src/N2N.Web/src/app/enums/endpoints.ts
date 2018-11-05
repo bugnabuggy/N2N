@@ -5,7 +5,7 @@ export class Endpoints {
         resetPassword: 'reset_password',
     };
 
-    static apiUrl = 'http://localhost:63354';
+    static apiUrl = 'http://localhost:56199';
 
     static api = {
         get login() { return Endpoints.apiUrl + '/user/login'; },

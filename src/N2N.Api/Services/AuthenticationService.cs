@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
+using IdentityServer4;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -17,6 +18,8 @@ using N2N.Core.Models;
 using N2N.Infrastructure.Repositories;
 using N2N.Infrastructure.Models;
 using N2N.Infrastructure.Models.DTO;
+using IdentityServer4.Services;
+using N2N.Api.Helpers;
 
 namespace N2N.Api.Services
 {
@@ -27,13 +30,15 @@ namespace N2N.Api.Services
         private IRepository<N2NToken> _tokenRepo;
         private IRepository<N2NRefreshToken> _refreshTokenRepo;
         private IN2NTokenService _tokenService;
+        private IdentityServerTools _identityServer;
         
 
         public AuthenticationService(UserManager<N2NIdentityUser> userManager,
             IRepository<N2NUser> userRepo,
             IRepository<N2NToken> tokenRepo,
             IRepository<N2NRefreshToken> refreshTokenRepo,
-            IN2NTokenService tokenService
+            IN2NTokenService tokenService,
+            IdentityServerTools identityServer
             )
         {
 
@@ -42,6 +47,7 @@ namespace N2N.Api.Services
             this._tokenRepo = tokenRepo;
             this._refreshTokenRepo = refreshTokenRepo;
             this._tokenService = tokenService;
+            this._identityServer = identityServer;
         }
 
         public async Task<OperationResult<LoginResponseDTO>> LoginUserAsync(string nickName, string password)
@@ -73,21 +79,30 @@ namespace N2N.Api.Services
 
             try
             {
-                //generate tokens        
-                DateTime refreshTokenExpirationDate;
-                var refreshToken = _tokenService.GetN2NRefreshToken(n2nUser.Id, n2nUser.NickName, out refreshTokenExpirationDate);
-                
-                DateTime tokenExpirationDate;
-                var token = _tokenService.GetN2NToken(n2nUser.Id, n2nUser.NickName, Guid.Empty, out tokenExpirationDate);
-                
+                var claims = ClaimsGenerator.GetClaims(await this._userManager.GetRolesAsync(user), n2nUser);
 
-                result.Success = true;
+                var jwt = await this._identityServer.IssueJwtAsync(SiteConstants.AccessTokenLifeTime, claims);
+
                 result.Data = new LoginResponseDTO()
                 {
-                    access_token = new JwtSecurityTokenHandler().WriteToken(token),
-                    expiration_date = tokenExpirationDate,
-                    refresh_token = new JwtSecurityTokenHandler().WriteToken(refreshToken)
+                    access_token = jwt,
+                    expiration_date = DateTime.Now.AddSeconds(SiteConstants.AccessTokenLifeTime)
                 };
+                //generate tokens        
+                //DateTime refreshTokenExpirationDate;
+                //var refreshToken = _tokenService.GetN2NRefreshToken(n2nUser.Id, n2nUser.NickName, out refreshTokenExpirationDate);
+
+                //DateTime tokenExpirationDate;
+                //var token = _tokenService.GetN2NToken(n2nUser.Id, n2nUser.NickName, Guid.Empty, out tokenExpirationDate);
+
+
+                //result.Success = true;
+                //result.Data = new LoginResponseDTO()
+                //{
+                //    access_token = new JwtSecurityTokenHandler().WriteToken(token),
+                //    expiration_date = tokenExpirationDate,
+                //    refresh_token = new JwtSecurityTokenHandler().WriteToken(refreshToken)
+                //};
             }
             catch (Exception exp)
             {

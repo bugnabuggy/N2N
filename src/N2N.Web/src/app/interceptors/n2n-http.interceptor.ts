@@ -6,16 +6,27 @@ import {
 } from '@angular/common/http';
 
 
-import { SiteStateService } from '../services/site-state.service';
+import { SiteStateService, SecurityService } from '../services';
 
 
 @Injectable()
 export class N2NHttpInterceptor implements HttpInterceptor {
-  constructor(public siteSvc: SiteStateService) {
+  constructor(
+    private siteSvc: SiteStateService,
+    private securitySvc: SecurityService
+    ) {
   }
 
   intercept(req: HttpRequest<any>, next: HttpHandler):
     Observable<HttpEvent<any>> {
+    if (this.securitySvc.accessToken) {
+      req = req.clone({
+        setHeaders: {
+          Authorization: `Bearer ${this.securitySvc.accessToken}`
+        }
+      });
+    }
+
     return next.handle(req).pipe(
       tap(event => {
         this.siteSvc.isRequestInProgress = true;
