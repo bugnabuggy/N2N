@@ -11,9 +11,10 @@ using System;
 namespace N2N.Infrastructure.Migrations
 {
     [DbContext(typeof(N2NDataContext))]
-    partial class N2NDataContextModelSnapshot : ModelSnapshot
+    [Migration("20181105115115_Check")]
+    partial class Check
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

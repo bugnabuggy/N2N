@@ -18,3 +18,17 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     background-image: url(https://material.angular.io/assets/img/examples/shiba1.jpg);
     background-size: cover;
 }
+
+n2n-login-page, n2n-registration-page {
+    display: flex;
+    flex: 1;
+}
+
+.mw-30 {
+    min-width: 30%;
+}
+
+
+.text-white .mat-button-wrapper {
+    color: white;
+}

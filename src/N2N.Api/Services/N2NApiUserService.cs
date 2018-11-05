@@ -62,9 +62,13 @@ namespace N2N.Api.Services
                         await _userManager.DeleteAsync(identityUser);
                     }
                 }
+                else
+                {
+                    result.Messages = identityResult.Errors.Select(x => $"{x.Code} - {x.Description}").ToList();
+                }
             } else
             {
-                result.Messages = new[] { $" User with nickname {user.NickName} already exists!" };
+                result.Messages = new[] { $" User with nickname [{user.NickName}] already exist!" };
             }
 
             return result;

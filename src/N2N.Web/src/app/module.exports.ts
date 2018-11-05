@@ -80,15 +80,27 @@ import {
     PageNotFoundComponent,
     MainPageComponent,
     LoginPageComponent,
-    RegistrationPageComponent
+    RegistrationPageComponent,
+    ResetPasswordPageComponent,
 } from './pages/';
 
 export const PAGES = [
     PageNotFoundComponent,
     MainPageComponent,
     LoginPageComponent,
-    RegistrationPageComponent
+    RegistrationPageComponent,
+    ResetPasswordPageComponent
 ];
+
+import {
+    UserService
+} from './services/';
+
+export const SERVICES = [
+    UserService
+];
+
+
 
 
 

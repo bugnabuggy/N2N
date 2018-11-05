@@ -88,8 +88,8 @@ namespace N2N.Api.Controllers
         {
           
             if (!string.IsNullOrEmpty(userRegistration.NickName) && 
-                !string.IsNullOrEmpty(userRegistration.Password) && 
-                !string.IsNullOrEmpty(userRegistration.Captcha) )
+                !string.IsNullOrEmpty(userRegistration.Password))
+                // && !string.IsNullOrEmpty(userRegistration.Captcha) )
             {
                 N2NUser user = new N2NUser()
                 {

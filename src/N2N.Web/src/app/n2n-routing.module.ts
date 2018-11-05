@@ -4,8 +4,11 @@ import { Routes, RouterModule } from '@angular/router';
 import {
   PageNotFoundComponent,
   MainPageComponent,
-  LoginPageComponent
+  LoginPageComponent,
+  RegistrationPageComponent,
+  ResetPasswordPageComponent
 } from './pages';
+import { Endpoints } from './enums/endpoints';
 
 const routes: Routes = [
   {
@@ -13,8 +16,16 @@ const routes: Routes = [
     component: MainPageComponent
   },
   {
-    path: 'login',
+    path: Endpoints.site.login,
     component: LoginPageComponent
+  },
+  {
+    path: Endpoints.site.registration,
+    component: RegistrationPageComponent
+  },
+  {
+    path: Endpoints.site.resetPassword,
+    component: ResetPasswordPageComponent
   },
   {
     path: '',

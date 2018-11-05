@@ -10,7 +10,7 @@
       <a mat-list-item routerLink="/heroes">Link 3</a>
     </mat-nav-list>
   </mat-sidenav>
-  <mat-sidenav-content>
+  <mat-sidenav-content class='d-flex flex-column'>
     <mat-toolbar color="primary" class='justify-content-between'>
       <button
         type="button"
@@ -25,10 +25,14 @@
     </mat-toolbar>
     
     <!-- Add Content Here -->
-    <router-outlet>
-    </router-outlet>
+      <router-outlet>
+      </router-outlet>
   </mat-sidenav-content>
 </mat-sidenav-container>
 
 
-
+<div *ngIf="siteStateSvc.isRequestInProgress" 
+style="background-color: rgba(0,0,0,0.3); top:0; left: 0; height: 100%; width: 100%; z-index: 1080;"
+class='position-fixed d-flex justify-content-center align-items-center'>
+  <mat-spinner diameter="100" ></mat-spinner>
+</div>

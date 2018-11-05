@@ -1,3 +1,22 @@
-<p>
-  registration-page works!
-</p>
+<div class='d-flex flex-grow-1 justify-content-center align-items-center'>
+  <form class='d-flex flex-column p-2 mw-30' (ngSubmit)="onSubmit($event)" #f="ngForm" >
+    <h2>Registration</h2>
+    <mat-form-field>
+      <input id="name" name="name" [(ngModel)]="nickname" #name="ngModel"  matInput placeholder="Nickname" >
+    </mat-form-field>
+
+    <mat-form-field>
+      <input matInput name="password" type="password" [(ngModel)]="password" placeholder="Password">
+    </mat-form-field>
+
+    <mat-form-field>
+      <input matInput name="rePassword" type="password" [(ngModel)]="rePassword" placeholder="Retype password">
+    </mat-form-field>
+
+    <div class='d-flex justify-content-between my-3'>
+      <a [routerLink]="'/' + Endpoints.site.login">Already have an account?</a>
+    </div>
+
+    <button type="submit" mat-raised-button>Register an account</button>
+  </form>
+</div>

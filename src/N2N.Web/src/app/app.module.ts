@@ -1,12 +1,17 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { LayoutModule } from '@angular/cdk/layout';
+import { HttpClientModule } from '@angular/common/http';
 
 import { N2NRoutingModule } from './n2n-routing.module';
 import { AppComponent } from './app.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { LayoutModule } from '@angular/cdk/layout';
+import { PAGES, MATERIAL, SERVICES } from './module.exports';
+import { N2NHttpInterceptor } from './interceptors/n2n-http.interceptor';
 
-import { PAGES, MATERIAL } from './module.exports';
+
 
 @NgModule({
   declarations: [
@@ -15,12 +20,18 @@ import { PAGES, MATERIAL } from './module.exports';
   ],
   imports: [
     BrowserModule,
+    FormsModule,
+    ReactiveFormsModule,
     N2NRoutingModule,
     BrowserAnimationsModule,
     LayoutModule,
-    MATERIAL
+    MATERIAL,
+    HttpClientModule
   ],
-  providers: [],
+  providers: [
+    SERVICES,
+    { provide: HTTP_INTERCEPTORS, useClass: N2NHttpInterceptor, multi: true },
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

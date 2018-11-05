@@ -36,7 +36,7 @@ namespace N2N.Services
 
         public bool HasAccess()
         {
-            return _principal.IsInRole("Admin");
+            return _principal.IsInRole("Admin") || System.Threading.Thread.CurrentPrincipal.IsInRole("Admin");
         }
 
         public bool HasAccess(IIdentity identity)
