@@ -3,6 +3,7 @@ export class Endpoints {
         login: 'login',
         registration: 'registration',
         resetPassword: 'reset_password',
+        dashboard: 'dashboard',
     };
 
     static apiUrl = 'http://localhost:56199';

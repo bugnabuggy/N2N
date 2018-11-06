@@ -82,6 +82,7 @@ import {
     LoginPageComponent,
     RegistrationPageComponent,
     ResetPasswordPageComponent,
+    DashboardPageComponent
 } from './pages/';
 
 export const PAGES = [
@@ -89,15 +90,22 @@ export const PAGES = [
     MainPageComponent,
     LoginPageComponent,
     RegistrationPageComponent,
-    ResetPasswordPageComponent
+    ResetPasswordPageComponent,
+    DashboardPageComponent
 ];
 
 import {
-    UserService
+    UserService,
+    SecurityService,
+    NotificationService,
+    SiteStateService
 } from './services/';
 
 export const SERVICES = [
-    UserService
+    UserService,
+    SecurityService,
+    NotificationService,
+    SiteStateService
 ];
 
 

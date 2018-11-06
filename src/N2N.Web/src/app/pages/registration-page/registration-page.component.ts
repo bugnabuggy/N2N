@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Endpoints } from 'src/app/enums/endpoints';
-import { UserService } from 'src/app/services';
-import { NotificationService } from 'src/app/services/notification.service';
+import { UserService, SecurityService, NotificationService } from 'src/app/services';
+import { LoginContract } from 'src/app/models';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'n2n-registration-page',
@@ -18,6 +19,8 @@ export class RegistrationPageComponent implements OnInit {
   constructor(
     public userSvc: UserService,
     private notifications: NotificationService,
+    private securitySvc: SecurityService,
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -31,8 +34,10 @@ export class RegistrationPageComponent implements OnInit {
         this.nickname,
         this.password
       ).subscribe(
-        (val) => {
-          debugger;
+        (resp: LoginContract ) => {
+            debugger;
+            this.securitySvc.setTokens(resp);
+            this.router.navigate(['\\' + Endpoints.site.dashboard]);
         },
         (err) => {
           debugger;
