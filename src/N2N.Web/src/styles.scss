@@ -19,7 +19,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     background-size: cover;
 }
 
-n2n-login-page, n2n-registration-page {
+n2n-login-page, n2n-registration-page, n2n-top-nav {
     display: flex;
     flex: 1;
 }
@@ -32,3 +32,7 @@ n2n-login-page, n2n-registration-page {
 .text-white .mat-button-wrapper {
     color: white;
 }
+
+.outline-n > button:focus, .mat-menu-content > button:focus {
+    outline: none;
+  }

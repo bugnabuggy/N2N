@@ -8,17 +8,15 @@ import { HttpClientModule } from '@angular/common/http';
 
 import { N2NRoutingModule } from './n2n-routing.module';
 import { AppComponent } from './app.component';
-import { PAGES, MATERIAL, SERVICES } from './module.exports';
+import { PAGES, MATERIAL, SERVICES, COMPONENTS } from './module.exports';
 import { N2NHttpInterceptor } from './interceptors/n2n-http.interceptor';
-
-
-
 
 
 @NgModule({
   declarations: [
     AppComponent,
     PAGES,
+    COMPONENTS,
   ],
   imports: [
     BrowserModule,

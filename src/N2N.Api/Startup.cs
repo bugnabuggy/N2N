@@ -20,17 +20,22 @@ using N2N.Infrastructure.Repositories;
 using N2N.Infrastructure.DataContext;
 using N2N.Infrastructure.Models;
 using System.Reflection;
+using IdentityServer4.Services;
+using Microsoft.Extensions.Logging;
 
 namespace N2N.Api
 {
     public class Startup
     {
         public IConfiguration Configuration { get; }
+        private ILoggerFactory _loggerFactory;
         private AppConfigurator appConfigurator = new AppConfigurator();
 
-        public Startup(IConfiguration configuration, IHostingEnvironment env)
+
+        public Startup(IConfiguration configuration, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             Configuration = configuration;
+            _loggerFactory = loggerFactory;
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -96,6 +101,12 @@ namespace N2N.Api
                 });
 
             appConfigurator.ConfigureServices(services);
+
+            var cors = new DefaultCorsPolicyService(_loggerFactory.CreateLogger<DefaultCorsPolicyService>())
+            {
+                AllowAll = true,
+            };
+            services.AddSingleton<ICorsPolicyService>(cors);
 
             services.AddCors(options =>
             {

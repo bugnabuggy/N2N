@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { catchError, map, tap } from 'rxjs/operators';
 
 import { Endpoints } from '../enums/endpoints';
 import { of, Observable } from 'rxjs';
 import { NotificationService } from './notification.service';
+import { SiteConstants } from '../enums/site-constants';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +19,6 @@ export class UserService {
 
   private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
-      debugger;
       // TODO: send the error to remote logging infrastructure
       console.error(error); // log to console instead
 
@@ -32,11 +32,12 @@ export class UserService {
 
 
   register(nickname: string, password: string) {
+
     return this.http.post(
       Endpoints.api.register,
       {
         nickname,
-        password
+        password,
       }).pipe(
         tap(_ => { console.log(_); }),
         // catchError(this.handleError('login', []))
@@ -44,14 +45,24 @@ export class UserService {
   }
 
   login(username: string, password: string) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/x-www-form-urlencoded',
+      })
+    };
+    const body = new HttpParams()
+      .set('client_id', SiteConstants.clientId)
+      .set('client_secret', SiteConstants.clientSecred)
+      .set('grant_type', 'password')
+      .set('username', username)
+      .set('password', password);
+
     return this.http.post(
-      Endpoints.api.login,
-      {
-        username,
-        password
-      }).pipe(
-        tap(_ => { console.log(_); }),
-        // catchError(this.handleError('login', []))
-      );
+      Endpoints.api.identityServerLogin,
+      body
+    ).pipe(
+      tap(_ => { console.log(_); }),
+      // catchError(this.handleError('login', []))
+    );
   }
 }

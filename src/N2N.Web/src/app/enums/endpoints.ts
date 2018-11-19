@@ -1,3 +1,5 @@
+import { environment } from '../../environments/environment';
+
 export class Endpoints {
     static site = {
         login: 'login',
@@ -6,10 +8,11 @@ export class Endpoints {
         dashboard: 'dashboard',
     };
 
-    static apiUrl = 'http://localhost:56199';
+    static apiUrl = environment.apiUrl;
 
     static api = {
-        get login() { return Endpoints.apiUrl + '/user/login'; },
+        // get login() { return Endpoints.apiUrl + '/user/login'; },
+        get identityServerLogin() { return Endpoints.apiUrl + '/connect/token'; },
         get register() { return Endpoints.apiUrl + '/user/register'; }
     };
 

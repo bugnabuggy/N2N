@@ -27,12 +27,13 @@ export class N2NHttpInterceptor implements HttpInterceptor {
       });
     }
 
+    this.siteSvc.requestsCount++ ;
+
     return next.handle(req).pipe(
       tap(event => {
-        this.siteSvc.isRequestInProgress = true;
       }),
       finalize(() => {
-        this.siteSvc.isRequestInProgress = false;
+        this.siteSvc.requestsCount--;
       })
     );
   }

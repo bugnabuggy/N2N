@@ -6,7 +6,8 @@ import {
   MainPageComponent,
   LoginPageComponent,
   RegistrationPageComponent,
-  ResetPasswordPageComponent
+  ResetPasswordPageComponent,
+  DashboardPageComponent
 } from './pages';
 import { Endpoints } from './enums/endpoints';
 
@@ -26,6 +27,10 @@ const routes: Routes = [
   {
     path: Endpoints.site.resetPassword,
     component: ResetPasswordPageComponent
+  },
+  {
+    path: Endpoints.site.dashboard,
+    component: DashboardPageComponent
   },
   {
     path: '',

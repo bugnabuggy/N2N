@@ -1,5 +1,6 @@
 export interface LoginContract {
     access_token: string;
     refresh_token?: string;
-    expiration_date?: Date;
+    expires_in?: number;
+    token_type?: string;
 }

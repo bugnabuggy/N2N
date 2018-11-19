@@ -85,6 +85,8 @@ import {
     DashboardPageComponent
 } from './pages/';
 
+import { TopNavComponent } from './components';
+
 export const PAGES = [
     PageNotFoundComponent,
     MainPageComponent,
@@ -94,12 +96,17 @@ export const PAGES = [
     DashboardPageComponent
 ];
 
+export const COMPONENTS = [
+    TopNavComponent
+];
+
 import {
     UserService,
     SecurityService,
     NotificationService,
     SiteStateService
 } from './services/';
+
 
 export const SERVICES = [
     UserService,

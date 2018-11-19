@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Endpoints } from 'src/app/enums/endpoints';
-import { UserService } from 'src/app/services';
+import { UserService, SecurityService, NotificationService } from 'src/app/services';
+import { LoginContract } from 'src/app/models';
+import { Router } from '@angular/router';
+import { ErrorParsingHelper } from 'src/app/utilities/error-parsing-helper';
 
 @Component({
   selector: 'n2n-login-page',
@@ -14,7 +17,10 @@ export class LoginPageComponent implements OnInit {
   password = '';
 
   constructor(
-    public userSvc: UserService
+    private userSvc: UserService,
+    private secSvc: SecurityService,
+    private notificationSvc: NotificationService,
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -24,12 +30,12 @@ export class LoginPageComponent implements OnInit {
     console.log(f);
     this.userSvc
       .login(this.username, this.password)
-      .subscribe((val) => {
-          debugger;
-          console.log(val);
+      .subscribe((val: LoginContract) => {
+          this.secSvc.setTokens(val);
+          this.router.navigate([Endpoints.site.dashboard]);
         },
         (err) => {
-          debugger;
+          this.notificationSvc.error(ErrorParsingHelper.getErrorMessage(err));
           console.log(err);
         });
   }

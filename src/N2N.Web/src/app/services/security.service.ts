@@ -14,9 +14,10 @@ export class SecurityService {
   get refreshToken() { return this._refreshToken; }
 
   constructor() {
+    debugger;
     this._accessToken = localStorage.getItem('access_token');
     this._refreshToken = localStorage.getItem('refresh_token');
-    const expDate  =  localStorage.getItem('expiration_date');
+    const expDate = localStorage.getItem('expiration_date');
     this._expiration = expDate ? new Date(expDate) : null;
 
   }
@@ -24,7 +25,8 @@ export class SecurityService {
   setTokens(loginResp: LoginContract) {
     this._accessToken = loginResp.access_token || '';
     this._refreshToken = loginResp.refresh_token || '';
-    this._expiration = loginResp.expiration_date || null;
+    const date = new Date();
+    this._expiration = new Date(date.setSeconds(loginResp.expires_in)) || null;
 
     localStorage.setItem('access_token', this._accessToken);
     localStorage.setItem('refresh_token', this._refreshToken);

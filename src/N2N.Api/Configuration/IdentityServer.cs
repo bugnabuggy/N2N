@@ -24,7 +24,7 @@ namespace N2N.Api.Configuration
 
         public static IEnumerable<ApiResource> GetApis()
         {
-            return new[]
+            return new List<ApiResource>()
             {
                 // simple API with a single scope (in this case the scope name is the same as the api name)
                 new ApiResource(SiteConstants.ApiName),
@@ -42,10 +42,14 @@ namespace N2N.Api.Configuration
                         ClientId = "frontend",
                         ClientName = "N2N site",
                         
-                        AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
+                        AllowedGrantTypes = GrantTypes.ResourceOwnerPasswordAndClientCredentials,
                         AccessTokenType = AccessTokenType.Jwt,
                         AccessTokenLifetime = SiteConstants.AccessTokenLifeTime,
+                        AllowOfflineAccess = true, // allow refresh_token to be generated
                         AllowAccessTokensViaBrowser = true,
+
+                        RefreshTokenExpiration = TokenExpiration.Sliding,
+
                         ClientSecrets =
                         {
                             new Secret("secret".Sha256())
