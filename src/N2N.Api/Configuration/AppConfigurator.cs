@@ -45,9 +45,9 @@ namespace N2N.Api.Configuration
 
             var users = new Dictionary<N2NUser, string>()
             {
-                {new N2NUser(){NickName = "jokero"}, "Password@123"},
+                //{new N2NUser(){NickName = "jokero"}, "Password@123"},
                 {new N2NUser(){NickName = "admin"}, "Password@123"},
-                {new N2NUser(){NickName = "Administrator"}, "Password@123"}
+                //{new N2NUser(){NickName = "Administrator"}, "Password@123"}
             };
 
             var httpContextAccessor = services.GetService<IHttpContextAccessor>();

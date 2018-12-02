@@ -11,7 +11,6 @@ import { SiteStateService } from './services/site-state.service';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
     .pipe(
       map(result => result.matches)

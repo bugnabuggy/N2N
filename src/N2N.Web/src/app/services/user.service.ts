@@ -31,9 +31,9 @@ export class UserService {
   }
 
 
-  register(nickname: string, password: string) {
+  register(nickname: string, password: string): Observable<any> {
 
-    return this.http.post(
+    return this.http.post<any>(
       Endpoints.api.register,
       {
         nickname,

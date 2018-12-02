@@ -54,7 +54,7 @@ namespace N2N.Api
                         options.Password.RequireNonAlphanumeric = false;
                         options.Password.RequireUppercase = false;
                         options.Password.RequireLowercase = false;
-                        options.Password.RequiredLength = 5;
+                        options.Password.RequiredLength = 4;
                     })
                 .AddEntityFrameworkStores<N2NDataContext>()
                 .AddDefaultTokenProviders();
@@ -129,7 +129,6 @@ namespace N2N.Api
 
             appConfigurator.UseMvcAndConfigureRoutes(app);
 
-            //app.UseAuthentication();
             app.UseIdentityServer();
 
         }

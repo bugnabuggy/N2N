@@ -4,6 +4,9 @@ import { UserService, SecurityService, NotificationService } from 'src/app/servi
 import { LoginContract } from 'src/app/models';
 import { Router } from '@angular/router';
 
+import { flatMap } from 'rxjs/operators';
+import { ErrorParsingHelper } from 'src/app/utilities/error-parsing-helper';
+
 @Component({
   selector: 'n2n-registration-page',
   templateUrl: './registration-page.component.html',
@@ -28,23 +31,44 @@ export class RegistrationPageComponent implements OnInit {
 
 
   onSubmit($event) {
-    debugger;
-    if (this.password && this.password == this.rePassword) {
+    if (  this.nickname &&
+          this.password &&
+          this.password === this.rePassword) {
       this.userSvc.register(
         this.nickname,
         this.password
+      ).pipe(
+        flatMap( (value, i) => {
+          return this.userSvc.login(this.nickname, this.password);
+        }
+      )
+        // .subscribe(
+        //   (resp: LoginContract ) => {
+        //       this.userSvc.login(this.nickname, this.password)
+        //       .subscribe(
+
+        //       )
+
+        //       this.securitySvc.setTokens(resp);
+        //       this.router.navigate(['\\' + Endpoints.site.dashboard]);
+        //   },
+      //   (err) => {
+      //   this.notifications.error(err.error);
+      //   console.log(err);
+      // }
       ).subscribe(
-        (resp: LoginContract ) => {
-            debugger;
-            this.securitySvc.setTokens(resp);
-            this.router.navigate(['\\' + Endpoints.site.dashboard]);
+        (resp: LoginContract) => {
+          this.securitySvc.setTokens(resp);
+          this.router.navigate(['\\' + Endpoints.site.dashboard]);
         },
         (err) => {
-          debugger;
-          this.notifications.error(err.error);
-          console.log(err);
+            const errMsg = ErrorParsingHelper.getErrorMessage(err);
+            this.notifications.error(errMsg);
+            console.log(err);
         }
       );
+    } else {
+      this.notifications.error('Fill all necessary fields');
     }
   }
 }

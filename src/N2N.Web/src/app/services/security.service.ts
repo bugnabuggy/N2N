@@ -14,7 +14,6 @@ export class SecurityService {
   get refreshToken() { return this._refreshToken; }
 
   constructor() {
-    debugger;
     this._accessToken = localStorage.getItem('access_token');
     this._refreshToken = localStorage.getItem('refresh_token');
     const expDate = localStorage.getItem('expiration_date');

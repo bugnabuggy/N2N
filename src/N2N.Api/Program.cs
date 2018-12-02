@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using IdentityServer4.EntityFramework.DbContexts;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -31,6 +32,9 @@ namespace N2N.Api
                     db.Database.Migrate();
 
                     appConfigurator.InitRolesAndUsers(services);
+
+                    var identityServerDb = services.GetRequiredService<PersistedGrantDbContext>();
+                    identityServerDb.Database.Migrate();
                 }
                 catch (Exception ex)
                 {
@@ -38,8 +42,9 @@ namespace N2N.Api
                     logger.LogError(ex, "An error occurred while migrating the database.");
                 }
             }
-
+            Utilities.Logging.Logger.LogWarning("Api site is starting");
             webHost.Run();
+            
         }
 
         public static IWebHost BuildWebHost(string[] args) =>

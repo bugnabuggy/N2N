@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using N2N.Api.Filters;
 using N2N.Core.Constants;
@@ -12,7 +8,7 @@ using N2N.Core.Models;
 using N2N.Core.Services;
 using N2N.Infrastructure.Models;
 
-namespace N2N.Api.Controllers
+namespace N2N.Api.Controllers.Admin
 {
     [Produces("application/json")]
     [N2NAutorization(N2NRoles.Admin)]

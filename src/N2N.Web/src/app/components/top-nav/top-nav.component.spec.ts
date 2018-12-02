@@ -1,6 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TopNavComponent } from './top-nav.component';
+import { MATERIAL } from 'src/app/module.exports';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('TopNavComponent', () => {
   let component: TopNavComponent;
@@ -8,7 +10,11 @@ describe('TopNavComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [
+        MATERIAL,
+      ],
       declarations: [ TopNavComponent ]
+
     })
     .compileComponents();
   }));
