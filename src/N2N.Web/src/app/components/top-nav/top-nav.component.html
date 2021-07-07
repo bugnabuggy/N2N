@@ -1,0 +1,20 @@
+<div class="w-100">
+
+  <div class="float-right outline-n">
+    <mat-menu #appMenu="matMenu">
+        <button mat-menu-item routerLink="/profile">
+            <mat-icon>face</mat-icon>
+            <label>Profile</label>
+        </button>
+
+        <button mat-menu-item>
+            <mat-icon>exit_to_app</mat-icon>
+            <label>Logout</label>
+        </button>
+    </mat-menu>
+    <button mat-icon-button class="" [matMenuTriggerFor]="appMenu">
+      <div mat-card-avatar class="example-header-image"></div>
+    </button>
+  </div>
+
+</div>

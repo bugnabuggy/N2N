@@ -1,51 +1,37 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { FormsModule,ReactiveFormsModule } from '@angular/forms';
-import { HttpModule } from '@angular/http';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { LayoutModule } from '@angular/cdk/layout';
 import { HttpClientModule } from '@angular/common/http';
 
+import { N2NRoutingModule } from './n2n-routing.module';
 import { AppComponent } from './app.component';
-import { NavMenuComponent } from './navmenu/navmenu.component';
-import { MakeaPromiseComponent } from './Make-a-Promise/makeapromise.component';
-import { SenfGiftComponent } from './Send-Gift/senfgift.component';
-import {SendPostcardComponent} from './Send-Postcard/sendpostcard.component'
-import {LogInComponent} from './login/login.component';
-import {RegistrationComponent} from './registration/registration.component';
+import { PAGES, MATERIAL, SERVICES, COMPONENTS } from './module.exports';
+import { N2NHttpInterceptor } from './interceptors/n2n-http.interceptor';
 
-import {UserService} from './userService';
-import {StoreHeaders} from './storeHeaders'
-import {StoreLinks} from './storeLinks'
-
-import { AppRoutingModule } from './app-routing.module';
-
-import {MatDialogModule,MatButtonModule,MatInputModule,MatCardModule,MatCheckboxModule} from '@angular/material';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
     AppComponent,
-    NavMenuComponent,
-    MakeaPromiseComponent,
-    SenfGiftComponent,
-    SendPostcardComponent,
-    LogInComponent,
-    RegistrationComponent
+    PAGES,
+    COMPONENTS,
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule,
-    MatDialogModule,
-    MatButtonModule,
-    MatCardModule,
-    MatInputModule,
-    MatCheckboxModule,
-    BrowserAnimationsModule,
     FormsModule,
-    HttpModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    N2NRoutingModule,
+    BrowserAnimationsModule,
+    LayoutModule,
+    MATERIAL,
+    HttpClientModule
   ],
-  entryComponents: [LogInComponent,RegistrationComponent],
-  providers: [UserService,StoreHeaders,StoreLinks],
+  providers: [
+    SERVICES,
+    { provide: HTTP_INTERCEPTORS, useClass: N2NHttpInterceptor, multi: true },
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

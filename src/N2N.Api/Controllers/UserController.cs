@@ -1,18 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Principal;
 using System.Threading.Tasks;
-using IdentityServer4.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Isam.Esent.Interop;
 using N2N.Api.Filters;
 using N2N.Api.Services;
+using N2N.Core.Constants;
 using N2N.Core.Entities;
 using N2N.Infrastructure.Models;
+using N2N.Infrastructure.Models.DTO;
 using Newtonsoft.Json;
 
+// TODO: refactor this ↓
 namespace N2N.Api.Controllers
 {
     [Produces("application/json")]
@@ -20,23 +24,34 @@ namespace N2N.Api.Controllers
     public class UserController : Controller
     {
         private N2NApiUserService _apiUserService;
-        private IAuthentificationService _authentificationService;
+        private IAuthenticationService _authentificationService;
 
 
-        public UserController(N2NApiUserService apiUserService, IAuthentificationService authentificationService)
+        public UserController(N2NApiUserService apiUserService, IAuthenticationService authentificationService)
         {
             this._authentificationService = authentificationService;
             this._apiUserService = apiUserService;
         }
 
-        //[N2NAutorizationFilter]
-        [HttpGet("/user")]
-        public async Task<JsonResult> СheckUser()
+        [HttpGet("/user/IsAuthorization")]
+        public async Task<bool> IsAuthorization()
         {
             var authHeader = HttpContext.Request.Headers["Authorization"];
-            if (authHeader!="Bearer")
+            if (authHeader != "Bearer undefined")
             {
-                string welcome_message = "Welcome " + _authentificationService.GetNameUser(authHeader.ToString());
+                return true;
+            }
+            return false;
+        }
+
+        //[N2NAutorizationFilter]
+        [HttpGet("/user")]
+        public JsonResult СheckUser()
+        {
+            var authHeader = HttpContext.Request.Headers["Authorization"];
+            if (authHeader!= "Bearer undefined")
+            {
+                string welcome_message = "Welcome " + _authentificationService.GetUserNameAsync(authHeader.ToString());
                 return Json(welcome_message);
             }
             return Json("You not authentification");
@@ -44,23 +59,23 @@ namespace N2N.Api.Controllers
 
 
         [HttpPost("/user/logIn")]
-        public async Task<IActionResult> LogIn([FromBody] UserRegistrationFormDTO userRegistration)
+        public async Task<IActionResult> LogIn([FromBody] UserLoginDTO loginForm)
         {
 
-            if (!userRegistration.NickName.IsNullOrEmpty() &&
-                !userRegistration.Password.IsNullOrEmpty() &&
-                !userRegistration.Capcha.IsNullOrEmpty())
+            if (!string.IsNullOrEmpty(loginForm.NickName) &&
+                !string.IsNullOrEmpty(loginForm.Password) &&
+                !string.IsNullOrEmpty(loginForm.Captcha))
             {
                 var response =
-                    await _authentificationService.Authentification(userRegistration.NickName,
-                        userRegistration.Password);
+                    await _authentificationService.LoginUserAsync(loginForm.NickName,
+                        loginForm.Password);
 
-                if (response.ToString() == new { }.ToString())
+                if (!response.Success)
                 {
                     return BadRequest("Invalid username or password.");
 
                 }
-                return Ok(response);
+                return Ok(response.Data);
             }
             else
             {
@@ -72,15 +87,18 @@ namespace N2N.Api.Controllers
         public async Task<IActionResult> Register([FromBody] UserRegistrationFormDTO userRegistration)
         {
           
-            if (!userRegistration.NickName.IsNullOrEmpty() && 
-                !userRegistration.Password.IsNullOrEmpty() && 
-                !userRegistration.Capcha.IsNullOrEmpty() )
+            if (!string.IsNullOrEmpty(userRegistration.NickName) && 
+                !string.IsNullOrEmpty(userRegistration.Password))
+                // && !string.IsNullOrEmpty(userRegistration.Captcha) )
             {
                 N2NUser user = new N2NUser()
                 {
                     Id = Guid.NewGuid(),
                     NickName = userRegistration.NickName
                 };
+
+                // because we have service permission checks 
+                System.Threading.Thread.CurrentPrincipal = new GenericPrincipal(new GenericIdentity("N2N User Registration Service"), new [] { N2NRoles.Admin } );
 
                 var result = await this._apiUserService.CreateUserAsync(user, userRegistration.Password);
 
@@ -89,15 +107,15 @@ namespace N2N.Api.Controllers
                     return BadRequest(result.Messages);
                 }
 
-                var response =await _authentificationService.Authentification(userRegistration.NickName, userRegistration.Password);
+                var response = await _authentificationService.LoginUserAsync(userRegistration.NickName, userRegistration.Password);
 
-                if (response.ToString() == new { }.ToString())
+                if (response.Data.ToString() == new { }.ToString())
                 {
                     return BadRequest("Invalid username or password.");
                    
                 }
                 
-                return Ok(response);
+                return Ok(response.Data);
             }
             else
             {
@@ -110,7 +128,7 @@ namespace N2N.Api.Controllers
         public void LogOut()
         {
             var authHeader = HttpContext.Request.Headers["Authorization"];
-            this._authentificationService.DeleteToken(authHeader.ToString());
+            //this._authentificationService.DeleteTokenAsync(authHeader.ToString());
         }
 
     }

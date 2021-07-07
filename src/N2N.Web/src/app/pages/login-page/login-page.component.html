@@ -1,0 +1,19 @@
+<div class='d-flex flex-grow-1 justify-content-center align-items-center'>
+  <form class='d-flex flex-column p-2 mw-30' (ngSubmit)="onSubmit()" #loginForm="ngForm" >
+    <h2>Log in</h2>
+    <mat-form-field>
+      <input id="name" name="name" [(ngModel)]="username" #name="ngModel"  matInput placeholder="Username" >
+    </mat-form-field>
+
+    <mat-form-field>
+      <input matInput name="password" type="password" [(ngModel)]="password" placeholder="Password">
+    </mat-form-field>
+
+    <div class='d-flex justify-content-between my-3'>
+      <a [routerLink]="'/' + Endpoints.site.registration">Do not have an account?</a>
+      <a [routerLink]="'/' + Endpoints.site.resetPassword">Reset password</a>
+    </div>
+
+    <button type="submit" mat-raised-button>Login</button>
+  </form>
+</div>

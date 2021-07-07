@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace N2N.Data.Repositories
+namespace N2N.Infrastructure.Repositories
 {
     public interface IRepository<T>
     {
@@ -15,8 +15,21 @@ namespace N2N.Data.Repositories
         T Add(T item);
         T Delete(T item);
 
+        IEnumerable<T> Get(Expression<Func<T, bool>> filter,
+                            Func<IQueryable<T>, IOrderedQueryable<T>> orderBy,
+                            string includeProperties);
+
         IEnumerable<T> Add(IEnumerable<T> items);
         IEnumerable<T> Update(IEnumerable<T> items);
         IEnumerable<T> Delete(IEnumerable<T> items);
+
+
+        Task<T> AddAsync(T item);
+        Task<IEnumerable<T>> AddAsync(IEnumerable<T> items);
+
+        Task<IEnumerable<T>> GetAsync(Expression<Func<T, bool>> filter,
+                            Func<IQueryable<T>, IOrderedQueryable<T>> orderBy,
+                            string includeProperties);
+
     }
 }
